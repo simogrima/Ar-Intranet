@@ -1,0 +1,23 @@
+<?php
+/**
+echo $this->headLink()
+          ->appendStylesheet($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css');
+echo $this->headScript()
+          ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.min.js')
+          ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
+ * 
+ */
+
+$title = 'Edit Post';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+        //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
+        $form->setAttribute('action', $this->serverUrl(TRUE));
+        $form->setAttribute('class', 'form-horizontal');
+        $form->prepare();
+        
+        echo $this->ztbForm($form);
+

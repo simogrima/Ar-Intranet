@@ -1,0 +1,72 @@
+<?php
+$getters = array();
+foreach ($this->permissionlistElements as $element) {
+    $parts = explode('_', $element);
+    array_walk($parts, function (&$val) {
+        $val = ucfirst($val);
+    });
+    $getters[$element] = 'get' . implode('', $parts);
+}
+?>
+
+<h1><?php echo $this->translate('Permissions') ?></h1>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+            <a href="<?php echo $this->url('zfcadmin/zfcrbacdmin/permission/create') ?>" class="btn btn-primary">
+                <?php echo $this->translate('Add New Permission') ?>
+            </a>
+  </div>
+</div>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <?php foreach ($this->permissionlistElements as $name => $element): ?>
+                <th><?php echo $this->escapeHtml($name ? : $element); ?></th>
+            <?php endforeach; ?>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->permissions as $permission): ?>
+        <tr>
+            <?php foreach ($this->permissionlistElements as $element): ?>
+                <td class="cell cell-<?php echo $this->escapeHtml($element) ?>">
+                    <?php $parts = explode('_', $element); ?>
+                    <?php echo call_user_func(array($permission, $getters[$element])); ?>
+                </td>
+            <?php endforeach; ?>
+            <td class="cell cell-ctrls">
+                <a href="<?php echo $this->url('zfcadmin/zfcrbacdmin/permission/edit', array('permissionId' => $permission->getId())); ?>">
+                    <?php echo $this->translate('Edit') ?>
+                </a>
+                |
+                <a href="<?php echo $this->url('zfcadmin/zfcrbacdmin/permission/remove', array('permissionId' => $permission->getId())); ?>"
+                   onclick="return confirm('<?php echo $this->translate('Really delete permission?') ?>')">
+                    <?php echo $this->translate('Delete') ?>
+                </a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="<?php echo count($this->permissionlistElements) + 1; ?>">
+            <?php //echo $this->paginationControl($this->users, 'Sliding', 'zfc-user-admin/user-admin/pagination_userlist.phtml'); ?>
+        </td>
+    </tr>
+    </tfoot>
+</table>
+
+<?php
+echo $this->paginationControl(
+        $this->permissions, 'Sliding', 'paginator-slide', array(
+            'order_by' => 'id', 
+            'order' => 'ASC', 
+            'search_by' => NULL, 
+            'pageAction' => $pageAction,            
+            )
+);
+?>

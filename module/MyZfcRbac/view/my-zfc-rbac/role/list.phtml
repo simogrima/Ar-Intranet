@@ -1,0 +1,65 @@
+<?php
+$getters = array();
+foreach ($this->rolelistElements as $element) {
+    $parts = explode('_', $element);
+    array_walk($parts, function (&$val) {
+        $val = ucfirst($val);
+    });
+    $getters[$element] = 'get' . implode('', $parts);
+}
+?>
+
+<h1><?php echo $this->translate('Roles') ?></h1>
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+            <a href="<?php echo $this->url('zfcadmin/zfcrbacdmin/role/create') ?>" class="btn btn-primary">
+                <?php echo $this->translate('Add New Role') ?>
+            </a>
+  </div>
+</div>
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <?php foreach ($this->rolelistElements as $name => $element): ?>
+                <th><?php echo $this->escapeHtml($name ? : $element); ?></th>
+            <?php endforeach; ?>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->roles as $role): ?>
+        <tr>
+            <?php foreach ($this->rolelistElements as $element): ?>
+                <td class="cell cell-<?php echo $this->escapeHtml($element) ?>">
+                    <?php $parts = explode('_', $element); ?>
+                    <?php echo call_user_func(array($role, $getters[$element])); ?>
+                </td>
+            <?php endforeach; ?>
+            <td class="cell cell-ctrls">
+                <a href="<?php echo $this->url('zfcadmin/zfcrbacdmin/role/edit', array('roleId' => $role->getId())); ?>">
+                    <?php echo $this->translate('Edit') ?>
+                </a>
+                |
+                <a href="<?php echo $this->url('zfcadmin/zfcrbacdmin/role/remove', array('roleId' => $role->getId())); ?>"
+                   onclick="return confirm('<?php echo $this->translate('Really delete role?') ?>')">
+                    <?php echo $this->translate('Delete') ?>
+                </a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+echo $this->paginationControl(
+        $this->roles, 'Sliding', 'paginator-slide', array(
+            'order_by' => 'id', 
+            'order' => 'ASC', 
+            'search_by' => NULL, 
+            'pageAction' => $pageAction,            
+            )
+);
+?>
