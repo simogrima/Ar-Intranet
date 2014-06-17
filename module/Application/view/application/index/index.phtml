@@ -1,8 +1,29 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Welcome to %sZend Framework 2%s'), '<span class="zf-green">', '</span>') ?></h1>
-    <p><?php echo sprintf($this->translate('Congratulations! You have successfully installed the %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2.'), '<a href="https://github.com/zendframework/ZendSkeletonApplication" target="_blank">', '</a>', \Zend\Version\Version::VERSION) ?></p>
-    <p><a class="btn btn-success btn-lg" href="https://github.com/zendframework/zf2" target="_blank"><?php echo $this->translate('Fork Zend Framework 2 on GitHub') ?> &raquo;</a></p>
+<?php
+ $title = 'Dashboard';
+ $this->headTitle($title);
+ 
+ //http://startbootstrap.com/templates/sb-admin-v2/
+ //http://almsaeedstudio.com/AdminLTE/pages/UI/buttons.html
+ ?>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header"><?= $this->escapeHtml($title); ?></h1>
+    </div>
+    <!-- /.col-lg-12 -->
 </div>
+<!-- /.row -->
+
+<section class="content-header">
+                    <h1>
+                        Dashboard
+                        <small>Control panel</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Dashboard</li>
+                    </ol>
+                </section>
+
 
 <div class="row">
 

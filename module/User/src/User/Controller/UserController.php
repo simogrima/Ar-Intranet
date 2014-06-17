@@ -26,9 +26,16 @@ class UserController extends ZfcUserController
     }
 
 
-    
+    public function loginAction()
+    {
+        $this->layout('layout/login');
+        return parent::loginAction();
+    }
+
+
     public function loginaAction()
     {
+        $this->layout('layout/login');
         echo 'aaaaaaaaaaa';
         return FALSE;
     }  

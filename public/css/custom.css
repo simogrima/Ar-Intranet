@@ -1,0 +1,67 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 12-giu-2014, 14.32.55
+    Author     : GrimaniSimone
+*/
+
+
+
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic);
+@import url(http://fonts.googleapis.com/css?family=Kaushan+Script);
+
+html,
+body {overflow-x: hidden!important; font-family: 'Source Sans Pro', sans-serif; -webkit-font-smoothing: antialiased;min-height: 100%;}
+a {color: #3c8dbc;}
+a:hover,
+a:active,
+a:focus {outline: none; text-decoration: none; color: #72afd2;}    
+
+.panel,
+.form-control,
+.btn,
+.btn-lg,
+.navbar-toggle,
+.dropdown-menu {border-radius: 0;}
+
+.content-header {background: #fbfbfb; box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);}
+.content-header {position: relative; padding: 15px 15px 10px 20px;}
+.content-header > h1 {margin: 0;font-size: 24px;}
+.content-header > .breadcrumb {float: right; background: transparent; margin-top: 0px; margin-bottom: 0; font-size: 12px; padding: 7px 5px; position: absolute; top: 15px; right: 10px; -webkit-border-radius: 2px; -moz-border-radius: 2px;border-radius: 2px;}
+
+.blur-login {background: #394557 url('../img/login-bg1.jpg') repeat;}
+.navbar-default .navbar-toggle { border: 0;}
+.btn.btn-primary {background-color: #3c8dbc; border-color: #367fa9;}
+.navbar-static-side li a {color: #555}
+.skin-blue .sidebar > .sidebar-menu > li:first-of-type {border-top: 1px solid #dbdbdb;}
+.skin-blue .sidebar-collapse > .nav > li { border-top: 1px solid #fff; border-bottom: 1px solid #dbdbdb;}
+
+/*-------------------------------
+Responsive styles
+-------------------------------*/
+@media screen and (max-width: 767px){
+    .content-header > .breadcrumb {
+        position: relative;
+        margin-top: 5px;
+        top: 0;
+        right: 0;
+        float: none;
+        background: #efefef;
+    }
+}
+/*-------------------------------
+End Responsive styles
+-------------------------------*/
+
+/*-------------------------------
+Print styles
+-------------------------------*/
+@media print{ 
+    .no-print {display:none!important;} 
+}
+/*-------------------------------
+End Print styles
+-------------------------------*/
