@@ -22,7 +22,7 @@ return array(
         'User',
         'MyZfcRbac',
         'Admin',
-        'Samples'
+        'Samples' //campionature
         ),
     'module_listener_options' => array(
         'module_paths' => array(
