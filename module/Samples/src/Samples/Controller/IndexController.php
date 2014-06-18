@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Samples\Controller
  *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @author Simone Grimani
+ * @copyright  Copyright (c) 2014 Simone Grimani (http://www.simogrima.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 namespace Samples\Controller;
@@ -102,13 +102,10 @@ class IndexController extends EntityUsingController
 
         // Create the form and inject the ObjectManager
         $form = new CreateSampleForm($objectManager);
-
+        
         // Create a new, empty entity and bind it to the form
         $sample = new Sample();
         $form->bind($sample);
-
-
-
 
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());

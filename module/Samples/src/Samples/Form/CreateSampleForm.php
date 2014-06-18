@@ -2,9 +2,9 @@
 
 namespace Samples\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Form;
+use Doctrine\Common\Persistence\ObjectManager,
+    DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
+    Zend\Form\Form;
 
 class CreateSampleForm extends Form
 {
@@ -20,6 +20,7 @@ class CreateSampleForm extends Form
         $sampleFieldset = new SampleFieldset($objectManager);
         $sampleFieldset->setUseAsBaseFieldset(true);
         $this->add($sampleFieldset);
+
 
         // … add CSRF and submit elements …
 

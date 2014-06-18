@@ -43,6 +43,7 @@ a:focus {outline: none; text-decoration: none; color: #72afd2;}
 Responsive styles
 -------------------------------*/
 @media screen and (max-width: 767px){
+    #sidebar-toggle {display: none}
     .content-header > .breadcrumb {
         position: relative;
         margin-top: 5px;

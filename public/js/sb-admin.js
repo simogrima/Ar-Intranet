@@ -16,3 +16,26 @@ $(function() {
         }
     })
 })
+
+
+$(function() {
+
+    /**
+     * Pulsante per mostrare/nascondere sidebar 
+     */
+    $("#sidebar-toggle a").click(function(e) {
+        e.preventDefault();
+
+        if ($('.navbar-static-side').is(":visible") ) {
+            $('.navbar-static-side').hide();
+            $('#page-wrapper').css( "margin-left", "0");
+        } else {
+            $('.navbar-static-side').show();
+            $('#page-wrapper').css( "margin-left", "250px");           
+        }
+    });
+
+
+
+});
+
