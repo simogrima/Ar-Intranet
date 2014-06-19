@@ -4,11 +4,11 @@ namespace Samples\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Collections\Collection,
-    Doctrine\ORM\Mapping as ORM,
-    Doctrine\ORM\Event\PreUpdateEventArgs;
+    Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="samples")
  */
 class Sample
@@ -85,6 +85,14 @@ class Sample
      * @ORM\Column(name="created_date", type="datetime", nullable=false)
      */
     protected $createdDate;
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="edit_date", type="datetime", nullable=false)
+     */
+    protected $editDate;
+    
 
     /**
      * Getter id
@@ -185,6 +193,16 @@ class Sample
     {
         return $this->createdDate;
     }
+    
+    /**
+     * Getter editDate
+     * 
+     * @return \DateTime 
+     */
+    public function getEditDate()
+    {
+        return $this->editDate;
+    }    
 
     /**
      * Setter model
@@ -302,31 +320,35 @@ class Sample
 
         return $this;
     }
+    
+    /**
+     * Setter editDate
+     * 
+     * @param \DateTime $editDate
+     * @return \Samples\Entity\Sample
+     */
+    public function setEditdDate(\DateTime $createdDate)
+    {
+        $this->editDate = $createdDate;
+
+        return $this;
+    }    
 
     /**
      * @ORM\PrePersist
-     * @ORM\PreUpdate
      */
     public function prePersist()
     {
+
         if (empty($this->getCreatedDate())) {
             $this->setCreatedDate(new \Datetime());
         }
-        //$this->setDateEdit(new \Datetime());
+    
+        $this->setEditdDate(new \Datetime());
+
     }
     
     
 
-    /**
-     *
-     * @ORM\PreUpdate
-     * @ORM\PrePersist
-     */
-    protected function formatDate()
-    {
-        if (empty($this->getCreatedDate())) {
-            $this->setCreatedDate(new \Datetime());
-        }
-        return $this;
-    }
+
 }

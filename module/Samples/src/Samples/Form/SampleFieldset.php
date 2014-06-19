@@ -14,9 +14,16 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
     public function __construct(ObjectManager $objectManager)
     {
         parent::__construct('sample');
-
-        $this->setHydrator(new DoctrineHydrator($objectManager))
+        
+        //$this->setHydrator(new DoctrineHydrator($objectManager))
+        $this->setHydrator(new DoctrineHydrator($objectManager, 'Samples\Entity\Sample', true))
                 ->setObject(new Sample());
+        
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'id'
+        ));        
 
         //model
         $this->add(array(
@@ -25,6 +32,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'options' => array(
                 'label' => 'Model',
             ),
+            'attributes' => array(
+                'required' => true,
+            )              
         ));
 
         //voltage
@@ -104,6 +114,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'options' => array(
                 'label' => 'Serigraphy',
             ),
+            'attributes' => array(
+                'required' => true,
+            )              
         ));
 
         //colors
@@ -113,6 +126,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'options' => array(
                 'label' => 'Colors',
             ),
+            'attributes' => array(
+                'required' => true,
+            )              
         ));
 
         //accessories
@@ -121,7 +137,10 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'name' => 'accessories',
             'options' => array(
                 'label' => 'Accessories',
-            )
+            ),
+            'attributes' => array(
+                'required' => true,
+            )              
         ));
         
         
@@ -132,6 +151,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return array(
+            'id' => array(
+                'required' => false
+            ),            
             'model' => array(
                 'required' => true,
             ),

@@ -11,91 +11,60 @@
 namespace Samples\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 use Application\Controller\EntityUsingController;
 use Samples\Entity\Sample;
+use Zend\Paginator;
+use Zend\Stdlib\Hydrator\ClassMethods;
+
 
 //Doctrine
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 //Form
-use Samples\Form\CreateSampleForm;
+use Samples\Form\SampleForm;
+
 
 class IndexController extends EntityUsingController
 {
-
-    public function indexAction()
-    {
-        return new ViewModel();
-    }
+    /**
+     * @var Samples\Options\ModuleOptions
+     */
+    protected $options;
 
     /**
-     * Non-existing entity in the association
-     * 
-     * Creo il post ed i tags
-     * Poi idrato.
-     * Funziona xchè nell'entità BlogPost ho definito due funzioni: addTags e removeTags. 
-     * Tali funzioni devono essere sempre definite e vengono chiamate automaticamente dal 
-     * Doctrine hydrator quando si tratta di collezioni.
-     * 
-     * Inoltre affinche siano memorizzati anche i tags (nuovi) è necessario 
-     * modificare leggermente la mappatura, in modo che Doctrine possa persistere 
-     * nuove entità sulle associazioni (notare le opzioni a cascade sulla associazione OneToMany):
-     * nell'entità BlogPost
-     * @ORM\OneToMany(targetEntity="Application\Entity\Tag", mappedBy="blogPost", cascade={"persist"})
+     *
+     * @var type Samples\Mapper\SampleMapper
      */
-    public function example1Action()
+    protected $sampleMapper;
+
+    public function __construct($options, $mapper)
     {
-        $hydrator = new DoctrineHydrator($this->getEntityManager());
-        $blogPost = new BlogPost();
-
-        $tags = array();
-
-        $tag1 = new Tag();
-        $tag1->setName('PHP');
-        $tags[] = $tag1;
-
-        $tag2 = new Tag();
-        $tag2->setName('STL');
-        $tags[] = $tag2;
-
-        $data = array(
-            'title' => 'The best blog post in the world !',
-            'tags' => $tags // Note that you can mix integers and entities without any problem
-        );
-
-        $blogPost = $hydrator->hydrate($data, $blogPost);
-
-        echo $blogPost->getTitle(); // prints "The best blog post in the world !"
-        echo count($blogPost->getTags()); // prints 2
-
-        return false;
-    }
-
-    /**
-     * Existing entity in the association
-     * Vedi example1Action
-     */
-    public function example2Action()
+        $this->options = $options;
+        $this->sampleMapper = $mapper;
+    }    
+    
+    
+    public function listAction()
     {
-        $hydrator = new DoctrineHydrator($this->getEntityManager());
-        $blogPost = new BlogPost();
-        $data = array(
-            'title' => 'The best blog post in the world !',
-            'tags' => array(
-                array('id' => 3), // add tag whose id is 3
-                array('id' => 8)  // also add tag whose id is 8
-            )
+        $samples = $this->sampleMapper->findAll();
+        if (is_array($samples)) {
+            $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($samples));
+        } else {
+            $paginator = $samples;
+        }
+
+        $paginator->setItemCountPerPage(30);
+        $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
+        return array(
+            'samples' => $paginator,
+            //'rolelistElements' => $this->options->getRoleListElements(),
+            'pageAction' => 'samples/list',
         );
+    }    
 
-        $blogPost = $hydrator->hydrate($data, $blogPost);
 
-        echo $blogPost->getTitle(); // prints "The best blog post in the world !"
-        echo count($blogPost->getTags()); // prints 2
 
-        return FALSE;
-    }
 
-    public function createAction()
+    public function createOLDAction()
     {
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getEntityManager();
@@ -119,56 +88,54 @@ class IndexController extends EntityUsingController
 
         return array('form' => $form);
     }
+    
+    public function createAction()
+    {
+        // Get your ObjectManager from the ServiceManager
+        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+
+        // Create the form and inject the ObjectManager
+        $form = new SampleForm($objectManager);
+
+        // Create a new, empty entity and bind it to the form
+        $class = $this->options->getSampleEntityClass();
+        $sample = new $class();
+        $form->bind($sample);
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+            if ($form->isValid()) {
+                $this->sampleMapper->insert($sample);
+
+                $this->flashMessenger()->setNamespace('success')->addMessage('Sample added successfully');
+                return $this->redirect()->toRoute('samples/list');
+            }
+        }
+
+        return array('form' => $form);
+    }    
 
     public function editAction()
     {
         // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getEntityManager();
+        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+
+        $sampleId = $this->getEvent()->getRouteMatch()->getParam('sampleId');
+        $sample = $objectManager->getRepository($this->options->getSampleEntityClass())->find($sampleId);
 
         // Create the form and inject the ObjectManager
-        $form = new CreateBlogPostForm($objectManager);
-
-        // Create a new, empty entity and bind it to the form
-
-        $blogPost = $this->getEntityManager()->getRepository('Application\Entity\BlogPost')->find(2);
-        ;
-        var_dump($blogPost->getTags()->toArray());
-        $form->bind($blogPost);
-
-        $form->add(array(
-            'type' => 'Zend\Form\Element\Select',
-            'name' => 'numbers',
-            'options' => array(
-
-		'value_options' => array(
-
-        	"1" => 'One',
-
-            "2"	=> "Two", 
-
-			"3"	=> "Three",
-
-			"4"	=> "Four",
-
-			"5"	=> "Five",
-
-	    ),
-
-	),
-            'attributes' => array(
-                'value' => '',
-                'id' => 'numbers',
-                'size' => '5',
-                'multiple' => 'multiple'
-            )
-        ));
+        $form = new SampleForm($objectManager);
+        $form->bind($sample);
 
         if ($this->request->isPost()) {
-            $form->setData($this->request->getPost());
-
+            $postedData = $this->request->getPost();
+            $form->setData($postedData);
             if ($form->isValid()) {
-                // Save the changes
-                $objectManager->flush();
+
+                $this->sampleMapper->update($sample);
+
+                $this->flashMessenger()->setNamespace('success')->addMessage('Samples edit successfully');
+                return $this->redirect()->toRoute('samples/list');
             }
         }
 
