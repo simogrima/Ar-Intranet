@@ -99,4 +99,31 @@ return array(
             ),
         ),
     ),   
+    'doctrine' => array(
+        'driver' => array(
+            'application_entities' => array(
+                'paths' => array(
+                    __DIR__ . '/../../Application/src/Application/Entity')
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'Application\Entity' => 'application_entities'
+                )
+            )
+        ),
+    ),    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 );

@@ -22,14 +22,42 @@ class Sample
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $customer;    
+    
     /**
      * @var string|null
      *
      * @ORM\Column(type="string", length=128)
      */
     protected $model;
-
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="smallint", options={"unsigned"=true, "default" = 0})
+     */
+    protected $qta;
+   
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="qta_expected", type="integer", options={"unsigned"=true, "default" = 0})
+     */
+    protected $qtaExpected;        
+    
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="smallint", options={"unsigned"=true, "default" = 0})
+     */
+    protected $status;     
+      
     /**
      * @var string|null
      *
@@ -77,8 +105,17 @@ class Sample
      *
      * @ORM\Column(type="string", length=128)
      */
-    protected $accessories = 'Standard'; //accessori  
-
+    protected $accessories;
+    
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="requested_delivery_date", type="datetime", nullable=false)
+     */
+    protected $requestedDeliveryDate;
+        
+      
     /**
      * @var \DateTime
      *
@@ -93,7 +130,17 @@ class Sample
      */
     protected $editDate;
     
-
+    /**
+     * @var \Application\Entity\Country
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\Country", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="country_id", nullable=true, referencedColumnName="country_id")
+     * })
+     */
+    protected $country;       
+    
+ 
     /**
      * Getter id
      * 
@@ -113,97 +160,7 @@ class Sample
     {
         return $this->model;
     }
-
-    /**
-     * Getter voltage
-     * 
-     * @return string
-     */
-    public function getVoltage()
-    {
-        return $this->voltage;
-    }
-
-    /**
-     * Getter plug
-     * 
-     * @return string
-     */
-    public function getPlug()
-    {
-        return $this->plug;
-    }
-
-    /**
-     * Getter frequency
-     * 
-     * @return string
-     */
-    public function getFrequency()
-    {
-        return $this->frequency;
-    }
-
-    /**
-     * Getter serigraphy
-     * 
-     * @return string
-     */
-    public function getSerigraphy()
-    {
-        return $this->serigraphy;
-    }
-
-    /**
-     * Getter colors
-     * 
-     * @return string
-     */
-    public function getColors()
-    {
-        return $this->colors;
-    }
-
-    /**
-     * Getter cable
-     * 
-     * @return string
-     */
-    public function getCable()
-    {
-        return $this->cable;
-    }
-
-    /**
-     * Getter accessories
-     * 
-     * @return string
-     */
-    public function getAccessories()
-    {
-        return $this->accessories;
-    }
-
-    /**
-     * Getter createDate
-     * 
-     * @return \DateTime 
-     */
-    public function getCreatedDate()
-    {
-        return $this->createdDate;
-    }
     
-    /**
-     * Getter editDate
-     * 
-     * @return \DateTime 
-     */
-    public function getEditDate()
-    {
-        return $this->editDate;
-    }    
-
     /**
      * Setter model
      * 
@@ -215,8 +172,87 @@ class Sample
         $this->model = $model;
 
         return $this;
-    }
+    }    
+    
+    /**
+     * Getter customer
+     * 
+     * @return string
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }    
+        
+    /**
+     * Setter customer
+     * 
+     * @param string $customer
+     * @return \Samples\Entity\Sample
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
 
+        return $this;
+    }     
+    
+    /**
+     * Getter qta
+     * 
+     * @return integer
+     */
+    public function getQta()
+    {
+        return $this->qta;
+    }    
+        
+    /**
+     * Setter qta
+     * 
+     * @param int $qta
+     * @return \Samples\Entity\Sample
+     */
+    public function setQta($qta)
+    {
+        $this->qta = $qta;
+
+        return $this;
+    }     
+    
+    /**
+     * Getter qtaExpected
+     * 
+     * @return integer
+     */
+    public function getQtaExpected()
+    {
+        return $this->qtaExpected;
+    }    
+        
+    /**
+     * Setter qtaExpected
+     * 
+     * @param int $qtaExpected
+     * @return \Samples\Entity\Sample
+     */
+    public function setQtaExpected($qtaExpected)
+    {
+        $this->qtaExpected = $qtaExpected;
+
+        return $this;
+    }      
+
+    /**
+     * Getter voltage
+     * 
+     * @return string
+     */
+    public function getVoltage()
+    {
+        return $this->voltage;
+    }
+    
     /**
      * Setter voltage
      * 
@@ -228,6 +264,16 @@ class Sample
         $this->voltage = $voltage;
 
         return $this;
+    }    
+
+    /**
+     * Getter plug
+     * 
+     * @return string
+     */
+    public function getPlug()
+    {
+        return $this->plug;
     }
 
     /**
@@ -241,8 +287,18 @@ class Sample
         $this->plug = $plug;
 
         return $this;
-    }
+    }    
 
+    /**
+     * Getter frequency
+     * 
+     * @return string
+     */
+    public function getFrequency()
+    {
+        return $this->frequency;
+    }
+    
     /**
      * Setter frequency
      * 
@@ -254,6 +310,16 @@ class Sample
         $this->frequency = $frequency;
 
         return $this;
+    }    
+
+    /**
+     * Getter serigraphy
+     * 
+     * @return string
+     */
+    public function getSerigraphy()
+    {
+        return $this->serigraphy;
     }
 
     /**
@@ -267,8 +333,18 @@ class Sample
         $this->serigraphy = $serigraphy;
 
         return $this;
-    }
+    }    
 
+    /**
+     * Getter colors
+     * 
+     * @return string
+     */
+    public function getColors()
+    {
+        return $this->colors;
+    }
+    
     /**
      * Setter colors
      * 
@@ -280,6 +356,16 @@ class Sample
         $this->colors = $colors;
 
         return $this;
+    }    
+
+    /**
+     * Getter cable
+     * 
+     * @return string
+     */
+    public function getCable()
+    {
+        return $this->cable;
     }
 
     /**
@@ -293,8 +379,18 @@ class Sample
         $this->cable = $cable;
 
         return $this;
-    }
+    }    
 
+    /**
+     * Getter accessories
+     * 
+     * @return string
+     */
+    public function getAccessories()
+    {
+        return $this->accessories;
+    }
+    
     /**
      * Setter accessories
      * 
@@ -306,8 +402,41 @@ class Sample
         $this->accessories = $accessories;
 
         return $this;
-    }
+    }    
+    
+    /**
+     * Getter requestedDeliveryDate
+     * 
+     * @return \DateTime 
+     */
+    public function getRequestedDeliveryDate()
+    {
+        return $this->requestedDeliveryDate;
+    }    
 
+    /**
+     * Setter requestedDeliveryDate
+     * 
+     * @param \DateTime $requestedDeliveryDate
+     * @return \Samples\Entity\Sample
+     */
+    public function setRequestedDeliveryDate(\DateTime $requestedDeliveryDate)
+    {
+        $this->requestedDeliveryDate = $requestedDeliveryDate;
+
+        return $this;
+    }     
+
+    /**
+     * Getter createDate
+     * 
+     * @return \DateTime 
+     */
+    public function getCreatedDate()
+    {
+        return $this->createdDate;
+    }
+    
     /**
      * Setter createDate
      * 
@@ -319,8 +448,18 @@ class Sample
         $this->createdDate = $createdDate;
 
         return $this;
-    }
+    }    
     
+    /**
+     * Getter editDate
+     * 
+     * @return \DateTime 
+     */
+    public function getEditDate()
+    {
+        return $this->editDate;
+    }    
+
     /**
      * Setter editDate
      * 
@@ -332,6 +471,29 @@ class Sample
         $this->editDate = $createdDate;
 
         return $this;
+    }  
+    
+    /**
+     * Set country
+     *
+     * @param \Application\Entity\Country
+     * @return \Samples\Entity\Sample
+     */
+    public function setCountry(\Application\Entity\Country $country = null)
+    {
+        $this->country = $country;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Application\Entity\Country 
+     */
+    public function getCountry()
+    {
+        return $this->country;
     }    
 
     /**
@@ -349,6 +511,4 @@ class Sample
     }
     
     
-
-
 }

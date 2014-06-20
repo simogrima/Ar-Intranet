@@ -2,11 +2,12 @@
 
 namespace Samples\Form;
 
-use Samples\Entity\Sample;
-use Doctrine\Common\Persistence\ObjectManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilterProviderInterface;
+use Samples\Entity\Sample,
+    Doctrine\Common\Persistence\ObjectManager,
+    DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
+    Zend\Form\Fieldset,
+    Zend\InputFilter\InputFilterProviderInterface,
+    \Application\Form\CountryFieldset;
 
 class SampleFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -14,16 +15,29 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
     public function __construct(ObjectManager $objectManager)
     {
         parent::__construct('sample');
-        
+
         //$this->setHydrator(new DoctrineHydrator($objectManager))
         $this->setHydrator(new DoctrineHydrator($objectManager, 'Samples\Entity\Sample', true))
                 ->setObject(new Sample());
-        
-        
+
+
         $this->add(array(
             'type' => 'Zend\Form\Element\Hidden',
             'name' => 'id'
-        ));        
+        ));
+
+        //customer
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'customer',
+            'options' => array(
+                'label' => 'Customer',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));
 
         //model
         $this->add(array(
@@ -34,7 +48,50 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'required' => true,
-            )              
+                'class' => 'form-control',
+            )
+        ));
+
+        //qta
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Number',
+            'name' => 'qta',
+            'options' => array(
+                'label' => 'Quantity'
+            ),
+            'attributes' => array(
+                'min' => '0',
+                'max' => '10',
+                'step' => '1', // default step interval is 1
+                'class' => 'form-control',
+            )
+        ));
+
+        //qta_expected
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Number',
+            'name' => 'qta_expected',
+            'options' => array(
+                'label' => 'Expected Quantity'
+            ),
+            'attributes' => array(
+                'min' => '0',
+                'class' => 'form-control',
+            )
+        ));
+
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Date',
+            'name' => 'requested_delivery_date',
+            'options' => array(
+                'label' => 'Requested Delivery Date'
+            ),
+            'attributes' => array(
+               // 'min' => '2012-01-01',
+               // 'max' => '2020-01-01',
+                'step' => '1', // days; default step interval is 1 day
+                'class' => 'form-control',
+            )
         ));
 
         //voltage
@@ -53,6 +110,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                     '230-240 V' => '230-240 V',
                     '240 V' => '240 V',
                 ),
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
             )
         ));
 
@@ -74,6 +134,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                     'Israele' => 'Israele',
                     'Sud Affrica' => 'Sud Affrica',
                 ),
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
             )
         ));
 
@@ -89,6 +152,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                     'UL' => 'UL',
                     'Japan' => 'Japan',
                 ),
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
             )
         ));
 
@@ -104,6 +170,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                     '60 Hz' => '60 Hz',
                     '50 - 60 Hz' => '50 - 60 Hz',
                 ),
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
             )
         ));
 
@@ -116,7 +185,8 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'required' => true,
-            )              
+                'class' => 'form-control',
+            )
         ));
 
         //colors
@@ -128,7 +198,8 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'required' => true,
-            )              
+                'class' => 'form-control',
+            )
         ));
 
         //accessories
@@ -140,12 +211,37 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'required' => true,
-            )              
+                'class' => 'form-control',
+            )
         ));
-        
-        
 
-
+        //country
+        $this->add(
+                array(
+                    'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                    'name' => 'country',
+                    'emptyOption' => 'Select..',
+                    'options' => array(
+                        'empty_option' => 'Select..',
+                        'label' => 'Country',
+                        'object_manager' => $objectManager,
+                        'target_class' => 'Application\Entity\Country',
+                        'property' => 'name',
+                        'is_method' => true,
+                        'find_method' => array(
+                            'name' => 'findBy',
+                            'params' => array(
+                                'criteria' => array('status' => 1),
+                                'orderBy' => array('name' => 'ASC'),
+                            ),
+                        ),
+                    ),
+                    'attributes' => array(
+                        'required' => true,
+                        'class' => 'form-control',
+                    )
+                )
+        );
     }
 
     public function getInputFilterSpecification()
@@ -153,6 +249,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
         return array(
             'id' => array(
                 'required' => false
+            ),
+            'customer' => array(
+                'required' => true,
             ),            
             'model' => array(
                 'required' => true,
@@ -165,7 +264,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'accessories' => array(
                 'required' => true,
-            ),            
+            ),
         );
     }
 
