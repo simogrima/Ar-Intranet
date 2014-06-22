@@ -67,10 +67,11 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
 
-        //qta_expected
+
+        //qtaExpected
         $this->add(array(
             'type' => 'Zend\Form\Element\Number',
-            'name' => 'qta_expected',
+            'name' => 'qtaExpected',
             'options' => array(
                 'label' => 'Expected Quantity'
             ),
@@ -80,9 +81,10 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
 
+        //requestedDeliveryDate
         $this->add(array(
             'type' => 'Zend\Form\Element\Date',
-            'name' => 'requested_delivery_date',
+            'name' => 'requestedDeliveryDate',
             'options' => array(
                 'label' => 'Requested Delivery Date'
             ),
@@ -188,7 +190,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'class' => 'form-control',
             )
         ));
-
+            
         //colors
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -201,7 +203,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'class' => 'form-control',
             )
         ));
-
+        
         //accessories
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',

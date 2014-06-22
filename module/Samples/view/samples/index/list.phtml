@@ -15,6 +15,7 @@
             <tr>
                 <th>Id</th>
                 <th>Model</th>
+                <th>Country</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -27,6 +28,11 @@
                     <td class="cell cell-model">
                         <?php echo $sample->getModel(); ?>
                     </td>
+                    <td class="cell cell-model">
+                        <?php if (null !== $sample->getCountry()): ?>
+                        <?php echo $sample->getCountry()->getName(); ?>
+                        <?php endif; ?>
+                    </td>                   
                     <td class="cell cell-ctrls">
                         <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
                             <?php echo $this->translate('Edit') ?>

@@ -50,14 +50,7 @@ class Sample
      * @ORM\Column(name="qta_expected", type="integer", options={"unsigned"=true, "default" = 0})
      */
     protected $qtaExpected;        
-    
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="smallint", options={"unsigned"=true, "default" = 0})
-     */
-    protected $status;     
-      
+          
     /**
      * @var string|null
      *
