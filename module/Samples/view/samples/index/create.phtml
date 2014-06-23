@@ -26,6 +26,7 @@ echo $this->ztbForm($form);
 <?php
 $sample = $form->get('sample');
 ?>
+<form>
 <div class = "row">
     <div class = "col-xs-6">
         <?= $this->ztbFormElement($sample->get('customer')); ?>
@@ -34,3 +35,15 @@ $sample = $form->get('sample');
         <?= $this->ztbFormElement($sample->get('country')); ?>
     </div>
 </div>
+<div class = "row">
+    <div class = "col-md-4">
+        <?= $this->ztbFormElement($sample->get('qta')); ?>
+    </div>
+    <div class = "col-md-4">
+        <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
+    </div>
+    <div class = "col-md-4">
+        <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
+    </div>    
+</div>
+</form>
