@@ -61,34 +61,6 @@ class IndexController extends EntityUsingController
         );
     }    
 
-
-
-
-    public function createOLDAction()
-    {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getEntityManager();
-
-        // Create the form and inject the ObjectManager
-        $form = new CreateSampleForm($objectManager);
-        
-        // Create a new, empty entity and bind it to the form
-        $sample = new Sample();
-        $form->bind($sample);
-
-        if ($this->request->isPost()) {
-            $form->setData($this->request->getPost());
-
-            if ($form->isValid()) {
-                $objectManager->persist($sample);
-                $objectManager->flush();
-            }
-        }
-
-
-        return array('form' => $form);
-    }
-    
     public function createAction()
     {
         // Get your ObjectManager from the ServiceManager

@@ -16,34 +16,119 @@ $this->headTitle($title);
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('id', 'create-form');
+$form->get('submit')->setValue('Add new sample request');
+$sample = $form->get('sample'); //fieldset
 $form->prepare();
 
-echo $this->ztbForm($form);
+echo $this->form()->openTag($form);
 ?>
+    <div class = "row">
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('customer')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('country')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('model')); ?>
+        </div>    
+    </div>
+    <div class = "row">
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('qta')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('requestedDeliveryDate')); ?>
+        </div>    
+    </div>
+    <div class = "row">
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('paymentTerm')); ?>
+        </div>   
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('standardProduct')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('approvalSample')); ?>
+        </div>    
+    </div>    
 
+    <hr class="devider devider-db-dashed">
+    <fieldset>
+    <div class = "row">
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('voltage')); ?>
+        </div>   
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('frequency')); ?>
+        </div> 
+    </div>    
+    <div class = "row">
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('plug')); ?>
+        </div>   
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('cable')); ?>
+        </div> 
+    </div>  
+    <div class = "row">
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('serigraphy')); ?>
+        </div>   
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('colors')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('accessories')); ?>
+        </div>    
+    </div> 
+    <div class = "row">
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('vpp')); ?>
+        </div>   
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('booklet')); ?>
+        </div>
+        <div class = "col-md-4">
+            <?= $this->ztbFormElement($sample->get('packaging')); ?>
+        </div>    
+    </div>   
+    </fieldset>
+    
+<div>
+    <?= $this->ztbFormElement($form->get('csrf')); ?>
+    <?= $this->ztbFormElement($form->get('submit')); ?>
+</div>    
+<?php 
+echo $this->form()->closeTag();
+?>
 
 
 <?php
-$sample = $form->get('sample');
-?>
-<form>
-<div class = "row">
-    <div class = "col-xs-6">
-        <?= $this->ztbFormElement($sample->get('customer')); ?>
-    </div>
-    <div class = "col-xs-6">
-        <?= $this->ztbFormElement($sample->get('country')); ?>
-    </div>
-</div>
-<div class = "row">
-    <div class = "col-md-4">
-        <?= $this->ztbFormElement($sample->get('qta')); ?>
-    </div>
-    <div class = "col-md-4">
-        <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
-    </div>
-    <div class = "col-md-4">
-        <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
-    </div>    
-</div>
-</form>
+$this->headScript()->appendScript("
+$(function() {
+    defaultValue();
+
+    $('#standardProduct').change(function() {
+        defaultValue();
+    }); 
+    
+
+    function defaultValue () {
+       var defaultValue = 'Standard';
+
+        if($('#standardProduct').is(\":checked\")) {
+            $('#voltage, #serigraphy, #frequency, #plug, #cable, #colors, #accessories, #vpp, #booklet, #packaging').val(defaultValue).attr('readonly', true);
+        } else {
+            $('#voltage, #serigraphy, #frequency, #plug, #cable, #colors, #accessories, #vpp, #booklet, #packaging').attr('readonly', false);
+        }    
+    }
+}); 
+
+");
+
+

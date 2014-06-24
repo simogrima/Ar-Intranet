@@ -89,12 +89,52 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Requested Delivery Date'
             ),
             'attributes' => array(
-               // 'min' => '2012-01-01',
-               // 'max' => '2020-01-01',
+                'min' => date('Y-m-d', time()),
+                // 'max' => '2020-01-01',
                 'step' => '1', // days; default step interval is 1 day
                 'class' => 'form-control',
             )
         ));
+
+        //paymentTerm
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'paymentTerm',
+            'options' => array(
+                'label' => 'Payment Term',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));
+
+        //standardProduct
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Checkbox',
+            'name' => 'standardProduct',
+            'options' => array(
+                'label' => 'Standard Product',
+                'use_hidden_element' => true,
+                'checked_value' => '1',
+                'unchecked_value' => '0'
+            ),         
+            'attributes' => array(
+                'id' => 'standardProduct',
+            )               
+        ));
+        
+        //approvalSample
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Checkbox',
+            'name' => 'approvalSample',
+            'options' => array(
+                'label' => 'Approval Sample',
+                'use_hidden_element' => true,
+                'checked_value' => '1',
+                'unchecked_value' => '0'
+            )         
+        ));        
 
         //voltage
         $this->add(array(
@@ -115,6 +155,8 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'class' => 'form-control',
+                'id' => 'voltage',
+                'required' => true,
             )
         ));
 
@@ -139,6 +181,8 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'class' => 'form-control',
+                'id' => 'plug',
+                'required' => true,
             )
         ));
 
@@ -157,6 +201,8 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'class' => 'form-control',
+                'id' => 'cable',
+                'required' => true,
             )
         ));
 
@@ -175,6 +221,8 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'class' => 'form-control',
+                'id' => 'frequency',
+                'required' => true,
             )
         ));
 
@@ -188,9 +236,10 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'attributes' => array(
                 'required' => true,
                 'class' => 'form-control',
+                'id' => 'serigraphy',
             )
         ));
-            
+
         //colors
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -201,9 +250,10 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'attributes' => array(
                 'required' => true,
                 'class' => 'form-control',
+                'id' => 'colors',
             )
         ));
-        
+
         //accessories
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -214,8 +264,51 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'attributes' => array(
                 'required' => true,
                 'class' => 'form-control',
+                'id' => 'accessories',
             )
         ));
+        
+        //vpp
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'vpp',
+            'options' => array(
+                'label' => 'VPP',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+                'id' => 'vpp',
+            )
+        ));        
+        
+        //booklet
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'booklet',
+            'options' => array(
+                'label' => 'Booklet',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+                'id' => 'booklet',
+            )
+        )); 
+        
+        //packaging
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'packaging',
+            'options' => array(
+                'label' => 'Packaging',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+                'id' => 'packaging',
+            )
+        ));        
 
         //country
         $this->add(
@@ -254,7 +347,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'customer' => array(
                 'required' => true,
-            ),            
+            ),
             'model' => array(
                 'required' => true,
             ),

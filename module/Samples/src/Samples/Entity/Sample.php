@@ -50,7 +50,35 @@ class Sample
      * @ORM\Column(name="qta_expected", type="integer", options={"unsigned"=true, "default" = 0})
      */
     protected $qtaExpected;        
-          
+              
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="requested_delivery_date", type="datetime", nullable=false)
+     */
+    protected $requestedDeliveryDate;
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $paymentTerm;    
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="standard_product", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $standardProduct;    
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="approval_sample", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $approvalSample;        
+        
     /**
      * @var string|null
      *
@@ -98,16 +126,28 @@ class Sample
      *
      * @ORM\Column(type="string", length=128)
      */
-    protected $accessories;
-    
+    protected $accessories;    
     
     /**
-     * @var \DateTime
+     * @var string|null
      *
-     * @ORM\Column(name="requested_delivery_date", type="datetime", nullable=false)
+     * @ORM\Column(type="string", length=128)
      */
-    protected $requestedDeliveryDate;
-        
+    protected $vpp;
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $booklet;  
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $packaging;     
       
     /**
      * @var \DateTime
@@ -419,6 +459,144 @@ class Sample
 
         return $this;
     }     
+    
+    /**
+     * Getter paymentTerm
+     * 
+     * @return string
+     */
+    public function getPaymentTerm()
+    {
+        return $this->paymentTerm;
+    }
+    
+    /**
+     * Setter paymentTerm
+     * 
+     * @param string $paymentTerm
+     * @return \Samples\Entity\Sample
+     */
+    public function setPaymentTerm($paymentTerm)
+    {
+        $this->paymentTerm = $paymentTerm;
+
+        return $this;
+    }       
+    
+    /**
+     * Getter standardProduct
+     * 
+     * @return string
+     */    
+    public function getStandardProduct()
+    {
+        return $this->standardProduct;
+    }
+
+    /**
+     * Setter standardProduct
+     * 
+     * @param string $standardProduct
+     * @return \Samples\Entity\Sample
+     */    
+    public function setStandardProduct($standardProduct)
+    {
+        $this->standardProduct = $standardProduct;
+        
+        return $this;
+    }
+    
+    /**
+     * Getter approvalSample
+     * 
+     * @return string
+     */        
+    public function getApprovalSample()
+    {
+        return $this->approvalSample;
+    }
+
+    /**
+     * Setter approvalSample
+     * 
+     * @param string $approvalSample
+     * @return \Samples\Entity\Sample
+     */      
+    public function setApprovalSample($approvalSample)
+    {
+        $this->approvalSample = $approvalSample;
+        
+        return $this;
+    }
+    
+    /**
+     * Getter vpp
+     * 
+     * @return string
+     */       
+    public function getVpp()
+    {
+        return $this->vpp;
+    }
+
+    /**
+     * Getter booklet
+     * 
+     * @return string
+     */       
+    public function getBooklet()
+    {
+        return $this->booklet;
+    }
+
+    /**
+     * Getter packaging
+     * 
+     * @return string
+     */       
+    public function getPackaging()
+    {
+        return $this->packaging;
+    }
+
+    /**
+     * Setter vpp
+     * 
+     * @param string $vpp
+     * @return \Samples\Entity\Sample
+     */        
+    public function setVpp($vpp)
+    {
+        $this->vpp = $vpp;
+        
+        return $this;
+    }
+
+    /**
+     * Setter booklet
+     * 
+     * @param string $booklet
+     * @return \Samples\Entity\Sample
+     */        
+    public function setBooklet($booklet)
+    {
+        $this->booklet = $booklet;
+        
+        return $this;
+    }
+
+    /**
+     * Setter packaging
+     * 
+     * @param string $packaging
+     * @return \Samples\Entity\Sample
+     */        
+    public function setPackaging($packaging)
+    {
+        $this->packaging = $packaging;
+        
+        return $this;
+    }    
 
     /**
      * Getter createDate
