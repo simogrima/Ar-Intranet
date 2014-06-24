@@ -148,6 +148,13 @@ class Sample
      * @ORM\Column(type="string", length=128)
      */
     protected $packaging;     
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $note;    
       
     /**
      * @var \DateTime
@@ -175,7 +182,7 @@ class Sample
     
  
     /**
-     * Getter id
+     * Get id
      * 
      * @return string
      */
@@ -185,7 +192,7 @@ class Sample
     }
 
     /**
-     * Getter model
+     * Get model
      * 
      * @return string
      */
@@ -195,7 +202,7 @@ class Sample
     }
     
     /**
-     * Setter model
+     * Set model
      * 
      * @param string $model
      * @return \Samples\Entity\Sample
@@ -208,7 +215,7 @@ class Sample
     }    
     
     /**
-     * Getter customer
+     * Get customer
      * 
      * @return string
      */
@@ -218,7 +225,7 @@ class Sample
     }    
         
     /**
-     * Setter customer
+     * Set customer
      * 
      * @param string $customer
      * @return \Samples\Entity\Sample
@@ -231,7 +238,7 @@ class Sample
     }     
     
     /**
-     * Getter qta
+     * Get qta
      * 
      * @return integer
      */
@@ -241,7 +248,7 @@ class Sample
     }    
         
     /**
-     * Setter qta
+     * Set qta
      * 
      * @param int $qta
      * @return \Samples\Entity\Sample
@@ -254,7 +261,7 @@ class Sample
     }     
     
     /**
-     * Getter qtaExpected
+     * Get qtaExpected
      * 
      * @return integer
      */
@@ -264,7 +271,7 @@ class Sample
     }    
         
     /**
-     * Setter qtaExpected
+     * Set qtaExpected
      * 
      * @param int $qtaExpected
      * @return \Samples\Entity\Sample
@@ -277,7 +284,7 @@ class Sample
     }      
 
     /**
-     * Getter voltage
+     * Get voltage
      * 
      * @return string
      */
@@ -287,7 +294,7 @@ class Sample
     }
     
     /**
-     * Setter voltage
+     * Set voltage
      * 
      * @param string $voltage
      * @return \Samples\Entity\Sample
@@ -300,7 +307,7 @@ class Sample
     }    
 
     /**
-     * Getter plug
+     * Get plug
      * 
      * @return string
      */
@@ -310,7 +317,7 @@ class Sample
     }
 
     /**
-     * Setter plug
+     * Set plug
      * 
      * @param string $plug
      * @return \Samples\Entity\Sample
@@ -323,7 +330,7 @@ class Sample
     }    
 
     /**
-     * Getter frequency
+     * Get frequency
      * 
      * @return string
      */
@@ -333,7 +340,7 @@ class Sample
     }
     
     /**
-     * Setter frequency
+     * Set frequency
      * 
      * @param string $frequency
      * @return \Samples\Entity\Sample
@@ -346,7 +353,7 @@ class Sample
     }    
 
     /**
-     * Getter serigraphy
+     * Get serigraphy
      * 
      * @return string
      */
@@ -356,7 +363,7 @@ class Sample
     }
 
     /**
-     * Setter serigraphy
+     * Set serigraphy
      * 
      * @param string $serigraphy
      * @return \Samples\Entity\Sample
@@ -369,7 +376,7 @@ class Sample
     }    
 
     /**
-     * Getter colors
+     * Get colors
      * 
      * @return string
      */
@@ -379,7 +386,7 @@ class Sample
     }
     
     /**
-     * Setter colors
+     * Set colors
      * 
      * @param string $colors
      * @return \Samples\Entity\Sample
@@ -392,7 +399,7 @@ class Sample
     }    
 
     /**
-     * Getter cable
+     * Get cable
      * 
      * @return string
      */
@@ -402,7 +409,7 @@ class Sample
     }
 
     /**
-     * Setter cable
+     * Set cable
      * 
      * @param string $cable
      * @return \Samples\Entity\Sample
@@ -415,7 +422,7 @@ class Sample
     }    
 
     /**
-     * Getter accessories
+     * Get accessories
      * 
      * @return string
      */
@@ -425,7 +432,7 @@ class Sample
     }
     
     /**
-     * Setter accessories
+     * Set accessories
      * 
      * @param string $accessories
      * @return \Samples\Entity\Sample
@@ -438,7 +445,7 @@ class Sample
     }    
     
     /**
-     * Getter requestedDeliveryDate
+     * Get requestedDeliveryDate
      * 
      * @return \DateTime 
      */
@@ -448,7 +455,7 @@ class Sample
     }    
 
     /**
-     * Setter requestedDeliveryDate
+     * Set requestedDeliveryDate
      * 
      * @param \DateTime $requestedDeliveryDate
      * @return \Samples\Entity\Sample
@@ -461,7 +468,7 @@ class Sample
     }     
     
     /**
-     * Getter paymentTerm
+     * Get paymentTerm
      * 
      * @return string
      */
@@ -471,7 +478,7 @@ class Sample
     }
     
     /**
-     * Setter paymentTerm
+     * Set paymentTerm
      * 
      * @param string $paymentTerm
      * @return \Samples\Entity\Sample
@@ -484,7 +491,7 @@ class Sample
     }       
     
     /**
-     * Getter standardProduct
+     * Get standardProduct
      * 
      * @return string
      */    
@@ -494,7 +501,7 @@ class Sample
     }
 
     /**
-     * Setter standardProduct
+     * Set standardProduct
      * 
      * @param string $standardProduct
      * @return \Samples\Entity\Sample
@@ -507,7 +514,7 @@ class Sample
     }
     
     /**
-     * Getter approvalSample
+     * Get approvalSample
      * 
      * @return string
      */        
@@ -517,7 +524,7 @@ class Sample
     }
 
     /**
-     * Setter approvalSample
+     * Set approvalSample
      * 
      * @param string $approvalSample
      * @return \Samples\Entity\Sample
@@ -530,7 +537,7 @@ class Sample
     }
     
     /**
-     * Getter vpp
+     * Get vpp
      * 
      * @return string
      */       
@@ -540,7 +547,7 @@ class Sample
     }
 
     /**
-     * Getter booklet
+     * Get booklet
      * 
      * @return string
      */       
@@ -550,7 +557,7 @@ class Sample
     }
 
     /**
-     * Getter packaging
+     * Get packaging
      * 
      * @return string
      */       
@@ -560,7 +567,7 @@ class Sample
     }
 
     /**
-     * Setter vpp
+     * Set vpp
      * 
      * @param string $vpp
      * @return \Samples\Entity\Sample
@@ -573,7 +580,7 @@ class Sample
     }
 
     /**
-     * Setter booklet
+     * Set booklet
      * 
      * @param string $booklet
      * @return \Samples\Entity\Sample
@@ -586,7 +593,7 @@ class Sample
     }
 
     /**
-     * Setter packaging
+     * Set packaging
      * 
      * @param string $packaging
      * @return \Samples\Entity\Sample
@@ -596,10 +603,33 @@ class Sample
         $this->packaging = $packaging;
         
         return $this;
-    }    
+    } 
+    
+    /**
+     * Get note
+     *
+     * @return string 
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }      
+    
+    /**
+     * Set note
+     *
+     * @param string $note
+     * @return \Samples\Entity\Sample
+     */
+    public function setNote($note)
+    {
+        $this->content = $note;
+    
+        return $this;
+    }
 
     /**
-     * Getter createDate
+     * Get createDate
      * 
      * @return \DateTime 
      */
@@ -609,7 +639,7 @@ class Sample
     }
     
     /**
-     * Setter createDate
+     * Set createDate
      * 
      * @param \DateTime $createdDate
      * @return \Samples\Entity\Sample
@@ -622,7 +652,7 @@ class Sample
     }    
     
     /**
-     * Getter editDate
+     * Get editDate
      * 
      * @return \DateTime 
      */
@@ -632,7 +662,7 @@ class Sample
     }    
 
     /**
-     * Setter editDate
+     * Set editDate
      * 
      * @param \DateTime $editDate
      * @return \Samples\Entity\Sample
