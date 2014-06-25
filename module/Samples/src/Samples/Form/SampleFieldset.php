@@ -308,6 +308,19 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'class' => 'form-control',
                 'id' => 'packaging',
             )
+        )); 
+        
+        //note
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Textarea',
+            'name' => 'note',
+            'options' => array(
+                'label' => 'Note',
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
+                'placeholder' => 'Inserire massimo 255 caratteri - per note più consistenti potrete inserire degli allegati una volta invivato il modulo.',
+            )
         ));        
 
         //country

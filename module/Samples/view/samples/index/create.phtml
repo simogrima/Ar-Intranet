@@ -99,6 +99,14 @@ echo $this->form()->openTag($form);
     </div>   
     </fieldset>
     
+    <hr class="devider devider-db-dashed">
+    
+    <div class = "row">
+        <div class = "col-md-12">
+            <?= $this->ztbFormElement($sample->get('note')); ?>
+        </div>      
+    </div>       
+    
 <div>
     <?= $this->ztbFormElement($form->get('csrf')); ?>
     <?= $this->ztbFormElement($form->get('submit')); ?>
@@ -106,8 +114,6 @@ echo $this->form()->openTag($form);
 <?php 
 echo $this->form()->closeTag();
 ?>
-
-
 <?php
 $this->headScript()->appendScript("
 $(function() {
