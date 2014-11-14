@@ -1,0 +1,85 @@
+<h1><?php echo $this->translate('Samples') ?></h1>
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <a href="<?php echo $this->url('samples/create') ?>" class="btn btn-primary">
+            <?php echo $this->translate('Add New Sample Request') ?>
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" id="example1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Model</th>
+                <th>Country</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->samples as $sample): ?>
+                <tr>
+                    <td class="cell cell-id">
+                        <?php echo $sample->getId(); ?>
+                    </td>
+                    <td class="cell cell-model">
+                        <?php echo $sample->getModel(); ?>
+                    </td>
+                    <td class="cell cell-model">
+                        <?php if (null !== $sample->getCountry()): ?>
+                        <?php echo $sample->getCountry()->getName(); ?>
+                        <?php endif; ?>
+                    </td>                   
+                    <td class="cell cell-ctrls">
+                        <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
+                            <?php echo $this->translate('Edit') ?>
+                        </a>
+                        |
+                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Really delete sample?') ?>')">
+                               <?php echo $this->translate('Delete') ?>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php
+echo $this->paginationControl(
+        $this->samples, 'Sliding', 'paginator-slide', array(
+    'order_by' => 'id',
+    'order' => 'ASC',
+    'search_by' => NULL,
+    'pageAction' => $pageAction,
+        )
+);
+?>
+
+
+<?php
+/* DataTables */
+$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/datatables/dataTables.bootstrap.css');
+
+$this->headScript()
+        ->appendFile($this->basePath() . '/js/plugins/datatables/jquery.dataTables.js')
+        ->appendFile($this->basePath() . '/js/plugins/datatables/dataTables.bootstrap.js');
+
+$this->inlineScript()->captureStart();
+echo <<<JS
+                $("#example1").dataTable();
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
+                });
+JS;
+$this->inlineScript()->captureEnd();
+?>  

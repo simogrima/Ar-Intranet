@@ -1,4 +1,5 @@
 <?php
+namespace Samples;
 
 return array(
     'service_manager' => array(

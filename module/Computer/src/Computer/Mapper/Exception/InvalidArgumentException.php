@@ -1,6 +1,6 @@
 <?php
 
-namespace Samples\Mapper\Exception;
+namespace Computer\Mapper\Exception;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {}
