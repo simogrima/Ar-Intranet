@@ -22,14 +22,16 @@ return array(
         'User',
         'MyZfcRbac',
         'Admin',
-        'Samples' //campionature
-        ),
+        'Samples',
+        'Computer'
+    ),
     'module_listener_options' => array(
         'module_paths' => array(
             './module',
             './vendor'
-            ),
-        'config_glob_paths' => array('config/autoload/{,*.}{global,local}.php')
+        ),
+        'config_glob_paths' => array(
+            'config/autoload/{,*.}{global,local}.php'
         )
-    );
- 
+    )
+);
