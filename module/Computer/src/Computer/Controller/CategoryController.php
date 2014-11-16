@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Computer\Controller
+ * Computer\Controller\Category
  *
  * @author Simone Grimani
  * @copyright  Copyright (c) 2014 Simone Grimani (http://www.simogrima.com)
@@ -20,10 +20,10 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 //Doctrine
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 //Form
-use Computer\Form\ComputerForm;
+use Computer\Form\CategoryForm;
 
 
-class IndexController extends EntityUsingController
+class CategoryController extends EntityUsingController
 {
     /**
      * @var Computer\Options\ModuleOptions
@@ -32,33 +32,30 @@ class IndexController extends EntityUsingController
 
     /**
      *
-     * @var type Computer\Mapper\ComputerMapper
+     * @var type Computer\Mapper\CategoryMapper
      */
-    protected $computerMapper;
+    protected $categoryMapper;
 
     public function __construct($options, $mapper)
     {
         $this->options = $options;
-        $this->computerMapper = $mapper;
+        $this->categoryMapper = $mapper;
     }    
     
-
-
-    public function listAction()
+    public function indexAction()
     {
-        $computers = $this->computerMapper->findAll();
-        if (is_array($computers)) {
-            $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($computers));
+        $categories = $this->categoryMapper->findAll();
+        if (is_array($categories)) {
+            $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($categories));
         } else {
-            $paginator = $computers;
+            $paginator = $categories;
         }
 
         $paginator->setItemCountPerPage(30);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
         return array(
-            'computers' => $paginator,
-            //'computerlistElements' => $this->options->getRoleListElements(),
-            'pageAction' => 'computer/list',
+            'categories' => $paginator,
+            'pageAction' => 'computer/category',
         );
     }    
 
@@ -68,20 +65,20 @@ class IndexController extends EntityUsingController
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
         // Create the form and inject the ObjectManager
-        $form = new ComputerForm($objectManager);
+        $form = new CategoryForm($objectManager);
 
         // Create a new, empty entity and bind it to the form
-        $class = $this->options->getComputerEntityClass();
-        $computer = new $class();
-        $form->bind($computer);
+        $class = $this->options->getCategoryEntityClass();
+        $category = new $class();
+        $form->bind($category);
 
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
-                $this->computerMapper->insert($computer);
+                $this->categoryMapper->insert($category);
 
-                $this->flashMessenger()->setNamespace('success')->addMessage('Computer added successfully');
-                return $this->redirect()->toRoute('computer/list');
+                $this->flashMessenger()->setNamespace('success')->addMessage('Category added successfully');
+                return $this->redirect()->toRoute('computer/category');
             }
         }
 
@@ -93,22 +90,22 @@ class IndexController extends EntityUsingController
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
-        $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
-        $computer = $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId);
+        $categoryId = $this->getEvent()->getRouteMatch()->getParam('categoryId');
+        $category = $objectManager->getRepository($this->options->getCategoryEntityClass())->find($categoryId);
 
         // Create the form and inject the ObjectManager
-        $form = new ComputerForm($objectManager);
-        $form->bind($computer);
+        $form = new CategoryForm($objectManager);
+        $form->bind($category);
 
         if ($this->request->isPost()) {
             $postedData = $this->request->getPost();
             $form->setData($postedData);
             if ($form->isValid()) {
 
-                $this->computerMapper->update($computer);
+                $this->categoryMapper->update($category);
 
-                $this->flashMessenger()->setNamespace('success')->addMessage('Computer edit successfully');
-                return $this->redirect()->toRoute('computer/list');
+                $this->flashMessenger()->setNamespace('success')->addMessage('Category edit successfully');
+                return $this->redirect()->toRoute('computer/category');
             }
         }
 
@@ -120,15 +117,15 @@ class IndexController extends EntityUsingController
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
-        $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
-        $computer = $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId);
+        $categoryId = $this->getEvent()->getRouteMatch()->getParam('categoryId');
+        $category = $objectManager->getRepository($this->options->getCategoryEntityClass())->find($categoryId);
 
-        if ($computer) {
-            $this->computerMapper->remove($computer);
-            $this->flashMessenger()->addSuccessMessage('The computer was deleted');
+        if ($category) {
+            $this->categoryMapper->remove($category);
+            $this->flashMessenger()->addSuccessMessage('The category was deleted');
         }
 
-        return $this->redirect()->toRoute('computer/list');
+        return $this->redirect()->toRoute('computer/category');
     }    
 
 }

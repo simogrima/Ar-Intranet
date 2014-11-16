@@ -52,8 +52,6 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
 
-
-
         //status
         $this->add(
                 array(
@@ -70,7 +68,8 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                         'find_method' => array(
                             'name' => 'findBy',
                             'params' => array(
-                                //'criteria' => array('status' => 1),
+                                'criteria' => array(),
+                                //'criteria' => array('name' => 'Attivo'),
                                 'orderBy' => array('name' => 'ASC'),
                             ),
                         ),
@@ -78,9 +77,39 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                     'attributes' => array(
                         'required' => true,
                         'class' => 'form-control',
+                        'id' => 'status',
                     )
                 )
         );
+        
+        //status
+        $this->add(
+                array(
+                    'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                    'name' => 'category',
+                    'emptyOption' => 'Select..',
+                    'options' => array(
+                        'empty_option' => 'Select..',
+                        'label' => 'Categoria',
+                        'object_manager' => $objectManager,
+                        'target_class' => 'Computer\Entity\Category',
+                        'property' => 'name',
+                        'is_method' => true,
+                        'find_method' => array(
+                            'name' => 'findBy',
+                            'params' => array(
+                                'criteria' => array('status' => 1),
+                                'orderBy' => array('name' => 'ASC'),
+                            ),
+                        ),
+                    ),
+                    'attributes' => array(
+                        'required' => true,
+                        'class' => 'form-control',
+                        'id' => 'category',
+                    )
+                )
+        );        
     }
 
     public function getInputFilterSpecification()

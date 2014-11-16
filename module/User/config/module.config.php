@@ -11,7 +11,7 @@ return array(
                 'options' => array(
                     'route' => '/user',
                     'defaults' => array(
-                        'controller' => 'user',
+                        'controller' => 'zfcuser',
                         'action' => 'index',
                     ),
                 ),
@@ -22,7 +22,7 @@ return array(
                         'options' => array(
                             'route' => '/login',
                             'defaults' => array(
-                                'controller' => 'user',
+                                'controller' => 'zfcuser',
                                 'action' => 'login',
                             ),
                         ),
@@ -89,8 +89,11 @@ return array(
     'view_manager' => array(
         'template_path_stack' => array(
             __NAMESPACE__ => __DIR__ . '/../view',
+            'zfcuser' => __DIR__ . '/../view', //visto che ho problemi con l'override del controller eseguo l'override della vista
         ),
     ),
+    
+ 
     
     'doctrine' => array(
         'driver' => array(

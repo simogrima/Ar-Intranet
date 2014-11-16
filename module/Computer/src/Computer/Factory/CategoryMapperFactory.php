@@ -5,12 +5,12 @@ namespace Computer\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Computer\Mapper\ComputerMapper;
+use Computer\Mapper\CategoryMapper;
 
 /**
- * Factory to create a computer mapper
+ * Factory to create a category mapper
  */
-class ComputerMapperFactory implements FactoryInterface
+class CategoryMapperFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
@@ -19,8 +19,8 @@ class ComputerMapperFactory implements FactoryInterface
        
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         
-        /* @var \Computer\Mapper\ComputerMapper $mapper */
-        $mapper = new ComputerMapper($entityManager);
+        /* @var \Computer\Mapper\CategoryMapper $mapper */
+        $mapper = new CategoryMapper($entityManager);
         
         $mapper->setModuleOptions($moduleOptions);
         return $mapper;     

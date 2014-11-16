@@ -1,4 +1,6 @@
 <?php
+//setto qua il layout visto cne non sono riuscito ad eseguire l'override del controller
+$this->layout('layout/login');
 $form = $this->loginForm;
 $form->prepare();
 $form->setAttribute('action', $this->url('zfcuser/login'));

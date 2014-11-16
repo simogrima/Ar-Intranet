@@ -1,4 +1,5 @@
 <?php
+
 namespace Computer;
 
 return array(
@@ -6,11 +7,13 @@ return array(
         'factories' => array(
             'Computer\Options\ModuleOptions' => 'Computer\Factory\ModuleOptionsFactory',
             'Computer\Mapper\ComputerMapper' => 'Computer\Factory\ComputerMapperFactory',
+            'Computer\Mapper\CategoryMapper' => 'Computer\Factory\CategoryMapperFactory',
         ),
     ),
     'controllers' => array(
         'factories' => array(
             'Computer\Controller\Index' => 'Computer\Factory\Controller\IndexControllerFactory',
+            'Computer\Controller\Category' => 'Computer\Factory\Controller\CategoryControllerFactory',
         ),
     ),
     'router' => array(
@@ -53,22 +56,68 @@ return array(
                     'edit' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/edit/:sampleId',
+                            'route' => '/edit/:computerId',
                             'defaults' => array(
                                 'controller' => 'Computer\Controller\Index',
                                 'action' => 'edit',
-                                'sampleId' => 0
+                                'computerId' => 0
                             ),
                         ),
                     ),
                     'remove' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/remove/:sampleId',
+                            'route' => '/remove/:computerId',
                             'defaults' => array(
                                 'controller' => 'Computer\Controller\Index',
                                 'action' => 'remove',
-                                'sampleId' => 0
+                                'computerId' => 0
+                            ),
+                        ),
+                    ),
+                    'category' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/category',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Category',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'create' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/create',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Category',
+                                        'action' => 'create',
+                                    ),
+                                ),
+                            ),
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit/:computerId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Category',
+                                        'action' => 'edit',
+                                        'computerId' => 0
+                                    ),
+                                ),
+                            ),
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:computerId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Category',
+                                        'action' => 'remove',
+                                        'computerId' => 0
+                                    ),
+                                ),
                             ),
                         ),
                     ),
@@ -95,5 +144,5 @@ return array(
         ),
     ),
     //My module options
-    'sample_opt' => [],
+    'computer_opt' => [],
 );

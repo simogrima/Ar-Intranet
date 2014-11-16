@@ -7,7 +7,7 @@
   ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
  * 
  */
-$title = 'Add Computer';
+$title = 'Add Category';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -17,28 +17,23 @@ $this->headTitle($title);
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
 $form->setAttribute('id', 'create-form');
-$form->get('submit')->setValue('Add new computer');
-$sample = $form->get('computer'); //fieldset
+$form->get('submit')->setValue('Add new category');
+$sample = $form->get('category'); //fieldset
 $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
     <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('serial')); ?>
-        </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('model')); ?>
-        </div>  
-        <div class = "col-md-4">
+        <div class = "col-md-12">
+            <?= $this->ztbFormElement($sample->get('name')); ?>
+        </div>    
+    </div>
+    <div class = "row">
+        <div class = "col-md-12">
             <?= $this->ztbFormElement($sample->get('status')); ?>
-        </div>        
+        </div>    
     </div>
-     <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('category')); ?>
-        </div>        
-    </div>
+
      
     
 <div>
@@ -51,10 +46,8 @@ echo $this->form()->closeTag();
 <?php
 $this->headScript()->appendScript("
 $(function() {
-    //Setto stato di default 'Attivo'
-    $('#status').val('1');
-}); 
 
+}); 
 ");
 
 

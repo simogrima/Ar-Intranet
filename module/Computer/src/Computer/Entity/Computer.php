@@ -59,7 +59,17 @@ class Computer
      *   @ORM\JoinColumn(name="status_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $status;       
+    protected $status;     
+    
+    /**
+     * @var \Computer\Entity\Category
+     *
+     * @ORM\ManyToOne(targetEntity="Computer\Entity\Category", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="category_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $category;      
     
  
     /**
@@ -79,7 +89,7 @@ class Computer
      */
     public function getSerial()
     {
-        return $this->model;
+        return $this->serial;
     }
     
     /**

@@ -24,6 +24,14 @@ class UserController extends ZfcUserController
         }
         return $this->em;
     }
+    
+    /**
+     * @param callable $redirectCallback
+     */
+    public function __construct($redirectCallback)
+    {
+
+    }    
 
 
     public function loginAction()
