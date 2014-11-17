@@ -251,4 +251,29 @@ return array(
     ),
     //My module options
     'computer_opt' => [],
+    
+    'navigation' => array(
+        'leftnav' => array(
+            'computer' => array(
+                'label' => 'Computers',
+                'route' => 'computer',
+                'icon' => 'fa fa-laptop fa-fw',
+                'pages' => array(
+                    'dashboard' => array(
+                        'label' => 'Dashboard',
+                        'route' => 'computer',
+                    ),                      
+                    'list' => array(
+                        'label' => 'Elenco',
+                        'route' => 'computer/list',
+                    ),                    
+                    'add' => array(
+                        'label' => 'New User',
+                        'route' => 'computer/create',
+                    ),
+                ),
+            ),              
+        ),
+    ),      
+        
 );

@@ -53,6 +53,9 @@ return array(
         ),
     ),
     'service_manager' => array(
+        'factories' => array(
+            'left_navigation' => 'Application\Navigation\Service\LeftNavigationFactory',
+        ),        
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
@@ -115,15 +118,14 @@ return array(
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    'navigation' => array(
+        'leftnav' => array(
+            'home' => array(
+                'label' => 'Dashboard',
+                'route' => 'home',
+                'icon' => 'fa fa-dashboard fa-fw'
+            ),           
+        ),
+    ),      
     
 );
