@@ -8,12 +8,16 @@ return array(
             'Computer\Options\ModuleOptions' => 'Computer\Factory\ModuleOptionsFactory',
             'Computer\Mapper\ComputerMapper' => 'Computer\Factory\ComputerMapperFactory',
             'Computer\Mapper\CategoryMapper' => 'Computer\Factory\CategoryMapperFactory',
+            'Computer\Mapper\BrandMapper' => 'Computer\Factory\BrandMapperFactory',
+            'Computer\Mapper\ProcessorMapper' => 'Computer\Factory\ProcessorMapperFactory',
         ),
     ),
     'controllers' => array(
         'factories' => array(
             'Computer\Controller\Index' => 'Computer\Factory\Controller\IndexControllerFactory',
             'Computer\Controller\Category' => 'Computer\Factory\Controller\CategoryControllerFactory',
+            'Computer\Controller\Brand' => 'Computer\Factory\Controller\BrandControllerFactory',
+            'Computer\Controller\Processor' => 'Computer\Factory\Controller\ProcessorControllerFactory',
         ),
     ),
     'router' => array(
@@ -100,27 +104,119 @@ return array(
                             'edit' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/edit/:computerId',
+                                    'route' => '/edit/:categoryId',
                                     'defaults' => array(
                                         'controller' => 'Computer\Controller\Category',
                                         'action' => 'edit',
-                                        'computerId' => 0
+                                        'categoryId' => 0
                                     ),
                                 ),
                             ),
                             'remove' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/remove/:computerId',
+                                    'route' => '/remove/:categoryId',
                                     'defaults' => array(
                                         'controller' => 'Computer\Controller\Category',
                                         'action' => 'remove',
-                                        'computerId' => 0
+                                        'categoryId' => 0
                                     ),
                                 ),
                             ),
                         ),
                     ),
+                    'brand' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/brand',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Brand',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'create' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/create',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Brand',
+                                        'action' => 'create',
+                                    ),
+                                ),
+                            ),
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit/:brandId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Brand',
+                                        'action' => 'edit',
+                                        'brandId' => 0
+                                    ),
+                                ),
+                            ),
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:brandId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Brand',
+                                        'action' => 'remove',
+                                        'brandId' => 0
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),// end brand
+                    'processor' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/processor',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Processor',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'create' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/create',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Processor',
+                                        'action' => 'create',
+                                    ),
+                                ),
+                            ),
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit/:processorId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Processor',
+                                        'action' => 'edit',
+                                        'processorId' => 0
+                                    ),
+                                ),
+                            ),
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:processorId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\Processor',
+                                        'action' => 'remove',
+                                        'processorId' => 0
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),// end processor                    
                 ),
             ),
         ),

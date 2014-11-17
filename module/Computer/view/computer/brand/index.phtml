@@ -1,0 +1,98 @@
+<h1><?php echo $this->translate('Brands') ?></h1>
+
+<?php
+// In any of your .phtml files:
+ $flash = $this->flashMessenger();
+ $flash->setMessageOpenFormat('<div%s>
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+         &times;
+     </button>
+     <ul><li>')
+     ->setMessageSeparatorString('</li><li>')
+     ->setMessageCloseString('</li></ul></div>');
+
+ echo $flash->render('error',   array('alert', 'alert-dismissable', 'alert-danger'));
+ echo $flash->render('info',    array('alert', 'alert-dismissable', 'alert-info'));
+ echo $flash->render('default', array('alert', 'alert-dismissable', 'alert-warning'));
+ echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success'));
+?>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <a href="<?php echo $this->url('computer/brand/create') ?>" class="btn btn-primary">
+            <?php echo $this->translate('Aggiungi nuovo brand') ?>
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" id="example1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Stato</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->brands as $brand): ?>
+                <tr>
+                    <td class="cell cell-id">
+                        <?php echo $brand->getId(); ?>
+                    </td>
+                    <td class="cell cell-model">
+                        <?php echo $brand->getName(); ?>
+                    </td>
+                    <td class="cell cell-model">
+                        <?php echo $brand->getStatus(); ?>
+                    </td>                                      
+                    <td class="cell cell-ctrls">
+                        <a title="Edit" class="btn btn-default btn-circle"  href="<?php echo $this->url('computer/brand/edit', array('brandId' => $brand->getId())); ?>">
+                            <i class="fa fa-edit"></i>
+                        </a>
+
+                        <a title="Eelete" class="btn btn-danger btn-circle" href="<?php echo $this->url('computer/brand/remove', array('brandId' => $brand->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Really delete brand?') ?>')">
+                               <i class="fa fa-trash-o"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php
+echo $this->paginationControl(
+        $this->brands, 'Sliding', 'paginator-slide', array(
+    'order_by' => 'id',
+    'order' => 'ASC',
+    'search_by' => NULL,
+    'pageAction' => $pageAction,
+        )
+);
+?>
+
+
+<?php
+/* DataTables */
+$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/datatables/dataTables.bootstrap.css');
+
+$this->headScript()
+        ->appendFile($this->basePath() . '/js/plugins/datatables/jquery.dataTables.js')
+        ->appendFile($this->basePath() . '/js/plugins/datatables/dataTables.bootstrap.js');
+
+$this->inlineScript()->captureStart();
+echo <<<JS
+                $("#example1").dataTable();
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
+                });
+JS;
+$this->inlineScript()->captureEnd();
+?>  

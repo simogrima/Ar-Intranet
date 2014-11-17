@@ -1,0 +1,98 @@
+<h1><?php echo $this->translate('Processors') ?></h1>
+
+<?php
+// In any of your .phtml files:
+ $flash = $this->flashMessenger();
+ $flash->setMessageOpenFormat('<div%s>
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+         &times;
+     </button>
+     <ul><li>')
+     ->setMessageSeparatorString('</li><li>')
+     ->setMessageCloseString('</li></ul></div>');
+
+ echo $flash->render('error',   array('alert', 'alert-dismissable', 'alert-danger'));
+ echo $flash->render('info',    array('alert', 'alert-dismissable', 'alert-info'));
+ echo $flash->render('default', array('alert', 'alert-dismissable', 'alert-warning'));
+ echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success'));
+?>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <a href="<?php echo $this->url('computer/processor/create') ?>" class="btn btn-primary">
+            <?php echo $this->translate('Aggiungi nuovo processore') ?>
+        </a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" id="example1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Stato</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->processors as $processor): ?>
+                <tr>
+                    <td class="cell cell-id">
+                        <?php echo $processor->getId(); ?>
+                    </td>
+                    <td class="cell cell-model">
+                        <?php echo $processor->getName(); ?>
+                    </td>
+                    <td class="cell cell-model">
+                        <?php echo $processor->getStatus(); ?>
+                    </td>                                      
+                    <td class="cell cell-ctrls">
+                        <a href="<?php echo $this->url('computer/processor/edit', array('processorId' => $processor->getId())); ?>">
+                            <?php echo $this->translate('Edit') ?>
+                        </a>
+                        |
+                        <a href="<?php echo $this->url('computer/processor/remove', array('processorId' => $processor->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Really delete processor?') ?>')">
+                               <?php echo $this->translate('Delete') ?>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php
+echo $this->paginationControl(
+        $this->processors, 'Sliding', 'paginator-slide', array(
+    'order_by' => 'id',
+    'order' => 'ASC',
+    'search_by' => NULL,
+    'pageAction' => $pageAction,
+        )
+);
+?>
+
+
+<?php
+/* DataTables */
+$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/datatables/dataTables.bootstrap.css');
+
+$this->headScript()
+        ->appendFile($this->basePath() . '/js/plugins/datatables/jquery.dataTables.js')
+        ->appendFile($this->basePath() . '/js/plugins/datatables/dataTables.bootstrap.js');
+
+$this->inlineScript()->captureStart();
+echo <<<JS
+                $("#example1").dataTable();
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
+                });
+JS;
+$this->inlineScript()->captureEnd();
+?>  

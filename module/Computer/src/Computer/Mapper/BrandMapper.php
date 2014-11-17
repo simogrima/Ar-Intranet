@@ -4,11 +4,13 @@ namespace Computer\Mapper;
 
 use MainModule\Mapper\Db\BaseDoctrine;
 
-class ComputerMapper extends BaseDoctrine
+class BrandMapper extends BaseDoctrine
 {
     public function findAll() 
     {
-        $er = $this->em->getRepository($this->options->getComputerEntityClass());
+        $er = $this->em->getRepository($this->options->getBrandEntityClass());
         return $er->findAll();
-    }    
+    }
+
+    
 }

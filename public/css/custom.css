@@ -22,6 +22,7 @@ a:focus {outline: none; text-decoration: none; color: #72afd2;}
 
 .alert,
 .panel,
+.panel-heading,
 .form-control,
 .btn,
 .btn-lg,

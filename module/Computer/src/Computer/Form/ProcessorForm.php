@@ -2,26 +2,26 @@
 
 namespace Computer\Form;
 
-use Computer\Entity\Category,
+use Computer\Entity\Processor,
     Doctrine\Common\Persistence\ObjectManager,
     DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
     Zend\Form\Form;
 
 
-class CategoryForm extends Form
+class ProcessorForm extends Form
 {
     public function __construct(ObjectManager $objectManager)
     {
-        parent::__construct('category-form');        
+        parent::__construct('processor-form');        
         
         // The form will hydrate an object of type "BlogPost"
         //$this->setHydrator(new DoctrineHydrator($objectManager));
-        $this->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Category', true)); 
+        $this->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Processor', true)); 
 
         // Add the sample fieldset, and set it as the base fieldset
         $attributeFieldset = new AttributeFieldset($objectManager);
-        $attributeFieldset->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Category', true))
-                ->setObject(new Category());
+        $attributeFieldset->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Processor', true))
+                ->setObject(new Processor());
         $attributeFieldset->setUseAsBaseFieldset(true);
         $this->add($attributeFieldset);
 

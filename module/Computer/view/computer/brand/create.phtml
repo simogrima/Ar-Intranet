@@ -7,7 +7,7 @@
   ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
  * 
  */
-$title = 'Add Category';
+$title = 'Add Brand';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -17,7 +17,7 @@ $this->headTitle($title);
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
 $form->setAttribute('id', 'create-form');
-$form->get('submit')->setValue('Add new category');
+$form->get('submit')->setValue('Add new brand');
 $attribute = $form->get('attribute'); //fieldset
 $form->prepare();
 

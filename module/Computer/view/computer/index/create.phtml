@@ -24,21 +24,43 @@ $form->prepare();
 echo $this->form()->openTag($form);
 ?>
     <div class = "row">
-        <div class = "col-md-4">
+        <div class = "col-md-6">
+<fieldset>
+    <legend>Anagrafica</legend>            
             <?= $this->ztbFormElement($sample->get('serial')); ?>
-        </div>
-        <div class = "col-md-4">
             <?= $this->ztbFormElement($sample->get('model')); ?>
-        </div>  
-        <div class = "col-md-4">
             <?= $this->ztbFormElement($sample->get('status')); ?>
-        </div>        
-    </div>
-     <div class = "row">
-        <div class = "col-md-4">
+</fieldset>
+        </div>
+        <div class = "col-md-6">
+<fieldset>
+    <legend>Caratteristiche</legend>            
             <?= $this->ztbFormElement($sample->get('category')); ?>
-        </div>        
+            <?= $this->ztbFormElement($sample->get('brand')); ?>
+            <?= $this->ztbFormElement($sample->get('processor')); ?>
+</fieldset>    
+        </div>       
     </div>
+<fieldset>
+    <legend>Fatturazione</legend>
+     <div class = "row">
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('ddt')); ?>
+        </div>     
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('ddtDate')); ?>
+        </div>           
+    </div>      
+     <div class = "row">         
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('invoice')); ?>
+        </div>     
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($sample->get('invoiceDate')); ?>
+        </div>           
+    </div>     
+</fieldset>
+
      
     
 <div>

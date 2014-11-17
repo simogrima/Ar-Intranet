@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Computer\Controller
+ * Computer\Controller\Processor
  *
  * @author Simone Grimani
  * @copyright  Copyright (c) 2014 Simone Grimani (http://www.simogrima.com)
@@ -20,10 +20,10 @@ use Zend\Stdlib\Hydrator\ClassMethods;
 //Doctrine
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 //Form
-use Computer\Form\ComputerForm;
+use Computer\Form\ProcessorForm;
 
 
-class IndexController extends EntityUsingController
+class ProcessorController extends EntityUsingController
 {
     /**
      * @var Computer\Options\ModuleOptions
@@ -32,38 +32,30 @@ class IndexController extends EntityUsingController
 
     /**
      *
-     * @var type Computer\Mapper\ComputerMapper
+     * @var type Computer\Mapper\ProcessorMapper
      */
-    protected $computerMapper;
+    protected $processorMapper;
 
     public function __construct($options, $mapper)
     {
         $this->options = $options;
-        $this->computerMapper = $mapper;
+        $this->processorMapper = $mapper;
     }    
     
     public function indexAction()
     {
-        return array(
-            'computerCount' =>  count($this->computerMapper->findAll()),
-        );
-    }        
-
-        public function listAction()
-    {
-        $computers = $this->computerMapper->findAll();
-        if (is_array($computers)) {
-            $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($computers));
+        $processors = $this->processorMapper->findAll();
+        if (is_array($processors)) {
+            $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($processors));
         } else {
-            $paginator = $computers;
+            $paginator = $processors;
         }
 
         $paginator->setItemCountPerPage(30);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
         return array(
-            'computers' => $paginator,
-            //'computerlistElements' => $this->options->getRoleListElements(),
-            'pageAction' => 'computer/list',
+            'processors' => $paginator,
+            'pageAction' => 'computer/processor',
         );
     }    
 
@@ -73,20 +65,20 @@ class IndexController extends EntityUsingController
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
         // Create the form and inject the ObjectManager
-        $form = new ComputerForm($objectManager);
+        $form = new ProcessorForm($objectManager);
 
         // Create a new, empty entity and bind it to the form
-        $class = $this->options->getComputerEntityClass();
-        $computer = new $class();
-        $form->bind($computer);
+        $class = $this->options->getProcessorEntityClass();
+        $processor = new $class();
+        $form->bind($processor);
 
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
-                $this->computerMapper->insert($computer);
+                $this->processorMapper->insert($processor);
 
-                $this->flashMessenger()->setNamespace('success')->addMessage('Computer added successfully');
-                return $this->redirect()->toRoute('computer/list');
+                $this->flashMessenger()->setNamespace('success')->addMessage('Processor added successfully');
+                return $this->redirect()->toRoute('computer/processor');
             }
         }
 
@@ -98,22 +90,22 @@ class IndexController extends EntityUsingController
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
-        $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
-        $computer = $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId);
+        $processorId = $this->getEvent()->getRouteMatch()->getParam('processorId');
+        $processor = $objectManager->getRepository($this->options->getProcessorEntityClass())->find($processorId);
 
         // Create the form and inject the ObjectManager
-        $form = new ComputerForm($objectManager);
-        $form->bind($computer);
+        $form = new ProcessorForm($objectManager);
+        $form->bind($processor);
 
         if ($this->request->isPost()) {
             $postedData = $this->request->getPost();
             $form->setData($postedData);
             if ($form->isValid()) {
 
-                $this->computerMapper->update($computer);
+                $this->processorMapper->update($processor);
 
-                $this->flashMessenger()->setNamespace('success')->addMessage('Computer edit successfully');
-                return $this->redirect()->toRoute('computer/list');
+                $this->flashMessenger()->setNamespace('success')->addMessage('Processor edit successfully');
+                return $this->redirect()->toRoute('computer/processor');
             }
         }
 
@@ -125,15 +117,15 @@ class IndexController extends EntityUsingController
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
-        $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
-        $computer = $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId);
+        $processorId = $this->getEvent()->getRouteMatch()->getParam('processorId');
+        $processor = $objectManager->getRepository($this->options->getProcessorEntityClass())->find($processorId);
 
-        if ($computer) {
-            $this->computerMapper->remove($computer);
-            $this->flashMessenger()->addSuccessMessage('The computer was deleted');
+        if ($processor) {
+            $this->processorMapper->remove($processor);
+            $this->flashMessenger()->addSuccessMessage('The processor was deleted');
         }
 
-        return $this->redirect()->toRoute('computer/list');
+        return $this->redirect()->toRoute('computer/processor');
     }    
 
 }

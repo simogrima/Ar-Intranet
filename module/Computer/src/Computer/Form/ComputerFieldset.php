@@ -51,6 +51,64 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'class' => 'form-control',
             )
         ));
+        
+        //invoice
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'invoice',
+            'options' => array(
+                'label' => 'Nr. Fattura',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));
+        
+        //invoiceDate
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Date',
+            'name' => 'invoiceDate',
+            'options' => array(
+                'label' => 'Data Fattura'
+            ),
+            'attributes' => array(
+                //'min' => date('Y-m-d', time()),
+                // 'max' => '2020-01-01',
+                'step' => '1', // days; default step interval is 1 day
+                'class' => 'form-control',
+                'required' => true,
+            )
+        ));        
+        
+        //ddt
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'ddt',
+            'options' => array(
+                'label' => 'Nr. DDT',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));        
+        
+        //ddtDate
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Date',
+            'name' => 'ddtDate',
+            'options' => array(
+                'label' => 'Data DDT'
+            ),
+            'attributes' => array(
+                //'min' => date('Y-m-d', time()),
+                // 'max' => '2020-01-01',
+                'step' => '1', // days; default step interval is 1 day
+                'class' => 'form-control',
+                'required' => true,
+            )
+        ));            
 
         //status
         $this->add(
@@ -82,7 +140,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 )
         );
         
-        //status
+        //Category
         $this->add(
                 array(
                     'type' => 'DoctrineModule\Form\Element\ObjectSelect',
@@ -109,7 +167,63 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                         'id' => 'category',
                     )
                 )
-        );        
+        );       
+        //Brand
+        $this->add(
+                array(
+                    'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                    'name' => 'brand',
+                    'emptyOption' => 'Select..',
+                    'options' => array(
+                        'empty_option' => 'Select..',
+                        'label' => 'Brand',
+                        'object_manager' => $objectManager,
+                        'target_class' => 'Computer\Entity\Brand',
+                        'property' => 'name',
+                        'is_method' => true,
+                        'find_method' => array(
+                            'name' => 'findBy',
+                            'params' => array(
+                                'criteria' => array('status' => 1),
+                                'orderBy' => array('name' => 'ASC'),
+                            ),
+                        ),
+                    ),
+                    'attributes' => array(
+                        'required' => true,
+                        'class' => 'form-control',
+                        'id' => 'brand',
+                    )
+                )
+        );    
+        //Processor
+        $this->add(
+                array(
+                    'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                    'name' => 'processor',
+                    'emptyOption' => 'Select..',
+                    'options' => array(
+                        'empty_option' => 'Select..',
+                        'label' => 'Processore',
+                        'object_manager' => $objectManager,
+                        'target_class' => 'Computer\Entity\Processor',
+                        'property' => 'name',
+                        'is_method' => true,
+                        'find_method' => array(
+                            'name' => 'findBy',
+                            'params' => array(
+                                'criteria' => array('status' => 1),
+                                'orderBy' => array('name' => 'ASC'),
+                            ),
+                        ),
+                    ),
+                    'attributes' => array(
+                        'required' => true,
+                        'class' => 'form-control',
+                        'id' => 'processor',
+                    )
+                )
+        );          
     }
 
     public function getInputFilterSpecification()
@@ -124,6 +238,21 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
             'model' => array(
                 'required' => true,
             ),
+            'invoice' => array(
+                'required' => true,
+            ),
+            'ddt' => array(
+                'required' => true,
+            ),       
+            'status' => array(
+                'required' => true,
+            ),  
+            'brand' => array(
+                'required' => true,
+            ),  
+            'processor' => array(
+                'required' => true,
+            ),              
         );
     }
 

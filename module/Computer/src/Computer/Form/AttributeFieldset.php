@@ -7,18 +7,17 @@ use Computer\Entity\Computer,
     DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
     Zend\Form\Fieldset,
     Zend\InputFilter\InputFilterProviderInterface;
-   // \Application\Form\CountryFieldset;
 
-class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
+class AttributeFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
     public function __construct(ObjectManager $objectManager)
     {
-        parent::__construct('category');
+        parent::__construct('attribute');
 
         //$this->setHydrator(new DoctrineHydrator($objectManager))
-        $this->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Category', true))
-                ->setObject(new Computer());
+        //$this->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Category', true))
+        //        ->setObject(new Computer());
 
 
         $this->add(array(
@@ -26,20 +25,7 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
             'name' => 'id'
         ));
 
-        //serial
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Text',
-            'name' => 'serial',
-            'options' => array(
-                'label' => 'Seriale',
-            ),
-            'attributes' => array(
-                'required' => true,
-                'class' => 'form-control',
-            )
-        ));
-
-        //model
+        //name
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
             'name' => 'name',
@@ -52,6 +38,7 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
 
+     //status   
      $this->add(array(
              'type' => 'Zend\Form\Element\Select',
              'name' => 'status',

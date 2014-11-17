@@ -36,6 +36,34 @@ class Computer
      * @ORM\Column(type="string", length=64)
      */
     protected $model;
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=64)
+     */
+    protected $invoice;    
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="invoice_date", type="datetime", nullable=false)
+     */
+    protected $invoiceDate;        
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=64)
+     */
+    protected $ddt;    
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="ddt_date", type="datetime", nullable=false)
+     */
+    protected $ddtDate;    
       
     /**
      * @var \DateTime
@@ -43,13 +71,33 @@ class Computer
      * @ORM\Column(name="created_date", type="datetime", nullable=false)
      */
     protected $createdDate;
-    
+              
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="edit_date", type="datetime", nullable=false)
      */
     protected $editDate;
+    
+    /**
+     * @var \Computer\Entity\Brand
+     *
+     * @ORM\ManyToOne(targetEntity="Computer\Entity\Brand", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="brand_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $brand;  
+    
+    /**
+     * @var \Computer\Entity\Processor
+     *
+     * @ORM\ManyToOne(targetEntity="Computer\Entity\Processor", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="processor_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $processor;      
     
     /**
      * @var \Computer\Entity\Status
@@ -128,7 +176,97 @@ class Computer
         return $this;
     }    
 
+    /**
+     * Get invoice
+     * 
+     * @return string
+     */
+    public function getInvoice()
+    {
+        return $this->invoice;
+    }
     
+    /**
+     * Set invoice
+     * 
+     * @param string $invoice
+     * @return \Computer\Entity\Computer
+     */
+    public function setInvoice($invoice)
+    {
+        $this->invoice = $invoice;
+
+        return $this;
+    }       
+    
+    /**
+     * Get invoiceDate
+     * 
+     * @return \DateTime 
+     */
+    public function getInvoiceDate()
+    {
+        return $this->invoiceDate;
+    }    
+
+    /**
+     * Set invoiceDate
+     * 
+     * @param \DateTime $invoiceDate
+     * @return \Samples\Entity\Computer
+     */
+    public function setInvoiceDate(\DateTime $invoiceDate)
+    {
+        $this->invoiceDate = $invoiceDate;
+
+        return $this;
+    }       
+    
+    /**
+     * Get ddt
+     * 
+     * @return string
+     */
+    public function getDdt()
+    {
+        return $this->ddt;
+    }
+    
+    /**
+     * Set ddt
+     * 
+     * @param string $ddt
+     * @return \Computer\Entity\Computer
+     */
+    public function setDdt($ddt)
+    {
+        $this->ddt = $ddt;
+
+        return $this;
+    }       
+    
+    /**
+     * Get ddtDate
+     * 
+     * @return \DateTime 
+     */
+    public function getDdtDate()
+    {
+        return $this->ddtDate;
+    }    
+
+    /**
+     * Set ddtDate
+     * 
+     * @param \DateTime $ddtDate
+     * @return \Samples\Entity\Computer
+     */
+    public function setDdtDate(\DateTime $ddtDate)
+    {
+        $this->ddtDate = $ddtDate;
+
+        return $this;
+    }     
 
 
     /**
@@ -200,6 +338,75 @@ class Computer
         return $this->status;
     }    
 
+    /**
+     * Set category
+     *
+     * @param \Computer\Entity\Category
+     * @return \Computer\Entity\Computer
+     */
+    public function setCategory(\Computer\Entity\Category $category = null)
+    {
+        $this->category = $category;
+    
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \Computer\Entity\Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }  
+    
+    /**
+     * Set brand
+     *
+     * @param \Computer\Entity\Brand
+     * @return \Computer\Entity\Computer
+     */
+    public function setBrand(\Computer\Entity\Brand $brand = null)
+    {
+        $this->brand = $brand;
+    
+        return $this;
+    }
+
+    /**
+     * Get brand
+     *
+     * @return \Computer\Entity\Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }      
+    
+    /**
+     * Set processor
+     *
+     * @param \Computer\Entity\Processor
+     * @return \Computer\Entity\Computer
+     */
+    public function setProcessor(\Computer\Entity\Processor $processor = null)
+    {
+        $this->processor = $processor;
+    
+        return $this;
+    }
+
+    /**
+     * Get processor
+     *
+     * @return \Computer\Entity\Processor
+     */
+    public function getProcessor()
+    {
+        return $this->processor;
+    }      
+    
     /**
      * @ORM\PrePersist
      */
