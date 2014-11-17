@@ -49,7 +49,7 @@ class IndexController extends EntityUsingController
         );
     }        
 
-        public function listAction()
+    public function listAction()
     {
         $computers = $this->computerMapper->findAll();
         if (is_array($computers)) {
@@ -135,5 +135,18 @@ class IndexController extends EntityUsingController
 
         return $this->redirect()->toRoute('computer/list');
     }    
+    
+    public function settingsAction()
+    {
+        $categoryMapper = $this->getServiceLocator()->get('Computer\Mapper\CategoryMapper');
+        $brandMapper = $this->getServiceLocator()->get('Computer\Mapper\BrandMapper');
+        $processorMapper = $this->getServiceLocator()->get('Computer\Mapper\ProcessorMapper');
+        
+        return array(
+            'categories' => $categoryMapper->findAll(),
+            'brands' => $brandMapper->findAll(),
+            'processors' => $processorMapper->findAll(),
+        );
+    }      
 
 }

@@ -47,6 +47,16 @@ return array(
                             ),
                         ),
                     ),
+                    'settings' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/settings',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Index',
+                                'action' => 'settings',
+                            ),
+                        ), 
+                    ),
                     'create' => array(
                         'type' => 'Literal',
                         'options' => array(
