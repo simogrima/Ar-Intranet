@@ -136,6 +136,17 @@ class IndexController extends EntityUsingController
         return $this->redirect()->toRoute('computer/list');
     }    
     
+    public function showAction()
+    {
+        // Get your ObjectManager from the ServiceManager
+        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+
+        $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
+        return array(
+            'computer' => $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId)
+            );
+    }    
+    
     public function settingsAction()
     {
         $categoryMapper = $this->getServiceLocator()->get('Computer\Mapper\CategoryMapper');

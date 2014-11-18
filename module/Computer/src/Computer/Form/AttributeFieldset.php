@@ -48,7 +48,11 @@ class AttributeFieldset extends Fieldset implements InputFilterProviderInterface
                              '1' => 'Enable',
                              '0' => 'Disable',
                      ),
-             )
+             ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )         
      ));
         
       

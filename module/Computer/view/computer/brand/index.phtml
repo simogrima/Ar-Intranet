@@ -1,21 +1,6 @@
-<h1><?php echo $this->translate('Brands') ?></h1>
+<?php echo $this->titleAndBread('Edit Brand'); ?>
+<?php $this->myFlashMessenger(); ?>    
 
-<?php
-// In any of your .phtml files:
- $flash = $this->flashMessenger();
- $flash->setMessageOpenFormat('<div%s>
-     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-         &times;
-     </button>
-     <ul><li>')
-     ->setMessageSeparatorString('</li><li>')
-     ->setMessageCloseString('</li></ul></div>');
-
- echo $flash->render('error',   array('alert', 'alert-dismissable', 'alert-danger'));
- echo $flash->render('info',    array('alert', 'alert-dismissable', 'alert-info'));
- echo $flash->render('default', array('alert', 'alert-dismissable', 'alert-warning'));
- echo $flash->render('success', array('alert', 'alert-dismissable', 'alert-success'));
-?>
 <div class="panel panel-default">
     <div class="panel-body">
         <a href="<?php echo $this->url('computer/brand/create') ?>" class="btn btn-primary">
@@ -24,7 +9,7 @@
     </div>
 </div>
 
-<div class="table-responsive">
+<div class="table">
     <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
@@ -47,13 +32,13 @@
                         <?php echo $brand->getStatus(); ?>
                     </td>                                      
                     <td class="cell cell-ctrls">
-                        <a title="Edit" class="btn btn-default btn-circle"  href="<?php echo $this->url('computer/brand/edit', array('brandId' => $brand->getId())); ?>">
-                            <i class="fa fa-edit"></i>
+                        <a href="<?php echo $this->url('computer/brand/edit', array('brandId' => $brand->getId())); ?>">
+                            <?php echo $this->translate('Edit') ?>
                         </a>
-
-                        <a title="Eelete" class="btn btn-danger btn-circle" href="<?php echo $this->url('computer/brand/remove', array('brandId' => $brand->getId())); ?>"
+                        |
+                        <a href="<?php echo $this->url('computer/brand/remove', array('brandId' => $brand->getId())); ?>"
                            onclick="return confirm('<?php echo $this->translate('Really delete brand?') ?>')">
-                               <i class="fa fa-trash-o"></i>
+                               <?php echo $this->translate('Delete') ?>
                         </a>
                     </td>
                 </tr>
@@ -84,15 +69,7 @@ $this->headScript()
 
 $this->inlineScript()->captureStart();
 echo <<<JS
-                $("#example1").dataTable();
-                $('#example2').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": false,
-                    "bFilter": false,
-                    "bSort": true,
-                    "bInfo": true,
-                    "bAutoWidth": false
-                });
+    $("#example1").dataTable();
 JS;
 $this->inlineScript()->captureEnd();
 ?>  

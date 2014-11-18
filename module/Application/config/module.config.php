@@ -95,6 +95,12 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+   'view_helpers' => array(
+        'invokables' => array(
+            'titleAndBread' => 'Application\View\Helper\TitleAndBread',
+            'myFlashMessenger' => 'Application\View\Helper\FlashMessenger',
+      ),
+   ), 
     // Placeholder for console routes
     'console' => array(
         'router' => array(

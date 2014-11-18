@@ -1,13 +1,80 @@
+<?php echo $this->titleAndBread('Edit Computer'); ?>
+<?php $this->myFlashMessenger(); ?>    
 <?php
-
-$title = 'Edit Computer';
-$this->headTitle($title);
+/**
+  echo $this->headLink()
+  ->appendStylesheet($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css');
+  echo $this->headScript()
+  ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.min.js')
+  ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
+ * 
+ */
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+
 
 <?php
+//$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('id', 'create-form');
+$form->get('submit')->setValue('Edit computer');
+$fieldset = $form->get('computer'); //fieldset
 $form->prepare();
-        
-echo $this->ztbForm($form);
+
+echo $this->form()->openTag($form);
+?>
+    <div class = "row">
+        <div class = "col-md-6">
+<fieldset>
+    <legend>Anagrafica</legend>            
+            <?= $this->ztbFormElement($fieldset->get('serial')); ?>
+            <?= $this->ztbFormElement($fieldset->get('model')); ?>
+            <?= $this->ztbFormElement($fieldset->get('status')); ?>
+</fieldset>
+        </div>
+        <div class = "col-md-6">
+<fieldset>
+    <legend>Caratteristiche</legend>            
+            <?= $this->ztbFormElement($fieldset->get('category')); ?>
+            <?= $this->ztbFormElement($fieldset->get('brand')); ?>
+            <?= $this->ztbFormElement($fieldset->get('processor')); ?>
+</fieldset>    
+        </div>       
+    </div>
+<fieldset>
+    <legend>Fatturazione</legend>
+     <div class = "row">
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($fieldset->get('ddt')); ?>
+        </div>     
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($fieldset->get('ddtDate')); ?>
+        </div>           
+    </div>      
+     <div class = "row">         
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($fieldset->get('invoice')); ?>
+        </div>     
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($fieldset->get('invoiceDate')); ?>
+        </div>           
+    </div>     
+</fieldset>
+
+     
+    
+<div>
+    <?= $this->ztbFormElement($fieldset->get('id')); ?>
+    <?= $this->ztbFormElement($form->get('csrf')); ?>
+    <?= $this->ztbFormElement($form->get('submit')); ?>
+</div>    
+<?php 
+echo $this->form()->closeTag();
+?>
+<?php
+$this->headScript()->appendScript("
+$(function() {
+
+}); 
+
+");

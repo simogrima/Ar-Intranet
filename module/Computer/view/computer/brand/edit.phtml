@@ -1,13 +1,39 @@
-<?php
-
-$title = 'Edit Brand';
-$this->headTitle($title);
-?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php echo $this->titleAndBread('Edit Brand'); ?>
+<?php $this->myFlashMessenger(); ?>    
 
 <?php
+//$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('id', 'create-form');
+$form->get('submit')->setValue('Add new brand');
+$attribute = $form->get('attribute'); //fieldset
 $form->prepare();
-        
-echo $this->ztbForm($form);
+
+echo $this->form()->openTag($form);
+?>
+    <div class = "row">
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($attribute->get('name')); ?>
+        </div>    
+        <div class = "col-md-6">
+            <?= $this->ztbFormElement($attribute->get('status')); ?>
+        </div>            
+    </div>
+    
+<div>
+    <?= $this->ztbFormElement($attribute->get('id')); ?>
+    <?= $this->ztbFormElement($form->get('csrf')); ?>
+    <?= $this->ztbFormElement($form->get('submit')); ?>
+</div>    
+<?php 
+echo $this->form()->closeTag();
+?>
+<?php
+$this->headScript()->appendScript("
+$(function() {
+
+}); 
+");
+
+

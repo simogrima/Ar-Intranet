@@ -89,6 +89,17 @@ return array(
                             ),
                         ),
                     ),
+                    'show' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/show/:computerId',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Index',
+                                'action' => 'show',
+                                'computerId' => 0
+                            ),
+                        ),
+                    ),                    
                     'category' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -262,15 +273,74 @@ return array(
                     'dashboard' => array(
                         'label' => 'Dashboard',
                         'route' => 'computer',
-                    ),                      
+                    ),          
+                    'settings' => array(
+                        'label' => 'Impostazioni',
+                        'route' => 'computer/settings',
+                    ),                     
                     'list' => array(
                         'label' => 'Elenco',
                         'route' => 'computer/list',
                     ),                    
                     'add' => array(
-                        'label' => 'New User',
+                        'label' => 'Nuovo Computer',
                         'route' => 'computer/create',
                     ),
+                    'edit' => array(
+                        'label' => 'Modifica Computer',
+                        'route' => 'computer/edit',
+                        'onlybread' => true,
+                    ),     
+                    'show' => array(
+                        'label' => 'Mostra Computer',
+                        'route' => 'computer/show',
+                        'onlybread' => true,
+                    ),                      
+                    'catlist' => array(
+                        'label' => 'Categorie computer',
+                        'route' => 'computer/category',
+                        'onlybread' => true,
+                    ),
+                    'catadd' => array(
+                        'label' => 'Nuova categoria computer',
+                        'route' => 'computer/category/create',
+                        'onlybread' => true,
+                    ),    
+                    'catedit' => array(
+                        'label' => 'Modifica categoria computer',
+                        'route' => 'computer/category/edit',
+                        'onlybread' => true,
+                    ),   
+                    'brandlist' => array(
+                        'label' => 'Brands computer',
+                        'route' => 'computer/brand',
+                        'onlybread' => true,
+                    ),
+                    'branadd' => array(
+                        'label' => 'Nuovo brand computer',
+                        'route' => 'computer/brand/create',
+                        'onlybread' => true,
+                    ),    
+                    'brandedit' => array(
+                        'label' => 'Modifica brand computer',
+                        'route' => 'computer/brand/edit',
+                        'onlybread' => true,
+                    ),     
+                    'processorlist' => array(
+                        'label' => 'Processore computer',
+                        'route' => 'computer/processor',
+                        'onlybread' => true,
+                    ),
+                    'processoradd' => array(
+                        'label' => 'Nuovo processore computer',
+                        'route' => 'computer/processor/create',
+                        'onlybread' => true,
+                    ),    
+                    'processoredit' => array(
+                        'label' => 'Modifica processore computer',
+                        'route' => 'computer/processor/edit',
+                        'onlybread' => true,
+                    ),                      
                 ),
             ),              
         ),

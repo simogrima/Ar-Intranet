@@ -121,7 +121,7 @@ class BrandController extends EntityUsingController
         $brand = $objectManager->getRepository($this->options->getBrandEntityClass())->find($brandId);
 
         if ($brand) {
-            $this->bradnMapper->remove($brand);
+            $this->brandMapper->remove($brand);
             $this->flashMessenger()->addSuccessMessage('The brand was deleted');
         }
 
