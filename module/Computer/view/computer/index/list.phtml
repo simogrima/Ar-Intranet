@@ -38,6 +38,10 @@
                         <?php endif; ?>
                     </td>                   
                     <td class="cell cell-ctrls">
+                        <a href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">
+                            <?php echo $this->translate('Show') ?>
+                        </a>
+                        |                        
                         <a href="<?php echo $this->url('computer/edit', array('computerId' => $computer->getId())); ?>">
                             <?php echo $this->translate('Edit') ?>
                         </a>

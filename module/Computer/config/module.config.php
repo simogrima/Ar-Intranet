@@ -10,6 +10,7 @@ return array(
             'Computer\Mapper\CategoryMapper' => 'Computer\Factory\CategoryMapperFactory',
             'Computer\Mapper\BrandMapper' => 'Computer\Factory\BrandMapperFactory',
             'Computer\Mapper\ProcessorMapper' => 'Computer\Factory\ProcessorMapperFactory',
+            'Computer\Mapper\HistoryMapper' => 'Computer\Factory\HistoryMapperFactory',
         ),
     ),
     'controllers' => array(

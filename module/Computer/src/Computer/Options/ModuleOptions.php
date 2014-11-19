@@ -15,6 +15,7 @@ class ModuleOptions extends AbstractOptions
     protected $categoryEntityClass = 'Computer\Entity\Category'; 
     protected $brandEntityClass = 'Computer\Entity\Brand'; 
     protected $processorEntityClass = 'Computer\Entity\Processor'; 
+    protected $historyEntityClass = 'Computer\Entity\History'; 
 
     /**
      * set computer entity class name
@@ -124,5 +125,27 @@ class ModuleOptions extends AbstractOptions
     public function getProcessorEntityClass()
     {
         return $this->processorEntityClass;
+    }      
+    
+    /**
+     * set history entity class name
+     *
+     * @param string $entityClass
+     * @return ModuleOptions
+     */
+    public function setHistoryEntityClass($entityClass)
+    {
+        $this->historyEntityClass = $entityClass;
+        return $this;
+    }
+
+    /**
+     * get history entity class name
+     *
+     * @return string
+     */
+    public function getHistoryEntityClass()
+    {
+        return $this->historyEntityClass;
     }      
 }

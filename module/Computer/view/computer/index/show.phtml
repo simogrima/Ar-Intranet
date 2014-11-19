@@ -3,16 +3,17 @@
 <?php
 $status = $computer->getStatus()->getId();
 switch ($status) {
-    case 1:
-        $class = 'green';
-        $icon = 'check';
-
-
+    case 2:
+        $class = 'yellow';
+        $icon = 'database';
         break;
-
+    case 3:
+        $class = 'red';
+        $icon = 'trash';
+        break;
     default:
         $class = 'green';
-        $icon = 'fa-check';        
+        $icon = 'check';        
         break;
 }
 ?>
@@ -103,11 +104,74 @@ switch ($status) {
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-clock-o fa-fw"></i> Responsive Timeline
+                <i class="fa fa-clock-o fa-fw"></i> History
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <ul class="timeline">
+<?php                    
+$count = 0;
+$history = $computer->getHistory();
+foreach ($history as $row):
+    $count++;
+    $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
+    $desc = $row->getAttributes()['description'];
+    if ($row->getType() == 3) {
+ 
+    }
+?>
+                    <li class="<?php echo $timelineClass; ?>">
+                        <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
+                        </div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4 class="timeline-title"><?php echo $row->getAttributes()['action']; ?></h4>
+                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> <?php
+                        echo $this->dateFormat(
+                                $row->getEditDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::SHORT, // time
+                                "it_IT");
+                        ?></small>
+                                </p>
+                            </div>
+                            <div class="timeline-body">
+                                <p><?php echo $row->getAttributes()['description']; ?></p>
+                                <hr>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-gear"></i>  <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Action</a>
+                                        </li>
+                                        <li><a href="#">Another action</a>
+                                        </li>
+                                        <li><a href="#">Something else here</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li><a href="#">Separated link</a>
+                                        </li>
+                                    </ul>
+                                </div>                                
+                            </div>
+                        </div>
+                    </li>                    
+<?php endforeach; ?>                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     <li>
                         <div class="timeline-badge"><i class="fa fa-check"></i>
                         </div>
@@ -218,3 +282,7 @@ switch ($status) {
 <?php
 echo $this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css');
 
+$history = $computer->getHistory();
+foreach ($history as $row) {
+    var_dump($row->getRecipient()->getDisplayName());
+}

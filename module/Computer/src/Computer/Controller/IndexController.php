@@ -113,7 +113,7 @@ class IndexController extends EntityUsingController
                 $this->computerMapper->update($computer);
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('Computer edit successfully');
-                return $this->redirect()->toRoute('computer/list');
+                //return $this->redirect()->toRoute('computer/list');
             }
         }
 

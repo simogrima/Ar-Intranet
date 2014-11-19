@@ -119,6 +119,18 @@ class Computer
      */
     protected $category;      
     
+    /**
+     * @ORM\OneToMany(targetEntity="Computer\Entity\History", mappedBy="computer", cascade={"persist"})
+     */
+    protected $history;    
+    
+    /**
+     * Never forget to initialize all your collections !
+     */
+    public function __construct()
+    {
+        $this->history = new ArrayCollection();
+    }    
  
     /**
      * Get id
@@ -406,6 +418,27 @@ class Computer
     {
         return $this->processor;
     }      
+    
+    public function addHistory(Collection $history)
+    {
+        foreach ($history as $row) {
+            $row->setComputer($this);
+            $this->history->add($row);
+        }
+    }
+
+    public function removeHistory(Collection $history)
+    {
+        foreach ($history as $row) {
+            $row->setComputer(null);
+            $this->history->removeElement($row);
+        }
+    }
+
+    public function getHistory()
+    {
+        return $this->history;
+    }    
     
     /**
      * @ORM\PrePersist
