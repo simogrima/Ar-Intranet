@@ -1,43 +1,44 @@
-<?php echo $this->titleAndBread('Brands'); ?>
+<?php echo $this->titleAndBread('Computers History'); ?>
 <?php $this->myFlashMessenger(); ?>    
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <a href="<?php echo $this->url('computer/brand/create') ?>" class="btn btn-primary">
-            <?php echo $this->translate('Aggiungi nuovo brand') ?>
-        </a>
-    </div>
-</div>
 
 <div class="table">
     <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Nome</th>
+                <th>Computer</th>
+                <th>Azione</th>
+                <th>Destinatario</th>
                 <th>Stato</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->brands as $brand): ?>
+            <?php foreach ($this->history as $row): ?>
                 <tr>
                     <td class="cell cell-id">
-                        <?php echo $brand->getId(); ?>
+                        <?php echo $row->getId(); ?>
                     </td>
                     <td class="cell cell-model">
-                        <?php echo $brand->getName(); ?>
-                    </td>
+                        <?php echo $row->getComputer()->getSerial(); ?>
+                    </td>  
                     <td class="cell cell-model">
-                        <?php echo $brand->getStatus(); ?>
+                        <?php echo $row->getAttributes()['action']; ?>
+                    </td>                    
+                    <td class="cell cell-model">
+                        <?php echo $row->getRecipient()->getDisplayName(); ?>
+                    </td>                      
+                    <td class="cell cell-model">
+                        <?php echo $row->getStatus(); ?>
                     </td>                                      
                     <td class="cell cell-ctrls">
-                        <a href="<?php echo $this->url('computer/brand/edit', array('brandId' => $brand->getId())); ?>">
+                        <a href="<?php echo $this->url('computer/history/edit', array('historyId' => $row->getId())); ?>">
                             <?php echo $this->translate('Edit') ?>
                         </a>
                         |
-                        <a href="<?php echo $this->url('computer/brand/remove', array('brandId' => $brand->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Really delete brand?') ?>')">
+                        <a href="<?php echo $this->url('computer/history/remove', array('historyId' => $row->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Really delete history?') ?>')">
                                <?php echo $this->translate('Delete') ?>
                         </a>
                     </td>
@@ -49,7 +50,7 @@
 
 <?php
 echo $this->paginationControl(
-        $this->brands, 'Sliding', 'paginator-slide', array(
+        $this->history, 'Sliding', 'paginator-slide', array(
     'order_by' => 'id',
     'order' => 'ASC',
     'search_by' => NULL,

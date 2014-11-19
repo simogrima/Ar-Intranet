@@ -19,6 +19,7 @@ return array(
             'Computer\Controller\Category' => 'Computer\Factory\Controller\CategoryControllerFactory',
             'Computer\Controller\Brand' => 'Computer\Factory\Controller\BrandControllerFactory',
             'Computer\Controller\Processor' => 'Computer\Factory\Controller\ProcessorControllerFactory',
+            'Computer\Controller\History' => 'Computer\Factory\Controller\HistoryControllerFactory',
         ),
     ),
     'router' => array(
@@ -238,7 +239,43 @@ return array(
                                 ),
                             ),
                         ),
-                    ),// end processor                    
+                    ),// end processor
+                    'history' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/history',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\History',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit/:historyId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\History',
+                                        'action' => 'edit',
+                                        'historyId' => 0
+                                    ),
+                                ),
+                            ),
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:historyId',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\History',
+                                        'action' => 'remove',
+                                        'historyId' => 0
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),// end processor                      
                 ),
             ),
         ),
@@ -340,6 +377,16 @@ return array(
                     'processoredit' => array(
                         'label' => 'Modifica processore computer',
                         'route' => 'computer/processor/edit',
+                        'onlybread' => true,
+                    ),     
+                    'historylist' => array(
+                        'label' => 'Storico computers',
+                        'route' => 'computer/history',
+                        'onlybread' => true,
+                    ),    
+                    'historyedit' => array(
+                        'label' => 'Modifica storico computer',
+                        'route' => 'computer/history/edit',
                         'onlybread' => true,
                     ),                      
                 ),

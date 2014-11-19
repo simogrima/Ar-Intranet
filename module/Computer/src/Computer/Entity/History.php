@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="computer_history")
  */
 class History
@@ -232,7 +233,7 @@ class History
 
         if ($this->getType() == 4) {
             $status = $this->getComputer()->getStatus();
-            $result['action'] = 'Cambiato';
+            $result['action'] = 'Cambio Stato';
             $result['description'] = 'Il computer è passato nello stato: ' . $status->getName();   
             switch ($status->getId()) {
                 case 1:
@@ -276,5 +277,14 @@ class History
         
         return $result;
     }
+    
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->setEditdDate(new \Datetime());
+
+    }    
 
 }

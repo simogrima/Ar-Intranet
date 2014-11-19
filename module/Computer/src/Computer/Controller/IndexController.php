@@ -119,7 +119,7 @@ class IndexController extends EntityUsingController
         $changeset = $uow->getEntityChangeSet($computer);
         var_dump($changeset);
                 $history = array(
-            'computer_id' => $entity->getId(),
+            'computer_id' => $computer->getId(),
             'recipient_id' => 2,
             'edit_by' => 1,
         );
