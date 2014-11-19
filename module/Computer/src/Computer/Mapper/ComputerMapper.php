@@ -3,6 +3,7 @@
 namespace Computer\Mapper;
 
 use MainModule\Mapper\Db\BaseDoctrine;
+use Computer\Entity\History;
 
 class ComputerMapper extends BaseDoctrine
 {
@@ -17,7 +18,7 @@ class ComputerMapper extends BaseDoctrine
         return $er->findAll();
     }    
     
-    public function update($entity)
+    public function updateBlocked($entity)
     {
         //Per verificare che ci sino modifiche (che sia cambiato lo stato)
         $uow = $this->em->getUnitOfWork();
@@ -26,13 +27,30 @@ class ComputerMapper extends BaseDoctrine
         
         $hm = $this->getHistoryMapper();
         
+        $history = array(
+            'computer_id' => $entity->getId(),
+            'recipient_id' => 2,
+            'edit_by' => 1,
+        );
         //se c'è il cambio stato
         if(isset($changeset['status'])) {
-            echo 'cambio stato';
+            $history['type'] = 4;
         } else {
-            
+            $history['type'] = 2;
         }
+        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+$hydrator = new DoctrineHydrator(
+    $objectManager,
+    'Application\Entity\City'
+);
+
+$city = new City();        
         
+        
+        
+        var_dump($history);
+        $history = $hm->getHydrator()->hydrate($history, new History());
+        $hm->insert($history);
         return $this->persist($entity);   
     }   
     
@@ -59,7 +77,4 @@ class ComputerMapper extends BaseDoctrine
         return $this;
     }
 
-
-    
-    
 }

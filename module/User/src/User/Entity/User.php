@@ -48,7 +48,7 @@ class User implements UserInterface, IdentityInterface
 
     /**
      * @var int
-     * @ORM\Column(type="smallint")
+     * @ORM\Column(type="smallint", options={"default" = 1})
      */
     protected $state;
     

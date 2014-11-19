@@ -110,7 +110,30 @@ class IndexController extends EntityUsingController
             $form->setData($postedData);
             if ($form->isValid()) {
 
+                
+                
+                
+                
+                        $uow = $objectManager->getUnitOfWork();
+        $uow->computeChangeSets();
+        $changeset = $uow->getEntityChangeSet($computer);
+        var_dump($changeset);
+                $history = array(
+            'computer_id' => $entity->getId(),
+            'recipient_id' => 2,
+            'edit_by' => 1,
+        );
+        //se c'è il cambio stato
+        if(isset($changeset['status'])) {
+            $history['type'] = 4;
+        } else {
+            $history['type'] = 2;
+        }
+        
+                
                 $this->computerMapper->update($computer);
+                
+                
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('Computer edit successfully');
                 //return $this->redirect()->toRoute('computer/list');
