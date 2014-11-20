@@ -120,7 +120,7 @@ class Computer
     protected $category;      
     
     /**
-     * @ORM\OneToMany(targetEntity="Computer\Entity\History", mappedBy="computer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Computer\Entity\History", mappedBy="computer", cascade={"remove"})
      */
     protected $history;    
     
