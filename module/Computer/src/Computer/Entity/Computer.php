@@ -453,6 +453,4 @@ class Computer
         $this->setEditdDate(new \Datetime());
 
     }
-    
-    
 }

@@ -57,7 +57,7 @@ return array(
                                 'controller' => 'Computer\Controller\Index',
                                 'action' => 'settings',
                             ),
-                        ), 
+                        ),
                     ),
                     'create' => array(
                         'type' => 'Literal',
@@ -101,7 +101,7 @@ return array(
                                 'computerId' => 0
                             ),
                         ),
-                    ),                    
+                    ),
                     'category' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -193,7 +193,7 @@ return array(
                                 ),
                             ),
                         ),
-                    ),// end brand
+                    ), // end brand
                     'processor' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -239,7 +239,7 @@ return array(
                                 ),
                             ),
                         ),
-                    ),// end processor
+                    ), // end processor
                     'history' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -275,7 +275,7 @@ return array(
                                 ),
                             ),
                         ),
-                    ),// end processor                      
+                    ), // end processor                      
                 ),
             ),
         ),
@@ -300,7 +300,6 @@ return array(
     ),
     //My module options
     'computer_opt' => [],
-    
     'navigation' => array(
         'leftnav' => array(
             'computer' => array(
@@ -311,15 +310,15 @@ return array(
                     'dashboard' => array(
                         'label' => 'Dashboard',
                         'route' => 'computer',
-                    ),          
+                    ),
                     'settings' => array(
                         'label' => 'Impostazioni',
                         'route' => 'computer/settings',
-                    ),                     
+                    ),
                     'list' => array(
                         'label' => 'Elenco',
                         'route' => 'computer/list',
-                    ),                    
+                    ),
                     'add' => array(
                         'label' => 'Nuovo Computer',
                         'route' => 'computer/create',
@@ -328,70 +327,81 @@ return array(
                         'label' => 'Modifica Computer',
                         'route' => 'computer/edit',
                         'onlybread' => true,
-                    ),     
+                    ),
                     'show' => array(
                         'label' => 'Mostra Computer',
                         'route' => 'computer/show',
                         'onlybread' => true,
-                    ),                      
+                    ),
+                    //Category
                     'catlist' => array(
                         'label' => 'Categorie computer',
                         'route' => 'computer/category',
                         'onlybread' => true,
+                        'pages' => array(
+                            'catadd' => array(
+                                'label' => 'Nuova categoria computer',
+                                'route' => 'computer/category/create',
+                                'onlybread' => true,
+                            ),
+                            'catedit' => array(
+                                'label' => 'Modifica categoria computer',
+                                'route' => 'computer/category/edit',
+                                'onlybread' => true,
+                            ),
+                        ),
                     ),
-                    'catadd' => array(
-                        'label' => 'Nuova categoria computer',
-                        'route' => 'computer/category/create',
-                        'onlybread' => true,
-                    ),    
-                    'catedit' => array(
-                        'label' => 'Modifica categoria computer',
-                        'route' => 'computer/category/edit',
-                        'onlybread' => true,
-                    ),   
+                    //brand
                     'brandlist' => array(
                         'label' => 'Brands computer',
                         'route' => 'computer/brand',
                         'onlybread' => true,
+                        'pages' => array(
+                            'branadd' => array(
+                                'label' => 'Nuovo brand computer',
+                                'route' => 'computer/brand/create',
+                                'onlybread' => true,
+                            ),
+                            'brandedit' => array(
+                                'label' => 'Modifica brand computer',
+                                'route' => 'computer/brand/edit',
+                                'onlybread' => true,
+                            ),
+                        ),
                     ),
-                    'branadd' => array(
-                        'label' => 'Nuovo brand computer',
-                        'route' => 'computer/brand/create',
-                        'onlybread' => true,
-                    ),    
-                    'brandedit' => array(
-                        'label' => 'Modifica brand computer',
-                        'route' => 'computer/brand/edit',
-                        'onlybread' => true,
-                    ),     
+                    //processor
                     'processorlist' => array(
                         'label' => 'Processore computer',
                         'route' => 'computer/processor',
                         'onlybread' => true,
+                        'pages' => array(
+                            'processoradd' => array(
+                                'label' => 'Nuovo processore computer',
+                                'route' => 'computer/processor/create',
+                                'onlybread' => true,
+                            ),
+                            'processoredit' => array(
+                                'label' => 'Modifica processore computer',
+                                'route' => 'computer/processor/edit',
+                                'onlybread' => true,
+                            ),
+                        ),
                     ),
-                    'processoradd' => array(
-                        'label' => 'Nuovo processore computer',
-                        'route' => 'computer/processor/create',
-                        'onlybread' => true,
-                    ),    
-                    'processoredit' => array(
-                        'label' => 'Modifica processore computer',
-                        'route' => 'computer/processor/edit',
-                        'onlybread' => true,
-                    ),     
+                    //history
                     'historylist' => array(
                         'label' => 'Storico computers',
                         'route' => 'computer/history',
                         'onlybread' => true,
-                    ),    
-                    'historyedit' => array(
-                        'label' => 'Modifica storico computer',
-                        'route' => 'computer/history/edit',
-                        'onlybread' => true,
-                    ),                      
+                        'pages' => array(
+                            'historyedit' => array(
+                                'label' => 'Modifica storico computer',
+                                'route' => 'computer/history/edit',
+                                'onlybread' => true,
+                            ),
+                        ),
+                    ),
                 ),
-            ),              
+            ),
         ),
-    ),      
-        
+    ),
 );

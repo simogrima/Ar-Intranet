@@ -233,7 +233,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => false
             ),
             'serial' => array(
-                'required' => true,
+                'required' => FALSE,
             ),
             'model' => array(
                 'required' => true,

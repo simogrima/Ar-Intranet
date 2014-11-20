@@ -9,6 +9,7 @@ use ZfcRbac\Identity\IdentityInterface;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="users")
  */
 class User implements UserInterface, IdentityInterface
@@ -250,5 +251,14 @@ class User implements UserInterface, IdentityInterface
         return in_array($role, $this->getRoles());
     }        
 
-    
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setDefaultValues()
+    {   
+        $this->setState(1);
+
+        return $this;
+    }    
+
 }

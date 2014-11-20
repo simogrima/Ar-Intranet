@@ -13,7 +13,7 @@ switch ($status) {
         break;
     default:
         $class = 'green';
-        $icon = 'check';        
+        $icon = 'check';
         break;
 }
 ?>
@@ -55,7 +55,7 @@ switch ($status) {
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-<?php echo $computer->getSerial(); ?>
+                <?php echo $computer->getSerial(); ?>
             </div>
             <div class="panel-body">
                 <h2>Seriale:
@@ -109,69 +109,57 @@ switch ($status) {
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <ul class="timeline">
-<?php                    
-$count = 0;
-$history = $computer->getHistory();
-foreach ($history as $row):
-    $count++;
-    $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
-    $desc = $row->getAttributes()['description'];
-    if ($row->getType() == 3) {
- 
-    }
-?>
-                    <li class="<?php echo $timelineClass; ?>">
-                        <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
-                        </div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4 class="timeline-title"><?php echo $row->getAttributes()['action']; ?></h4>
-                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> <?php
-                        echo $this->dateFormat(
-                                $row->getEditDate(), IntlDateFormatter::LONG, // date
-                                IntlDateFormatter::SHORT, // time
-                                "it_IT");
-                        ?></small>
-                                </p>
+                    <?php
+                    $count = 0;
+                    $history = $computer->getHistory();
+                    foreach ($history as $row):
+                        $count++;
+                        $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
+                        $desc = $row->getAttributes()['description'];
+                        if ($row->getType() == 3) {
+                            
+                        }
+                        ?>
+                        <li class="<?php echo $timelineClass; ?>">
+                            <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
                             </div>
-                            <div class="timeline-body">
-                                <p><?php echo $row->getAttributes()['description']; ?></p>
-                                <hr>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-gear"></i>  <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="#">Action</a>
-                                        </li>
-                                        <li><a href="#">Another action</a>
-                                        </li>
-                                        <li><a href="#">Something else here</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a>
-                                        </li>
-                                    </ul>
-                                </div>                                
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title"><?php echo $row->getAttributes()['action']; ?></h4>
+                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> <?php
+                                            echo $this->dateFormat(
+                                                    $row->getEditDate(), IntlDateFormatter::LONG, // date
+                                                    IntlDateFormatter::SHORT, // time
+                                                    "it_IT");
+                                            ?></small>
+                                    </p>
+                                </div>
+                                <div class="timeline-body">
+                                    <p><?php echo $row->getAttributes()['description']; ?></p>
+                                    <hr>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                            <i class="fa fa-gear"></i>  <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                                <a href="<?php echo $this->url('computer/history/edit', array('historyId' => $row->getId())); ?>">
+                                                    <?php echo $this->translate('Edit') ?>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="<?php echo $this->url('computer/history/remove', array('historyId' => $row->getId())); ?>"
+                                                   onclick="return confirm('<?php echo $this->translate('Really delete history?') ?>')">
+                                                       <?php echo $this->translate('Delete') ?>
+                                                </a>                                            
+                                            </li>
+                                        </ul>
+                                    </div>                                
+                                </div>
                             </div>
-                        </div>
-                    </li>                    
-<?php endforeach; ?>                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                        </li>                    
+                    <?php endforeach; ?>                    
+
                     <li>
                         <div class="timeline-badge"><i class="fa fa-check"></i>
                         </div>
