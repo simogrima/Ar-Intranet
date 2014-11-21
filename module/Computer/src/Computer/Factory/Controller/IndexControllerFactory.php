@@ -18,7 +18,8 @@ class IndexControllerFactory implements FactoryInterface
         $sm   = $serviceLocator->getServiceLocator();
         $options = $sm->get('Computer\Options\ModuleOptions');
         $mapper = $sm->get('Computer\Mapper\ComputerMapper');
+        $mapperHistory = $sm->get('Computer\Mapper\HistoryMapper');
         
-        return new IndexController($options, $mapper);
+        return new IndexController($options, $mapper, $mapperHistory);
     }
 }

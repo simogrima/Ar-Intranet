@@ -139,6 +139,12 @@ class HistoryForm extends Form
                 'id' => 'submitbutton',
             ),
         ));
+        
+        //Id
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'redirect'
+        ));        
 
         $this->addInputFilter();
     }

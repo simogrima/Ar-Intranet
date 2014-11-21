@@ -23,27 +23,27 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
-    <div class = "row">
-        <div class = "col-md-6">
-<fieldset>
-    <legend>Anagrafica</legend>            
+<div class = "row">
+    <div class = "col-md-6">
+        <fieldset>
+            <legend>Anagrafica</legend>            
             <?php //echo $this->ztbFormElement($fieldset->get('serial')); ?>
             <?= $this->ztbFormElement($fieldset->get('model')); ?>
             <?= $this->ztbFormElement($fieldset->get('status')); ?>
-</fieldset>
-        </div>
-        <div class = "col-md-6">
-<fieldset>
-    <legend>Caratteristiche</legend>            
+        </fieldset>
+    </div>
+    <div class = "col-md-6">
+        <fieldset>
+            <legend>Caratteristiche</legend>            
             <?= $this->ztbFormElement($fieldset->get('category')); ?>
             <?= $this->ztbFormElement($fieldset->get('brand')); ?>
             <?= $this->ztbFormElement($fieldset->get('processor')); ?>
-</fieldset>    
-        </div>       
-    </div>
+        </fieldset>    
+    </div>       
+</div>
 <fieldset>
     <legend>Fatturazione</legend>
-     <div class = "row">
+    <div class = "row">
         <div class = "col-md-6">
             <?= $this->ztbFormElement($fieldset->get('ddt')); ?>
         </div>     
@@ -51,7 +51,7 @@ echo $this->form()->openTag($form);
             <?= $this->ztbFormElement($fieldset->get('ddtDate')); ?>
         </div>           
     </div>      
-     <div class = "row">         
+    <div class = "row">         
         <div class = "col-md-6">
             <?= $this->ztbFormElement($fieldset->get('invoice')); ?>
         </div>     
@@ -60,15 +60,19 @@ echo $this->form()->openTag($form);
         </div>           
     </div>     
 </fieldset>
+<div class = "row">         
+    <div class = "col-md-6">
+        <?= $this->ztbFormElement($fieldset->get('recipient')); ?>
+    </div>               
+</div>
 
-     
-    
+
 <div>
     <?= $this->ztbFormElement($fieldset->get('id')); ?>
     <?= $this->ztbFormElement($form->get('csrf')); ?>
     <?= $this->ztbFormElement($form->get('submit')); ?>
 </div>    
-<?php 
+<?php
 echo $this->form()->closeTag();
 ?>
 <?php

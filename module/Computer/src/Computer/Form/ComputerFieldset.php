@@ -223,7 +223,35 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                         'id' => 'processor',
                     )
                 )
-        );          
+        );         
+        
+        //Recipient
+        $this->add(
+                array(
+                    'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                    'name' => 'recipient',
+                    'emptyOption' => 'Select..',
+                    'options' => array(
+                        'empty_option' => 'Select..',
+                        'label' => 'Destinatario',
+                        'object_manager' => $objectManager,
+                        'target_class' => 'User\Entity\User',
+                        'property' => 'username',
+                        'is_method' => true,
+                        'find_method' => array(
+                            'name' => 'findBy',
+                            'params' => array(
+                                'criteria' => array('state' => 1),
+                                'orderBy' => array('displayName' => 'ASC'),
+                            ),
+                        ),
+                    ),
+                    'attributes' => array(
+                        'required' => true,
+                        'class' => 'form-control',
+                    )
+                )
+        );        
     }
 
     public function getInputFilterSpecification()
@@ -252,7 +280,10 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
             ),  
             'processor' => array(
                 'required' => true,
-            ),              
+            ),      
+            'recipient' => array(
+                'required' => true,
+            ),   
         );
     }
 

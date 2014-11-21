@@ -391,7 +391,6 @@ return array(
                     'historylist' => array(
                         'label' => 'Storico computers',
                         'route' => 'computer/history',
-                        'onlybread' => true,
                         'pages' => array(
                             'historyedit' => array(
                                 'label' => 'Modifica storico computer',

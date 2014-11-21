@@ -125,6 +125,16 @@ class Computer
     protected $history;    
     
     /**
+     * @var \User\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="User\Entity\User", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="recipient", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $recipient;    
+    
+    /**
      * Never forget to initialize all your collections !
      */
     public function __construct()
@@ -438,6 +448,39 @@ class Computer
     public function getHistory()
     {
         return $this->history;
+    }    
+    
+    /**
+     * Get computer
+     *
+     * @return \Computer\Entity\Computer
+     */
+    public function getComputer()
+    {
+        return $this->computer;
+    }
+
+    /**
+     * Set recipient
+     *
+     * @param \User\Entity\User
+     * @return \Computer\Entity\History
+     */
+    public function setRecipient(\User\Entity\User $user = null)
+    {
+        $this->recipient = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get recipient
+     *
+     * @return \User\Entity\User
+     */
+    public function getRecipient()
+    {
+        return $this->recipient;
     }    
     
     /**

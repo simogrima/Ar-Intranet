@@ -15,16 +15,15 @@ use Application\Controller\EntityUsingController;
 //use Computer\Entity\Computer;
 use Zend\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
-
-
 //Doctrine
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 //Form
 use Computer\Form\ComputerForm;
-
+use ZfcUserDoctrineORM\Mapper\User as ZfcUserDoctrineMapper;
 
 class IndexController extends EntityUsingController
 {
+
     /**
      * @var Computer\Options\ModuleOptions
      */
@@ -36,18 +35,25 @@ class IndexController extends EntityUsingController
      */
     protected $computerMapper;
 
-    public function __construct($options, $mapper)
+    /**
+     *
+     * @var type Computer\Mapper\HistoryMapper
+     */
+    protected $historyMapper;
+
+    public function __construct($options, $mapper, $mapperHistory)
     {
         $this->options = $options;
         $this->computerMapper = $mapper;
-    }    
-    
+        $this->historyMapper = $mapperHistory;
+    }
+
     public function indexAction()
     {
         return array(
-            'computerCount' =>  count($this->computerMapper->findAll()),
+            'computerCount' => count($this->computerMapper->findAll()),
         );
-    }        
+    }
 
     public function listAction()
     {
@@ -65,7 +71,7 @@ class IndexController extends EntityUsingController
             //'computerlistElements' => $this->options->getRoleListElements(),
             'pageAction' => 'computer/list',
         );
-    }    
+    }
 
     public function createAction()
     {
@@ -91,7 +97,7 @@ class IndexController extends EntityUsingController
         }
 
         return array('form' => $form);
-    }    
+    }
 
     public function editAction()
     {
@@ -110,30 +116,43 @@ class IndexController extends EntityUsingController
             $form->setData($postedData);
             if ($form->isValid()) {
 
-                
-                
-                
-                
-                        $uow = $objectManager->getUnitOfWork();
-        $uow->computeChangeSets();
-        $changeset = $uow->getEntityChangeSet($computer);
-        var_dump($changeset);
-                $history = array(
-            'computer_id' => $computer->getId(),
-            'recipient_id' => 2,
-            'edit_by' => 1,
-        );
-        //se c'è il cambio stato
-        if(isset($changeset['status'])) {
-            $history['type'] = 4;
-        } else {
-            $history['type'] = 2;
-        }
-        
-                
+
+
+
+                /**** History ****/
+                $uow = $objectManager->getUnitOfWork();
+                $uow->computeChangeSets();
+                $changeset = $uow->getEntityChangeSet($computer);
+                $historyEditor = $this->getServiceLocator()->get('zfcuser_user_mapper')->findById($this->zfcUserAuthentication()->getIdentity()->getId());
+                $recipient = $historyEditor = $this->getServiceLocator()->get('zfcuser_user_mapper')->findById(2);
+                var_dump($changeset);
+                $data = array(
+                    'computer' => $computer,
+                    'recipient' => 2,
+                    'editby' => $historyEditor,
+                );
+                //se c'è il cambio stato
+                if (isset($changeset['status'])) {
+                    $data['type'] = 4;
+                } else {
+                    $data['type'] = 2;
+                }
+                $historyClass = $this->options->getHistoryEntityClass();
+                $history = new $historyClass();
+                $hydrator = new DoctrineHydrator($objectManager, $historyClass);
+
+
+
+                $history = $hydrator->hydrate($data, $history);
+                //var_dump($history);
+                $this->historyMapper->update($history);
+                $this->flashMessenger()->setNamespace('success')->addMessage('History add successfully');
+                /****  Fine History ****/
+
+                $computer->setEditdDate(new \Datetime()); //setto data ultima modifica
                 $this->computerMapper->update($computer);
-                
-                
+
+
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('Computer edit successfully');
                 //return $this->redirect()->toRoute('computer/list');
@@ -142,7 +161,7 @@ class IndexController extends EntityUsingController
 
         return array('form' => $form);
     }
-    
+
     public function removeAction()
     {
         // Get your ObjectManager from the ServiceManager
@@ -157,8 +176,8 @@ class IndexController extends EntityUsingController
         }
 
         return $this->redirect()->toRoute('computer/list');
-    }    
-    
+    }
+
     public function showAction()
     {
         // Get your ObjectManager from the ServiceManager
@@ -167,20 +186,20 @@ class IndexController extends EntityUsingController
         $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
         return array(
             'computer' => $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId)
-            );
-    }    
-    
+        );
+    }
+
     public function settingsAction()
     {
         $categoryMapper = $this->getServiceLocator()->get('Computer\Mapper\CategoryMapper');
         $brandMapper = $this->getServiceLocator()->get('Computer\Mapper\BrandMapper');
         $processorMapper = $this->getServiceLocator()->get('Computer\Mapper\ProcessorMapper');
-        
+
         return array(
             'categories' => $categoryMapper->findAll(),
             'brands' => $brandMapper->findAll(),
             'processors' => $processorMapper->findAll(),
         );
-    }      
+    }
 
 }

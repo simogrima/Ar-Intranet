@@ -56,6 +56,17 @@ class History
      * @ORM\Column(type="smallint", options={"unsigned"=true, "default" = 0})
      */
     protected $status;
+    
+    
+    /**
+     * @var \Computer\Entity\Status
+     *
+     * @ORM\ManyToOne(targetEntity="Computer\Entity\Status", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="computer_status_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $computerStatus;        
 
     /**
      * @var \User\Entity\User
@@ -175,6 +186,29 @@ class History
 
         return $this;
     }
+    
+    /**
+     * Set computerStatus
+     *
+     * @param \Computer\Entity\Status
+     * @return \Computer\Entity\History
+     */
+    public function setComputerStatus(\Computer\Entity\Status $status = null)
+    {
+        $this->computerStatus = $status;
+    
+        return $this;
+    }
+
+    /**
+     * Get computerstatus
+     *
+     * @return \Computer\Entity\Status 
+     */
+    public function getComputerStatus()
+    {
+        return $this->computerStatus;
+    }       
 
     /**
      * Set editBy
@@ -232,20 +266,20 @@ class History
         $result = [];
 
         if ($this->getType() == 4) {
-            $status = $this->getComputer()->getStatus();
             $result['action'] = 'Cambio Stato';
-            $result['description'] = 'Il computer è passato nello stato: ' . $status->getName();   
-            switch ($status->getId()) {
+            $result['description'] = 'Il computer è passato nello stato: ' . $this->getComputerStatus()->getName();   
+            switch ($this->getComputerStatus()->getId()) { 
                 case 1:
                     $result['icon'] = 'fa-check';
-                    $result['class'] = 'green';
+                    $result['class'] = 'success';
                     break;
                 case 2:
                     $result['icon'] = 'fa-database';
-                    $result['class'] = 'yellow';
+                    $result['class'] = 'warning';
                     break;
+                case 3:
                     $result['icon'] = 'fa-trash';
-                    $result['class'] = 'red';
+                    $result['class'] = 'danger';
                     break;
                 default:
                     break;                
@@ -274,6 +308,7 @@ class History
                     break;
             }
         }
+
         
         return $result;
     }
@@ -283,6 +318,7 @@ class History
      */
     public function prePersist()
     {
+        $this->setStatus(1);
         $this->setEditdDate(new \Datetime());
 
     }    

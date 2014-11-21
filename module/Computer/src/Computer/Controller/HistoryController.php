@@ -71,20 +71,36 @@ class HistoryController extends EntityUsingController
         $form = new HistoryForm($objectManager);
         $form->bind($history);
         $form->get('edit_by')->setValue($this->zfcUserAuthentication()->getIdentity()->getId());
+        
+      
 
         if ($this->request->isPost()) {
             $postedData = $this->request->getPost();
             $form->setData($postedData);
+            $redirectUrl = $form->get('redirect')->getValue(); //x redirect
             if ($form->isValid()) {
-
+                
                 $this->historyMapper->update($history);
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('History edit successfully');
+
+                //redirect in base da dove provengo
+                if (!empty($redirectUrl)) {
+                    return $this->redirect()->toUrl($redirectUrl);
+                }
+                
                 return $this->redirect()->toRoute('computer/history');
+                
             } else {
                 var_dump($form->getValidationGroup());    
             }
         }
+        
+        //se provengo da scheda computer redirect lì.
+        $redirectUrl = $url = $this->getRequest()->getHeader('Referer')->getUri();
+        if (strpos($redirectUrl,'computer/show') !== false) {
+            $form->get('redirect')->setValue($redirectUrl);
+        }          
 
         return array('form' => $form);
     }
@@ -101,6 +117,12 @@ class HistoryController extends EntityUsingController
             $this->historyMapper->remove($history);
             $this->flashMessenger()->addSuccessMessage('The history was deleted');
         }
+        
+        //se provengo da scheda computer redirect lì.
+        $redirectUrl = $url = $this->getRequest()->getHeader('Referer')->getUri();
+        if (strpos($redirectUrl,'computer/show') !== false) {
+            return $this->redirect()->toUrl($redirectUrl);
+        }             
 
         return $this->redirect()->toRoute('computer/history');
     }    
