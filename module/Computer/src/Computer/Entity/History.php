@@ -14,6 +14,11 @@ use Doctrine\Common\Collections\ArrayCollection,
 class History
 {
 
+    const HISTORY_TYPE_COMPUTER_CREATE = 1;
+    const HISTORY_TYPE_COMPUTER_MODIFY = 2;
+    const HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT = 3;
+    const HISTORY_TYPE_COMPUTER_CHAGE_STATUS = 4;
+
     /**
      * @var int|null
      *
@@ -56,8 +61,7 @@ class History
      * @ORM\Column(type="smallint", options={"unsigned"=true, "default" = 0})
      */
     protected $status;
-    
-    
+
     /**
      * @var \Computer\Entity\Status
      *
@@ -66,7 +70,7 @@ class History
      *   @ORM\JoinColumn(name="computer_status_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $computerStatus;        
+    protected $computerStatus;
 
     /**
      * @var \User\Entity\User
@@ -186,7 +190,7 @@ class History
 
         return $this;
     }
-    
+
     /**
      * Set computerStatus
      *
@@ -196,7 +200,7 @@ class History
     public function setComputerStatus(\Computer\Entity\Status $status = null)
     {
         $this->computerStatus = $status;
-    
+
         return $this;
     }
 
@@ -208,7 +212,7 @@ class History
     public function getComputerStatus()
     {
         return $this->computerStatus;
-    }       
+    }
 
     /**
      * Set editBy
@@ -265,10 +269,10 @@ class History
     {
         $result = [];
 
-        if ($this->getType() == 4) {
+        if ($this->getType() == self::HISTORY_TYPE_COMPUTER_CHAGE_STATUS) {
             $result['action'] = 'Cambio Stato';
-            $result['description'] = 'Il computer è passato nello stato: ' . $this->getComputerStatus()->getName();   
-            switch ($this->getComputerStatus()->getId()) { 
+            $result['description'] = 'Il computer è passato nello stato: ' . $this->getComputerStatus()->getName();
+            switch ($this->getComputerStatus()->getId()) {
                 case 1:
                     $result['icon'] = 'fa-check';
                     $result['class'] = 'success';
@@ -282,23 +286,23 @@ class History
                     $result['class'] = 'danger';
                     break;
                 default:
-                    break;                
+                    break;
             }
         } else {
             switch ($this->getType()) {
-                case 1:
+                case self::HISTORY_TYPE_COMPUTER_CREATE:
                     $result['action'] = 'Creazione';
                     $result['icon'] = 'fa-save';
                     $result['class'] = '';
                     $result['description'] = 'Aggiunto nuovo computer';
                     break;
-                case 2:
+                case self::HISTORY_TYPE_COMPUTER_MODIFY:
                     $result['action'] = 'Modifica';
                     $result['icon'] = 'fa-edit';
                     $result['class'] = '';
                     $result['description'] = 'Il computer è stato modificato';
                     break;
-                case 3:
+                case self::HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT:
                     $result['action'] = 'Assegnazione';
                     $result['icon'] = 'fa-user';
                     $result['class'] = 'info';
@@ -309,10 +313,10 @@ class History
             }
         }
 
-        
+
         return $result;
     }
-    
+
     /**
      * @ORM\PrePersist
      */
@@ -320,7 +324,6 @@ class History
     {
         $this->setStatus(1);
         $this->setEditdDate(new \Datetime());
-
-    }    
+    }
 
 }

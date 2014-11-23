@@ -34,7 +34,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Seriale',
             ),
             'attributes' => array(
-                'required' => true,
+               // 'required' => true,
                 'class' => 'form-control',
             )
         ));
@@ -248,7 +248,9 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                     ),
                     'attributes' => array(
                         'required' => true,
-                        'class' => 'form-control',
+                        'class' => 'form-control selectpicker',
+                        'data-live-search' => 'true',
+                        'data-style' =>'btn-info',
                     )
                 )
         );        
@@ -261,7 +263,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => false
             ),
             'serial' => array(
-                'required' => FALSE,
+                'required' => true,
             ),
             'model' => array(
                 'required' => true,

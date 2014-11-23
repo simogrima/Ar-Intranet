@@ -12,5 +12,10 @@ class HistoryMapper extends BaseDoctrine
         return $er->findAll();
     }
 
+    public function findAllByComputerId($computerId)
+    {
+        $er = $this->em->getRepository($this->options->getHistoryEntityClass());
+        $er->findBy("first_name", "Travis");
+    }        
     
 }

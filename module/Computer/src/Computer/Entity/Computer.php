@@ -235,7 +235,7 @@ class Computer
      * Set invoiceDate
      * 
      * @param \DateTime $invoiceDate
-     * @return \Samples\Entity\Computer
+     * @return \Computer\Entity\Computer
      */
     public function setInvoiceDate(\DateTime $invoiceDate)
     {
@@ -281,7 +281,7 @@ class Computer
      * Set ddtDate
      * 
      * @param \DateTime $ddtDate
-     * @return \Samples\Entity\Computer
+     * @return \Computer\Entity\Computer
      */
     public function setDdtDate(\DateTime $ddtDate)
     {
@@ -437,34 +437,50 @@ class Computer
         }
     }
 
+    /**
+     * Rimuove lo storico di un computer
+     * @param Collection $history lo storico da rimuovere
+     * @return \Computer\Entity\Computer
+     */
     public function removeHistory(Collection $history)
     {
         foreach ($history as $row) {
             $row->setComputer(null);
             $this->history->removeElement($row);
         }
+        
+        return $this;
     }
 
-    public function getHistory()
+    /**
+     * Get computer history
+     * @param int $type in tipo di history
+     * 0 -> all
+     * 1 -> Creazione
+     * 2 -> Modifica
+     * 3 -> Assegnazione
+     * 4 -> Cambio stato
+     * 
+     * @return Collection | Array
+     */
+    public function getHistory($type = 0)
     {
+        if (is_numeric($type) && $type > 0) {
+            $history = [];
+            foreach ($this->getHistory() as $row) {
+                if ($row->getType() == $type)
+                $history[] = $row;
+            }
+            return $history;
+        }
         return $this->history;
     }    
     
     /**
-     * Get computer
-     *
-     * @return \Computer\Entity\Computer
-     */
-    public function getComputer()
-    {
-        return $this->computer;
-    }
-
-    /**
      * Set recipient
      *
      * @param \User\Entity\User
-     * @return \Computer\Entity\History
+     * @return \Computer\Entity\Computer
      */
     public function setRecipient(\User\Entity\User $user = null)
     {

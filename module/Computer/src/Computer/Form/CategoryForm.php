@@ -18,7 +18,7 @@ class CategoryForm extends Form
         //$this->setHydrator(new DoctrineHydrator($objectManager));
         $this->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Category', true)); 
 
-        // Add the sample fieldset, and set it as the base fieldset
+        // Add the attribute fieldset, and set it as the base fieldset
         $attributeFieldset = new AttributeFieldset($objectManager);
         $attributeFieldset->setHydrator(new DoctrineHydrator($objectManager, 'Computer\Entity\Category', true))
                 ->setObject(new Category());

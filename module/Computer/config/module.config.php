@@ -91,14 +91,26 @@ return array(
                             ),
                         ),
                     ),
+                    'clearhistory' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/clear-history/:computerId',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Index',
+                                'action' => 'clearHistory',
+                                'computerId' => 0,
+                            ),
+                        ),
+                    ),                    
                     'show' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/show/:computerId',
+                            'route' => '/show/:computerId/:historyType',
                             'defaults' => array(
                                 'controller' => 'Computer\Controller\Index',
                                 'action' => 'show',
-                                'computerId' => 0
+                                'computerId' => 0,
+                                'historyType' => 0,
                             ),
                         ),
                     ),
@@ -299,7 +311,12 @@ return array(
         ),
     ),
     //My module options
-    'computer_opt' => [],
+    'computer_opt' => [
+        'scortaId' => 2,
+        'scortaUserId' => 2,
+    ],
+    
+    //Navigation menu/breadcrumb
     'navigation' => array(
         'leftnav' => array(
             'computer' => array(

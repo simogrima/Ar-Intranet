@@ -16,6 +16,8 @@ class ModuleOptions extends AbstractOptions
     protected $brandEntityClass = 'Computer\Entity\Brand'; 
     protected $processorEntityClass = 'Computer\Entity\Processor'; 
     protected $historyEntityClass = 'Computer\Entity\History'; 
+    protected $scortaId;
+    protected $scortaUserId;
 
     /**
      * set computer entity class name
@@ -147,5 +149,46 @@ class ModuleOptions extends AbstractOptions
     public function getHistoryEntityClass()
     {
         return $this->historyEntityClass;
-    }      
+    }    
+    
+    /**
+     * Get scorta Id
+     * 
+     * @return int
+     */
+    function getScortaId()
+    {
+        return $this->scortaId;
+    }
+
+    /**
+     * Get id utente a cui saranno assegnati i computers in scorta
+     * @return int
+     */
+    function getScortaUserId()
+    {
+        return $this->scortaId;
+    }
+
+    /**
+     * Set scorta Id
+     * 
+     * @param int $scortaId
+     */
+    function setScortaId($scortaId)
+    {
+        $this->scortaId = $scortaId;
+    }
+
+    /**
+     * Set id utente a cui saranno assegnati i computers in scorta
+     * @param int $userScortaId
+     */
+    function setScortaUserId($scortaUserId)
+    {
+        $this->scortaUserId = $scortaUserId;
+    }
+
+
+
 }

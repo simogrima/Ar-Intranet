@@ -64,10 +64,10 @@ class Computer extends \Computer\Entity\Computer implements \Doctrine\ORM\Proxy\
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'serial', 'model', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history');
+            return array('__isInitialized__', 'id', 'serial', 'model', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
         }
 
-        return array('__isInitialized__', 'id', 'serial', 'model', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history');
+        return array('__isInitialized__', 'id', 'serial', 'model', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
     }
 
     /**
@@ -477,12 +477,34 @@ class Computer extends \Computer\Entity\Computer implements \Doctrine\ORM\Proxy\
     /**
      * {@inheritDoc}
      */
-    public function getHistory()
+    public function getHistory($type = 0)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHistory', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHistory', array($type));
 
-        return parent::getHistory();
+        return parent::getHistory($type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setRecipient(\User\Entity\User $user = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRecipient', array($user));
+
+        return parent::setRecipient($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRecipient()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRecipient', array());
+
+        return parent::getRecipient();
     }
 
     /**

@@ -18,6 +18,6 @@ class ModuleOptionsFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new ModuleOptions($serviceLocator->get('Config')['sample_opt']);
+        return new ModuleOptions($serviceLocator->get('Config')['computer_opt']);
     }
 }

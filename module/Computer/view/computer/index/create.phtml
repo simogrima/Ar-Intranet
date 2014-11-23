@@ -10,7 +10,12 @@
  * 
  */
 ?>
-
+<?php
+echo $this->headLink()
+        ->appendStylesheet('http://silviomoreto.github.io/bootstrap-select/bootstrap-select.min.css');
+echo $this->headScript()
+        ->prependFile('http://silviomoreto.github.io/bootstrap-select/bootstrap-select.min.js');
+?>
 
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
@@ -23,43 +28,66 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
-    <div class = "row">
-        <div class = "col-md-6">
-<fieldset>
-    <legend>Anagrafica</legend>            
-            <?php //echo $this->ztbFormElement($fieldset->get('serial')); ?>
-            <?= $this->ztbFormElement($fieldset->get('model')); ?>
-            <?= $this->ztbFormElement($fieldset->get('status')); ?>
-</fieldset>
+<div class = "row">
+    <div class = "col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Anagrafica
+            </div>
+            <div class="panel-body">
+                <?php echo $this->ztbFormElement($fieldset->get('serial')); ?>
+                <?php echo $this->ztbFormElement($fieldset->get('model')); ?>
+                <?php echo $this->ztbFormElement($fieldset->get('status')); ?>
+            </div>    
         </div>
-        <div class = "col-md-6">
-<fieldset>
-    <legend>Caratteristiche</legend>            
-            <?= $this->ztbFormElement($fieldset->get('category')); ?>
-            <?= $this->ztbFormElement($fieldset->get('brand')); ?>
-            <?= $this->ztbFormElement($fieldset->get('processor')); ?>
-</fieldset>    
-        </div>       
     </div>
-<fieldset>
-    <legend>Fatturazione</legend>
-     <div class = "row">
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($fieldset->get('ddt')); ?>
-        </div>     
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($fieldset->get('ddtDate')); ?>
-        </div>           
-    </div>      
-     <div class = "row">         
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($fieldset->get('invoice')); ?>
-        </div>     
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($fieldset->get('invoiceDate')); ?>
-        </div>           
-    </div>     
-</fieldset>
+    <div class = "col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Caratteristiche
+            </div>
+            <div class="panel-body">           
+                <?php echo $this->ztbFormElement($fieldset->get('category')); ?>
+                <?php echo $this->ztbFormElement($fieldset->get('brand')); ?>
+                <?php echo $this->ztbFormElement($fieldset->get('processor')); ?>
+            </div>   
+        </div>
+    </div>       
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Fatturazione
+    </div>
+    <div class="panel-body">
+        <div class = "row">
+            <div class = "col-md-6">
+                <?php echo $this->ztbFormElement($fieldset->get('ddt')); ?>
+            </div>     
+            <div class = "col-md-6">
+                <?php echo $this->ztbFormElement($fieldset->get('ddtDate')); ?>
+            </div>           
+        </div>      
+        <div class = "row">         
+            <div class = "col-md-6">
+                <?php echo $this->ztbFormElement($fieldset->get('invoice')); ?>
+            </div>     
+            <div class = "col-md-6">
+                <?php echo $this->ztbFormElement($fieldset->get('invoiceDate')); ?>
+            </div>           
+        </div> 
+    </div>
+</div>
+<div class = "row">         
+    <div class = "col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <i class="fa fa-user"></i> Utente
+            </div>
+            <div class="panel-body">        
+        <?php echo $this->ztbFormElement($fieldset->get('recipient')); ?>
+                </div></div>
+    </div>               
+</div>
 
 <div>
     <?= $this->ztbFormElement($form->get('csrf')); ?>

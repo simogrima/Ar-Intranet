@@ -21,6 +21,8 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Computer\Form\ComputerForm;
 use ZfcUserDoctrineORM\Mapper\User as ZfcUserDoctrineMapper;
 
+use Computer\Entity\History;
+
 class IndexController extends EntityUsingController
 {
 
@@ -75,8 +77,7 @@ class IndexController extends EntityUsingController
 
     public function createAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         // Create the form and inject the ObjectManager
         $form = new ComputerForm($objectManager);
@@ -101,11 +102,14 @@ class IndexController extends EntityUsingController
 
     public function editAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
         $computer = $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId);
+        
+        if (!$computer) {
+            throw new \Exception('Computer not found');
+        }
 
         // Create the form and inject the ObjectManager
         $form = new ComputerForm($objectManager);
@@ -116,46 +120,73 @@ class IndexController extends EntityUsingController
             $form->setData($postedData);
             if ($form->isValid()) {
 
-
-
-
-                /**** History ****/
+                /*** * History *** */
+                //Controllo le modifiche
                 $uow = $objectManager->getUnitOfWork();
                 $uow->computeChangeSets();
                 $changeset = $uow->getEntityChangeSet($computer);
-                $historyEditor = $this->getServiceLocator()->get('zfcuser_user_mapper')->findById($this->zfcUserAuthentication()->getIdentity()->getId());
-                $recipient = $historyEditor = $this->getServiceLocator()->get('zfcuser_user_mapper')->findById(2);
-                var_dump($changeset);
+
+                //Dati di default
                 $data = array(
                     'computer' => $computer,
-                    'recipient' => 2,
-                    'editby' => $historyEditor,
+                    'recipient' => $this->getServiceLocator()->get('zfcuser_user_mapper')
+                            ->findById($computer->getRecipient()->getId()),
+                    'editBy' => $this->getServiceLocator()->get('zfcuser_user_mapper')
+                            ->findById($this->zfcUserAuthentication()
+                                    ->getIdentity()->getId()),
+                    'computerStatus' => $computer->getStatus(),
                 );
-                //se c'è il cambio stato
+
+                $noModify = false;
+                $noRecipient = false;
+
+                //Cambio stato
                 if (isset($changeset['status'])) {
-                    $data['type'] = 4;
-                } else {
-                    $data['type'] = 2;
+                    $data['type'] = History::HISTORY_TYPE_COMPUTER_CHAGE_STATUS;
+                    $noModify = true;
+                    //Aggiungo un record per cambio stato
+                    $this->addHistory($data);
+                    
+                    /**
+                     * Se è passato in stato scorta
+                     * 1) assegno computer ad utente scortaUserId (ced) 
+                     * 2) aggiungo record anche per cambio destinatario
+                     */
+                    if ($computer->getStatus()->getId() == $this->options->getScortaId()) {
+                        $computer->setRecipient($this->getServiceLocator()->get('zfcuser_user_mapper')
+                            ->findById($this->options->getScortaUserId()));
+                        $data['type'] = History::HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT;
+                        $data['recipient'] = $computer->getRecipient();
+                        $noRecipient = true;
+                        $this->addHistory($data);
+                    }
                 }
-                $historyClass = $this->options->getHistoryEntityClass();
-                $history = new $historyClass();
-                $hydrator = new DoctrineHydrator($objectManager, $historyClass);
-
-
-
-                $history = $hydrator->hydrate($data, $history);
-                //var_dump($history);
-                $this->historyMapper->update($history);
-                $this->flashMessenger()->setNamespace('success')->addMessage('History add successfully');
-                /****  Fine History ****/
-
+                
+                //Cambio destinatario 
+                if($noRecipient == FALSE && isset($changeset['recipient'])) {
+                    $noModify = true;
+                    $data['type'] = History::HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT;
+                    $this->addHistory($data);                    
+                }
+                
+                //Modifica generica
+                if ($noModify == false) {
+                    $data['type'] = History::HISTORY_TYPE_COMPUTER_MODIFY;
+                    $this->addHistory($data);
+                }
+                /*** *  Fine History *** */
+                
+                
                 $computer->setEditdDate(new \Datetime()); //setto data ultima modifica
                 $this->computerMapper->update($computer);
-
-
-
+                
                 $this->flashMessenger()->setNamespace('success')->addMessage('Computer edit successfully');
-                //return $this->redirect()->toRoute('computer/list');
+                return $this->redirect()->toRoute(
+                        'computer/show', 
+                        array(
+                            'computerId' => $computer->getId(),
+                            'historyType' => 0,
+                        ));
             }
         }
 
@@ -164,8 +195,7 @@ class IndexController extends EntityUsingController
 
     public function removeAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
         $computer = $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId);
@@ -180,12 +210,11 @@ class IndexController extends EntityUsingController
 
     public function showAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
+        $historyType = (int) $this->getEvent()->getRouteMatch()->getParam('historyType');
         return array(
-            'computer' => $objectManager->getRepository($this->options->getComputerEntityClass())->find($computerId)
+            'computer' => $this->getEntityManager()->getRepository($this->options->getComputerEntityClass())->find($computerId),
+            'historyType' => $historyType,
         );
     }
 
@@ -201,5 +230,45 @@ class IndexController extends EntityUsingController
             'processors' => $processorMapper->findAll(),
         );
     }
+
+    /**
+     * Aggiunge un record alla tabella computer_history in caso di aggiunta o 
+     * modifica computer.
+     * 
+     * @param array $data
+     */
+    protected function addHistory($data)
+    {
+        $historyClass = $this->options->getHistoryEntityClass();
+        $history = new $historyClass();
+        $hydrator = new DoctrineHydrator($this->getEntityManager(), $historyClass);
+        $history = $hydrator->hydrate($data, $history);
+        
+        //var_dump($history);
+        $this->historyMapper->update($history);
+        //$this->flashMessenger()->setNamespace('success')->addMessage('History add successfully');
+    }
+    
+    public function clearHistoryAction()
+    {
+        $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
+        $computer = $this->getEntityManager()->getRepository($this->options->getComputerEntityClass())->find($computerId);
+        
+        if ($computer) {
+            $computer->removeHistory($computer->getHistory());
+            $this->flashMessenger()->setNamespace('success')->addMessage('Computer history clear successfully');
+            $this->getEntityManager()->persist($computer);
+            $this->getEntityManager()->flush();
+            return $this->redirect()->toRoute(
+                    'computer/show', 
+                    array(
+                        'computerId' => $computer->getId(),
+                        'historyType' => 0,
+                    ));            
+        }
+        //To disable the view completely, from within a controller action, you should return a Response object
+        $response = $this->getResponse();
+        return $response;        
+    }        
 
 }
