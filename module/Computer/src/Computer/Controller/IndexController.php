@@ -59,14 +59,16 @@ class IndexController extends EntityUsingController
 
     public function listAction()
     {
-        $computers = $this->computerMapper->findAll();
+       // $computers = $this->computerMapper->findAll();
+        $computers = $this->computerMapper->getItems(0,10);
         if (is_array($computers)) {
+            //$paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($computers));
             $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($computers));
         } else {
             $paginator = $computers;
         }
 
-        $paginator->setItemCountPerPage(30);
+        $paginator->setItemCountPerPage(1);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
         return array(
             'computers' => $paginator,

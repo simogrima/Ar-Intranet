@@ -3,9 +3,21 @@
 
 <div class="panel panel-default">
     <div class="panel-body">
-        <a href="<?php echo $this->url('computer/create') ?>" class="btn btn-primary">
-            <?php echo $this->translate('Aggiungi nuovo computer') ?>
-        </a>
+        <div class="row">
+            <div class="col-md-6">
+                <a href="<?php echo $this->url('computer/create') ?>" class="btn btn-primary">
+                    <?php echo $this->translate('Aggiungi nuovo computer') ?>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <form class="navbar-form navbar-right" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                </form>            
+            </div>
+        </div>
     </div>
 </div>
 
@@ -14,8 +26,8 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Modello</th>
                 <th>Seriale</th>
+                <th>Modello</th>                
                 <th>Stato</th>
                 <th>&nbsp;</th>
             </tr>
@@ -27,14 +39,14 @@
                         <?php echo $computer->getId(); ?>
                     </td>
                     <td class="cell cell-model">
-                        <?php echo $computer->getModel(); ?>
-                    </td>
-                    <td class="cell cell-model">
                         <?php echo $computer->getSerial(); ?>
+                    </td>         
+                    <td class="cell cell-model">
+                        <?php echo $computer->getModel(); ?>
                     </td>                    
                     <td class="cell cell-model">
                         <?php if (null !== $computer->getStatus()): ?>
-                        <?php echo $computer->getStatus()->getName(); ?>
+                            <?php echo $computer->getStatus()->getName(); ?>
                         <?php endif; ?>
                     </td>                   
                     <td class="cell cell-ctrls">
