@@ -45,7 +45,11 @@ switch ($status) {
                         <i class="fa fa-user fa-5x"></i>
                     </div>
                     <div class="col-xs-9 text-right">
-                        <div class="huge"><?php echo $computer->getRecipient()->getDisplayName(); ?></div>
+                        <div class="huge">
+                            <a href="<?php echo $this->url('computer/userhistory', array('userId' => $computer->getRecipient()->getId())); ?>">
+                            <?php echo $computer->getRecipient()->getDisplayName(); ?>
+                            </a>    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -153,31 +157,23 @@ switch ($status) {
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="<?php echo $this->url('computer/show',array('computerId' => $computer->getId(),'historyType' => 0)); ?>">
-                                    Mostra tutti
-                                </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo $this->url('computer/show',array('computerId' => $computer->getId(),'historyType' => 1)); ?>">
-                                    Solo Creazione
-                                </a>
-                            </li>
-                            <li class="active">
-                                <a href="<?php echo $this->url('computer/show',array('computerId' => $computer->getId(),'historyType' => 2)); ?>">
-                                    Solo modifica
-                                </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo $this->url('computer/show',array('computerId' => $computer->getId(),'historyType' => 3)); ?>">
-                                    Solo Assegnazione
-                                </a>
-                            </li>
-                            <li>
-                                <a href="<?php echo $this->url('computer/show',array('computerId' => $computer->getId(),'historyType' => 4)); ?>">
-                                    Solo Cambio Stato
+<?php 
+$items = array(
+    0 => 'Mostra Tutti',
+    1 => 'Solo creazione',
+    2 => 'Solo Modifica',
+    3 => 'Solo Assegnazione',
+    4 => 'Solo Cambio Stato',
+);
+foreach($items as $key => $value): 
+$class = ($historyType == $key) ? 'active' : '';
+?>
+                            <li class="<?php echo $class; ?>">
+                                <a href="<?php echo $this->url('computer/show',array('computerId' => $computer->getId(),'historyType' => $key)); ?>">
+                                    <?php echo $value; ?>
                                 </a>
                             </li>                            
+<?php endforeach; ?>                                                      
                             <li class="divider"></li>
                             <li>
                                 <a href="<?php echo $this->url('computer/clearhistory', array('computerId' => $computer->getId())); ?>"
@@ -216,7 +212,13 @@ switch ($status) {
                                 </div>
                                 <div class="timeline-body">
                                     <p>
-                                        <?php echo $row->getAttributes()['description']; ?><br/>
+                                        <?php echo $row->getAttributes()['description']; ?>
+                                        <?php if ($row->getType() == Computer\Entity\History::HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT): ?>
+                                        <a href="<?php echo $this->url('computer/userhistory', array('userId' => $row->getRecipient()->getId())); ?>">
+                                            <?php echo $row->getRecipient()->getDisplayName(); ?>
+                                        </a>
+                                        <?php endif; ?>    
+                                        <br/>
                                     </p>
                                     <hr>
                                     <div class="btn-group">

@@ -90,6 +90,28 @@ class IndexController extends EntityUsingController
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
+
+                /*** * History *** */
+                //Dati di default
+                $data = array(
+                    'computer' => $computer,
+                    'recipient' => $this->getServiceLocator()->get('zfcuser_user_mapper')
+                            ->findById($computer->getRecipient()->getId()),
+                    'editBy' => $this->getServiceLocator()->get('zfcuser_user_mapper')
+                            ->findById($this->zfcUserAuthentication()
+                                    ->getIdentity()->getId()),
+                    'computerStatus' => $computer->getStatus(),
+                    'type' => History::HISTORY_TYPE_COMPUTER_CREATE,
+                );
+                
+                //Aggiungo un record per cambio stato
+                $this->addHistory($data);     
+                
+                //Aggiungo un record per assegnazione
+                $data['type'] = History::HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT;
+                $this->addHistory($data);                
+                /*** *  Fine History *** */                
+                
                 $this->computerMapper->insert($computer);
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('Computer added successfully');
@@ -269,6 +291,24 @@ class IndexController extends EntityUsingController
         //To disable the view completely, from within a controller action, you should return a Response object
         $response = $this->getResponse();
         return $response;        
+    }     
+    
+    public function userHistoryAction()
+    {
+        $userId = $this->getEvent()->getRouteMatch()->getParam('userId');
+        $user = $this->getServiceLocator()->get('zfcuser_user_mapper')->findById((int) $userId);
+        if ($user) {
+            $history = $this->getEntityManager()
+                         ->getRepository($this->options->getHistoryEntityClass())
+                         ->findBy(array('recipient' => $user, 'type' => History::HISTORY_TYPE_COMPUTER_CHAGE_RECIPIENT));
+            return array(
+                'title' => 'Storico Computer di ' .  $user->getDisplayName(),
+                'history' => $history,
+            );            
+        }
+        
+        $response = $this->getResponse();
+        return $response;          
     }        
 
 }

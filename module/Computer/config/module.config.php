@@ -114,6 +114,17 @@ return array(
                             ),
                         ),
                     ),
+                    'userhistory' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/user-history/:userId',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Index',
+                                'action' => 'userHistory',
+                                'userId' => 0,
+                            ),
+                        ),
+                    ),                    
                     'category' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -350,6 +361,11 @@ return array(
                         'route' => 'computer/show',
                         'onlybread' => true,
                     ),
+                    'userhistory' => array(
+                        'label' => 'Storico computer di un utente',
+                        'route' => 'computer/userhistory',
+                        'onlybread' => true,
+                    ),                    
                     //Category
                     'catlist' => array(
                         'label' => 'Categorie computer',

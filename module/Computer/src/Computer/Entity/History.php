@@ -306,7 +306,7 @@ class History
                     $result['action'] = 'Assegnazione';
                     $result['icon'] = 'fa-user';
                     $result['class'] = 'info';
-                    $result['description'] = 'Il computer è stato assegnato a ' . $this->getRecipient()->getDisplayName();
+                    $result['description'] = 'Il computer è stato assegnato a ';
                     break;
                 default:
                     break;
