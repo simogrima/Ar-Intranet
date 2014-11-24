@@ -3,19 +3,31 @@
 namespace Computer\Mapper;
 
 use MainModule\Mapper\Db\BaseDoctrine;
+use Computer\Entity\Computer;
 
 class HistoryMapper extends BaseDoctrine
 {
-    public function findAll() 
+
+    public function findAll()
     {
         $er = $this->em->getRepository($this->options->getHistoryEntityClass());
         return $er->findAll();
     }
 
-    public function findAllByComputerId($computerId)
+    /**
+     * 
+     * @param Computer $computer
+     */
+    public function resetStatusByComputerId(Computer $computer)
     {
-        $er = $this->em->getRepository($this->options->getHistoryEntityClass());
-        $er->findBy("first_name", "Travis");
-    }        
-    
+        $qb = $this->em->createQueryBuilder();
+        $q = $qb->update($this->options->getHistoryEntityClass(), 'h')
+                ->set('h.status', '?1')
+                ->where('h.computer = ?2')
+                ->setParameter(1, 0)
+                ->setParameter(2, $computer)
+                ->getQuery();
+        $p = $q->execute();
+    }
+
 }
