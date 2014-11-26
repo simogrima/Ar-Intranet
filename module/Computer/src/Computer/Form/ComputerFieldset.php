@@ -236,7 +236,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                         'label' => 'Destinatario',
                         'object_manager' => $objectManager,
                         'target_class' => 'User\Entity\User',
-                        'property' => 'username',
+                        'property' => 'displayName',
                         'is_method' => true,
                         'find_method' => array(
                             'name' => 'findBy',

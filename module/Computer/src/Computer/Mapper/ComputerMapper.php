@@ -28,26 +28,8 @@ class ComputerMapper extends BaseDoctrine
         return count($result);
     }
 
-    /**
-     * Returns a list of computers
-     *
-     * @param int $offset Offset
-     * @param int $itemCountPerPage Max results
-     *
-     * @return array
-     */
-    public function getItems($offset, $itemCountPerPage)
-    {
-        $query = $this->em->createQueryBuilder();
-        $query->select(array('c'))
-                ->from($this->options->getComputerEntityClass(), 'c')
-                ->setFirstResult($offset)
-                ->setMaxResults($itemCountPerPage);
-        $result = $query->getQuery()->getResult(Query::HYDRATE_OBJECT);
-        return $result;
-    }
 
-    public function getSearchQuery($searchString)
+    public function getSearchQuery($searchString, $orderBy, $order)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select(array('c'))
@@ -55,16 +37,18 @@ class ComputerMapper extends BaseDoctrine
                 ->innerJoin('c.status', 's')
                 ->innerJoin('c.brand', 'b')
                 ->innerJoin('c.processor', 'p')
+                ->innerJoin('c.recipient', 'u')
                 ->where(
                     $qb->expr()->orX(
                     $qb->expr()->like('c.serial', '?1'), 
                     $qb->expr()->like('c.model', '?1'),
                     $qb->expr()->like('s.name', '?1'),   
                     $qb->expr()->like('b.name', '?1'),
-                    $qb->expr()->like('p.name', '?1') 
+                    $qb->expr()->like('p.name', '?1'), 
+                    $qb->expr()->like('u.displayName', '?1') 
                 ))   
                 ->setParameter(1, '%' .$searchString . '%')
-                ->orderBy('c.id', 'DESC');
+                ->orderBy($orderBy, $order);
         return $qb->getQuery();
     }
 

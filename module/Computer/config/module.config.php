@@ -37,15 +37,29 @@ return array(
                 'may_terminate' => true,
                 'child_routes' => array(
                     'list' => array(
-                        'type' => 'Segment',
+                        'type' => 'segment',
                         'options' => array(
-                            'route' => '/list[/:page]',
+                            'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
                             'constraints' => array(
+                                'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
                                 'page' => '[0-9]+',
+                                'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'order' => 'ASC|DESC',
                             ),
                             'defaults' => array(
                                 'controller' => 'Computer\Controller\Index',
                                 'action' => 'list',
+                            ),
+                        ),
+                    ),
+                    'search' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/search',
+                            'defaults' => array(
+                                'controller' => 'Computer\Controller\Index',
+                                'action' => 'search',
                             ),
                         ),
                     ),
@@ -101,7 +115,7 @@ return array(
                                 'computerId' => 0,
                             ),
                         ),
-                    ),                    
+                    ),
                     'show' => array(
                         'type' => 'Segment',
                         'options' => array(
@@ -124,7 +138,7 @@ return array(
                                 'userId' => 0,
                             ),
                         ),
-                    ),                    
+                    ),
                     'category' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -297,6 +311,16 @@ return array(
                                     ),
                                 ),
                             ),
+                            'search' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/search',
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\History',
+                                        'action' => 'search',
+                                    ),
+                                ),
+                            ),
                         ),
                     ), // end processor                      
                 ),
@@ -326,7 +350,6 @@ return array(
         'scortaId' => 2,
         'scortaUserId' => 2,
     ],
-    
     //Navigation menu/breadcrumb
     'navigation' => array(
         'leftnav' => array(
@@ -365,7 +388,7 @@ return array(
                         'label' => 'Storico computer di un utente',
                         'route' => 'computer/userhistory',
                         'onlybread' => true,
-                    ),                    
+                    ),
                     //Category
                     'catlist' => array(
                         'label' => 'Categorie computer',

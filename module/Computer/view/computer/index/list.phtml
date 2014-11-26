@@ -1,21 +1,54 @@
 <?php echo $this->titleAndBread('Computers List'); ?>
 <?php $this->myFlashMessenger(); ?>    
-
+<?php
+$url_order = 'ASC';
+if ($order_by == 'id') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+} elseif ($order_by == 'serial') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+} elseif ($order_by == 'model') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+}
+?>
+<div class="row">
+    <div class="col-md-12">                
+        Trovati <?php echo $totalRecord; ?> computers
+    </div>
+</div>   
 <div class="panel panel-default">
-    <div class="panel-body">
+    <div class="panel-body">        
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6">                
                 <a href="<?php echo $this->url('computer/create') ?>" class="btn btn-primary">
                     <?php echo $this->translate('Aggiungi nuovo computer') ?>
                 </a>
             </div>
             <div class="col-md-6">
-                <form class="navbar-form navbar-right" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
+                <?php
+                $form = $this->form;
+                $form->setAttribute('action', $this->url('computer/search'));
+                $form->setAttribute('class', 'navbar-form navbar-right');
+                $form->prepare();
+
+                echo $this->form()->openTag($form);
+                foreach ($form as $element) :
+                    ?>
+                    <div class="form-group <?php if ($this->formElementErrors($element)) echo "error" ?>">
+
+                        <?php
+                        echo $this->formElement($element);
+                        if ($this->formElementErrors($element)):
+                            ?>
+                            <span class="help-inline"><?php echo $this->formElementErrors($element); ?></span>
+                            <?php
+                        endif;
+                        ?>
+
                     </div>
-                    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </form>            
+                    <?php
+                endforeach;
+                echo $this->form()->closeTag();
+                ?>               
             </div>
         </div>
     </div>
@@ -25,9 +58,27 @@
     <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Seriale</th>
-                <th>Modello</th>                
+                <th>
+                    <a href="<?php echo $this->url('computer/list', array_filter(array('order_by' => 'id', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Id
+                    </a> 
+                    <?php if ($order_by == 'id'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>
+                <th>
+                    <a href="<?php echo $this->url('computer/list', array_filter(array('order_by' => 'serial', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Seriale
+                    </a> 
+                    <?php if ($order_by == 'serial'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>
+                <th>
+                    <a href="<?php echo $this->url('computer/list', array_filter(array('order_by' => 'model', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Modello
+                    </a> 
+                    <?php if ($order_by == 'model'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>    
+                <th>
+                    Possessore
+                </th>
                 <th>Stato</th>
                 <th>&nbsp;</th>
             </tr>
@@ -43,7 +94,10 @@
                     </td>         
                     <td class="cell cell-model">
                         <?php echo $computer->getModel(); ?>
-                    </td>                    
+                    </td>     
+                    <td class="cell cell-model">
+                        <?php echo $computer->getRecipient()->getDisplayName(); ?>
+                    </td>                        
                     <td class="cell cell-model">
                         <?php if (null !== $computer->getStatus()): ?>
                             <?php echo $computer->getStatus()->getName(); ?>
@@ -72,34 +126,10 @@
 <?php
 echo $this->paginationControl(
         $this->computers, 'Sliding', 'paginator-slide', array(
-    'order_by' => 'id',
-    'order' => 'ASC',
-    'search_by' => NULL,
+    'order_by' => $order_by,
+    'order' => $order,
+    'search_by' => $search_by,
     'pageAction' => $pageAction,
         )
 );
 ?>
-
-
-<?php
-/* DataTables */
-$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/datatables/dataTables.bootstrap.css');
-
-$this->headScript()
-        ->appendFile($this->basePath() . '/js/plugins/datatables/jquery.dataTables.js')
-        ->appendFile($this->basePath() . '/js/plugins/datatables/dataTables.bootstrap.js');
-
-$this->inlineScript()->captureStart();
-echo <<<JS
-                $("#example1----------------").dataTable();
-                $('#example2---------------').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": false,
-                    "bFilter": false,
-                    "bSort": true,
-                    "bInfo": true,
-                    "bAutoWidth": false
-                });
-JS;
-$this->inlineScript()->captureEnd();
-?>  

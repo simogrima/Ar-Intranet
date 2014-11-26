@@ -61,11 +61,8 @@ class ProcessorController extends EntityUsingController
 
     public function createAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         // Create the form and inject the ObjectManager
-        $form = new ProcessorForm($objectManager);
+        $form = new ProcessorForm($this->getEntityManager());
 
         // Create a new, empty entity and bind it to the form
         $class = $this->options->getProcessorEntityClass();
@@ -88,7 +85,7 @@ class ProcessorController extends EntityUsingController
     public function editAction()
     {
         // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         $processorId = $this->getEvent()->getRouteMatch()->getParam('processorId');
         $processor = $objectManager->getRepository($this->options->getProcessorEntityClass())->find($processorId);
@@ -114,11 +111,8 @@ class ProcessorController extends EntityUsingController
     
     public function removeAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         $processorId = $this->getEvent()->getRouteMatch()->getParam('processorId');
-        $processor = $objectManager->getRepository($this->options->getProcessorEntityClass())->find($processorId);
+        $processor = $this->getEntityManager()->getRepository($this->options->getProcessorEntityClass())->find($processorId);
 
         if ($processor) {
             $this->processorMapper->remove($processor);

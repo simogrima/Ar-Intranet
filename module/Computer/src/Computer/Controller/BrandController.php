@@ -61,11 +61,8 @@ class BrandController extends EntityUsingController
 
     public function createAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         // Create the form and inject the ObjectManager
-        $form = new BrandForm($objectManager);
+        $form = new BrandForm($this->getEntityManager());
 
         // Create a new, empty entity and bind it to the form
         $class = $this->options->getBrandEntityClass();
@@ -88,7 +85,7 @@ class BrandController extends EntityUsingController
     public function editAction()
     {
         // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         $brandId = $this->getEvent()->getRouteMatch()->getParam('brandId');
         $brand = $objectManager->getRepository($this->options->getBrandEntityClass())->find($brandId);
@@ -114,11 +111,8 @@ class BrandController extends EntityUsingController
     
     public function removeAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         $brandId = $this->getEvent()->getRouteMatch()->getParam('brandId');
-        $brand = $objectManager->getRepository($this->options->getBrandEntityClass())->find($brandId);
+        $brand = $this->getEntityManager()->getRepository($this->options->getBrandEntityClass())->find($brandId);
 
         if ($brand) {
             $this->brandMapper->remove($brand);

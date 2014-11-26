@@ -62,7 +62,7 @@ class HistoryController extends EntityUsingController
     public function editAction()
     {
         // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         $historyId = $this->getEvent()->getRouteMatch()->getParam('historyId');
         $history = $objectManager->getRepository($this->options->getHistoryEntityClass())->find($historyId);
@@ -107,11 +107,8 @@ class HistoryController extends EntityUsingController
     
     public function removeAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         $historyId = $this->getEvent()->getRouteMatch()->getParam('historyId');
-        $history = $objectManager->getRepository($this->options->getHistoryEntityClass())->find($historyId);
+        $history = $this->getEntityManager()->getRepository($this->options->getHistoryEntityClass())->find($historyId);
 
         if ($history) {
             $this->historyMapper->remove($history);

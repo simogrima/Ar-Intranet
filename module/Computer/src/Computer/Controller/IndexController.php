@@ -62,24 +62,37 @@ class IndexController extends EntityUsingController
     public function listAction()
     {
         $searchform = new SearchForm();
-        $searchform->get('submit')->setValue('Search');        
-        $searchString = $this->getEvent()->getRouteMatch()->getParam('search');
-        var_dump($searchString);
- 
-        $computers = $this->computerMapper->getItems(0, 10);
-        if (is_array($computers)) {
-            $paginator = new Paginator\Paginator(
-                    new DoctrinePaginator(new ORMPaginator($this->computerMapper->getSearchQuery('scorta')))
-            );
-        } else {
-            $paginator = $computers;
-        }
+        $searchform->get('submit')->setValue('Search');
+        $search_by = $this->params()->fromRoute('search_by') ? $this->params()->fromRoute('search_by') : '';
+        $searchString = '';
+        $formdata = [];
+        if (!empty($search_by)) {
+            $formdata = (array) json_decode($search_by);
+            if (isset($formdata['search'])) {
+                $searchString = trim($formdata['search']);
+            }
+        }    
 
-        $paginator->setItemCountPerPage(2);
+        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
+        $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
+        $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;  
+
+        $paginator = new Paginator\Paginator(
+            new DoctrinePaginator(new ORMPaginator($this->computerMapper->getSearchQuery($searchString, 'c.' . $order_by, $order)))
+        );
+
+        $paginator->setItemCountPerPage(10);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
+        
+        $searchform->setData($formdata);
         return array(
+            'search_by' => $search_by,
+            'order_by' => $order_by,
+            'order' => $order,
+            'page' => $page,
+            'totalRecord' => $paginator->getTotalItemCount(),                        
             'computers' => $paginator,
-            //'computerlistElements' => $this->options->getRoleListElements(),
+            'form' => $searchform,
             'pageAction' => 'computer/list',
         );
     }
@@ -319,5 +332,32 @@ class IndexController extends EntityUsingController
         $response = $this->getResponse();
         return $response;
     }
+    
+    /**
+     * Usata per formattare una ricerca. Poteva essere + semplice ma in partenza 
+     * precedeva + campi. Ho lasciato il codice originale.
+     */
+    public function searchAction()
+    {
+        $request = $this->getRequest();
+        $url = 'list';
+
+        if ($request->isPost()) {
+            $formdata = (array) $request->getPost();
+            $search_data = array();
+            foreach ($formdata as $key => $value) {
+                if ($key != 'submit') {
+                    if (!empty($value)) {
+                        $search_data[$key] = trim($value);
+                    }
+                }
+            }
+            if (!empty($search_data)) {
+                $search_by = json_encode($search_data);
+                $url .= '/search_by/' . $search_by;
+            }
+        }
+        $this->redirect()->toUrl($url);
+    }    
 
 }

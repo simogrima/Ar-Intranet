@@ -9,8 +9,8 @@ class SearchForm extends Form
     public function __construct($name = null)
     {
         //setto il nome chimando il parent’s constructor
-        parent::__construct('search-fomr');
-        $this->setAttribute('class', 'form-horizontal');
+        parent::__construct('search-form');
+        $this->setAttribute('class', 'navbar-form navbar-right');
         $this->setAttribute('method', 'post');
 
         $search = new Element\Text('search');

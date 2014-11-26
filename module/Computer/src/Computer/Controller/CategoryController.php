@@ -61,11 +61,8 @@ class CategoryController extends EntityUsingController
 
     public function createAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         // Create the form and inject the ObjectManager
-        $form = new CategoryForm($objectManager);
+        $form = new CategoryForm($this->getEntityManager());
 
         // Create a new, empty entity and bind it to the form
         $class = $this->options->getCategoryEntityClass();
@@ -88,7 +85,7 @@ class CategoryController extends EntityUsingController
     public function editAction()
     {
         // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         $categoryId = $this->getEvent()->getRouteMatch()->getParam('categoryId');
         $category = $objectManager->getRepository($this->options->getCategoryEntityClass())->find($categoryId);
@@ -114,11 +111,8 @@ class CategoryController extends EntityUsingController
     
     public function removeAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-
         $categoryId = $this->getEvent()->getRouteMatch()->getParam('categoryId');
-        $category = $objectManager->getRepository($this->options->getCategoryEntityClass())->find($categoryId);
+        $category = $this->getEntityManager()->getRepository($this->options->getCategoryEntityClass())->find($categoryId);
 
         if ($category) {
             $this->categoryMapper->remove($category);
