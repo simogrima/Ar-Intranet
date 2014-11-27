@@ -13,7 +13,7 @@ class SearchForm extends Form
         $this->setAttribute('class', 'navbar-form navbar-right');
         $this->setAttribute('method', 'post');
 
-        $search = new Element\Text('search');
+        $search = new Element('search');
         $search->setLabel('Search')
                 ->setAttribute('class', 'form-control')
                 ->setAttribute('placeholder', 'Search');

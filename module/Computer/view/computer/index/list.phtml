@@ -31,22 +31,9 @@ if ($order_by == 'id') {
                 $form->prepare();
 
                 echo $this->form()->openTag($form);
-                foreach ($form as $element) :
-                    ?>
-                    <div class="form-group <?php if ($this->formElementErrors($element)) echo "error" ?>">
+                echo $this->formSearch($form->get('search'));
+                echo $this->formButton()->render($form->get('submit'), 'Search');
 
-                        <?php
-                        echo $this->formElement($element);
-                        if ($this->formElementErrors($element)):
-                            ?>
-                            <span class="help-inline"><?php echo $this->formElementErrors($element); ?></span>
-                            <?php
-                        endif;
-                        ?>
-
-                    </div>
-                    <?php
-                endforeach;
                 echo $this->form()->closeTag();
                 ?>               
             </div>
@@ -86,6 +73,21 @@ if ($order_by == 'id') {
         </thead>
         <tbody>
             <?php foreach ($this->computers as $computer): ?>
+<?php
+                                switch ($computer->getStatus()->getId()) {
+                                    case 1:
+                                        $statusClass = 'success';
+                                        break;
+                                    case 2:
+                                        $statusClass = 'warning';
+                                        break;
+                                    case 3:
+                                        $statusClass = 'danger';
+                                        break;                                    
+                                    default:
+                                        break;
+                                }
+?>
                 <tr>
                     <td class="cell cell-id">
                         <?php echo $computer->getId(); ?>
@@ -97,7 +99,9 @@ if ($order_by == 'id') {
                         <?php echo $computer->getModel(); ?>
                     </td>     
                     <td class="cell cell-model">
-                        <?php echo $computer->getRecipient()->getDisplayName(); ?>
+                        <a href="<?php echo $this->url('computer/userhistory', array('userId' => $computer->getRecipient()->getId())); ?>">
+                            <?php echo $computer->getRecipient()->getDisplayName(); ?>
+                        </a>                          
                     </td>  
                     <td class="cell cell-model">
                         <?php echo $computer->getCategory()->getName(); ?>
@@ -108,10 +112,10 @@ if ($order_by == 'id') {
                     <td class="cell cell-model">
                         <?php echo $computer->getProcessor()->getName(); ?>
                     </td>                       
-                    <td class="cell cell-model">
-                        <?php if (null !== $computer->getStatus()): ?>
+                    <td class="cell cell-model text-center">
+                        <span class="label label-<?php echo $statusClass; ?>">
                             <?php echo $computer->getStatus()->getName(); ?>
-                        <?php endif; ?>
+                        </span>
                     </td>                   
                     <td class="cell cell-ctrls">
                         <a href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">

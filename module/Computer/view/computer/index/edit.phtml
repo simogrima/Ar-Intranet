@@ -11,10 +11,10 @@
  */
 ?>
 <?php
-echo $this->headLink()
-        ->appendStylesheet('http://silviomoreto.github.io/bootstrap-select/bootstrap-select.min.css');
-echo $this->headScript()
-        ->prependFile('http://silviomoreto.github.io/bootstrap-select/bootstrap-select.min.js');
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css');
+$this->headScript()
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js');
 ?>
 
 <?php

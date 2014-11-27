@@ -37,6 +37,7 @@ class ComputerMapper extends BaseDoctrine
                 ->innerJoin('c.status', 's')
                 ->innerJoin('c.brand', 'b')
                 ->innerJoin('c.processor', 'p')
+                ->innerJoin('c.category', 't')
                 ->innerJoin('c.recipient', 'u')
                 ->where(
                     $qb->expr()->orX(
@@ -45,6 +46,7 @@ class ComputerMapper extends BaseDoctrine
                     $qb->expr()->like('s.name', '?1'),   
                     $qb->expr()->like('b.name', '?1'),
                     $qb->expr()->like('p.name', '?1'), 
+                    $qb->expr()->like('t.name', '?1'),
                     $qb->expr()->like('u.displayName', '?1') 
                 ))   
                 ->setParameter(1, '%' .$searchString . '%')

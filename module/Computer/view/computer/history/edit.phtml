@@ -1,6 +1,11 @@
 <?php echo $this->titleAndBread('Edit History'); ?>
 <?php $this->myFlashMessenger(); ?>    
-
+<?php
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css');
+$this->headScript()
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js');
+?>
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
@@ -11,33 +16,39 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
-    <div class = "row">
-        <div class = "col-md-6">
-            <h3>Computer</h3>
-        </div>    
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($form->get('recipient')); ?>
-        </div>            
+<div class="row">
+    <div class = "col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Modifica storico (solo in casi particolari)
+            </div>
+            <div class="panel-body">
+                <h4>
+                    Computer: 
+                    <a href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">
+                        <?php echo $computer->getSerial(); ?>
+                    </a>                    
+                </h4>                
+                <?= $this->ztbFormElement($form->get('recipient')); ?>
+                <?= $this->ztbFormElement($form->get('type')); ?>
+                <?= $this->ztbFormElement($form->get('status')); ?>
+                <p class="help-block">Ha significato solo per tipo "Assegnazione"</p>
+                <?= $this->ztbFormElement($form->get('computer_id')); ?>
+            </div>    
+        </div>
+    </div>    
+</div>     
+<div class="row">
+    <div class = "col-md-6">
+        <?= $this->ztbFormElement($form->get('id')); ?>
+        <?= $this->ztbFormElement($form->get('edit_by')); ?>
+
+        <?= $this->ztbFormElement($form->get('redirect')); ?>
+        <?= $this->ztbFormElement($form->get('csrf')); ?>
+        <?= $this->ztbFormElement($form->get('submit')); ?>
     </div>
-    <div class = "row">
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($form->get('type')); ?>
-        </div>    
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($form->get('status')); ?>
-            <p class="help-block">Ha significato solo per tipo "Assegnazione"</p>
-        </div>            
-    </div>
-    
-<div>
-    <?= $this->ztbFormElement($form->get('id')); ?>
-    <?= $this->ztbFormElement($form->get('edit_by')); ?>
-    <?= $this->ztbFormElement($form->get('computer')); ?>
-    <?= $this->ztbFormElement($form->get('redirect')); ?>
-    <?= $this->ztbFormElement($form->get('csrf')); ?>
-    <?= $this->ztbFormElement($form->get('submit')); ?>
 </div>    
-<?php 
+<?php
 echo $this->form()->closeTag();
 ?>
 <?php

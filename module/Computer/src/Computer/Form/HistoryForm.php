@@ -29,8 +29,14 @@ class HistoryForm extends Form
             'type' => 'Zend\Form\Element\Hidden',
             'name' => 'edit_by'
         ));
+        
+        //Computer
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'computer_id'
+        ));        
 
-        //Recipient
+        /**Computer
         $this->add(
                 array(
                     'type' => 'DoctrineModule\Form\Element\ObjectSelect',
@@ -58,6 +64,8 @@ class HistoryForm extends Form
                     )
                 )
         );
+         * 
+         */
 
         //Recipient
         $this->add(
@@ -82,7 +90,9 @@ class HistoryForm extends Form
                     ),
                     'attributes' => array(
                         'required' => true,
-                        'class' => 'form-control',
+                        'class' => 'form-control selectpicker',
+                        'data-live-search' => 'true',
+                        'data-style' =>'btn-info',
                     )
                 )
         );
@@ -176,7 +186,7 @@ class HistoryForm extends Form
 
         $inputFilter->add(
                 array(
-                    'name' => 'computer',
+                    'name' => 'computer_id',
                     'required' => true,
                 )
         );

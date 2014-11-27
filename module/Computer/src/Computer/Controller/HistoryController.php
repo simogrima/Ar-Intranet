@@ -16,9 +16,10 @@ use Application\Controller\EntityUsingController;
 use Zend\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 
-
 //Doctrine
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 //Form
 use Computer\Form\HistoryForm;
 
@@ -44,21 +45,18 @@ class HistoryController extends EntityUsingController
     
     public function indexAction()
     {
-        $history = $this->historyMapper->findAll();
-        if (is_array($history)) {
-            $paginator = new Paginator\Paginator(new Paginator\Adapter\ArrayAdapter($history));
-        } else {
-            $paginator = $history;
-        }
+        $paginator = new Paginator\Paginator(
+            new DoctrinePaginator(new ORMPaginator($this->historyMapper->getSearchQuery()))
+        );
 
         $paginator->setItemCountPerPage(30);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
         return array(
             'history' => $paginator,
-            'pageAction' => 'computer/history',
+            'pageAction' => 'computer/history/list',
         );
     }    
-
+     
     public function editAction()
     {
         // Get your ObjectManager from the ServiceManager
@@ -71,6 +69,7 @@ class HistoryController extends EntityUsingController
         $form = new HistoryForm($objectManager);
         $form->bind($history);
         $form->get('edit_by')->setValue($this->zfcUserAuthentication()->getIdentity()->getId());
+        $form->get('computer_id')->setValue($history->getComputer()->getId());
         
       
 
@@ -102,7 +101,7 @@ class HistoryController extends EntityUsingController
             $form->get('redirect')->setValue($redirectUrl);
         }          
 
-        return array('form' => $form);
+        return array('form' => $form, 'computer' => $history->getComputer());
     }
     
     public function removeAction()

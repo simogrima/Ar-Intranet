@@ -54,10 +54,14 @@ class IndexController extends EntityUsingController
 
     public function indexAction()
     {
+        $queryPieBrand = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, b.name FROM Computer\Entity\Computer c JOIN c.brand b GROUP BY c.brand');
+        $queryPieCategory = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, t.name FROM Computer\Entity\Computer c JOIN c.category t GROUP BY c.category');
         return array(
             'computerCount' => $this->computerMapper->count(),
+            'chartPieBrand' => $queryPieBrand->getResult(),
+            'chartPieCategory' => $queryPieCategory->getResult(),
         );
-    }
+    }      
 
     public function listAction()
     {
@@ -81,7 +85,7 @@ class IndexController extends EntityUsingController
             new DoctrinePaginator(new ORMPaginator($this->computerMapper->getSearchQuery($searchString, 'c.' . $order_by, $order)))
         );
 
-        $paginator->setItemCountPerPage(10);
+        $paginator->setItemCountPerPage(30);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
         
         $searchform->setData($formdata);

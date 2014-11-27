@@ -70,3 +70,146 @@
                 </div>
 
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Line Chart Example
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-line-chart"></div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Per Brand
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-pie-brand"></div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Per categoria
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-pie-category"></div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+
+
+            </div>
+
+<!-- Flot Charts JavaScript --> 
+<?php
+$this->headScript()
+        //->prependFile($this->basePath() . '/js/plugins/flot/flot-data.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.tooltip.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.resize.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.pie.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/excanvas.min.js');
+
+
+$pieBrandData = '';
+foreach ($chartPieBrand as $item) {
+    $pieBrandData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+}
+
+$pieCategoryData = '';
+foreach ($chartPieCategory as $item) {
+    $pieCategoryData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+}
+
+$this->headScript()->appendScript("
+$(function() {
+//Flot Pie Chart
+$(function() {
+
+    //Brand
+    var dataBrand = [" . $pieBrandData . "];
+    var plotObj = $.plot($(\"#flot-pie-brand\"), dataBrand, {
+        series: {
+            pie: {
+                show: true
+            }
+        },
+        grid: {
+            hoverable: true
+        },
+        tooltip: true,
+        tooltipOpts: {
+            content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            shifts: {
+                x: 20,
+                y: 0
+            },
+            defaultTheme: false
+        }
+    });
+    
+    //Category
+    var dataBrand = [" . $pieCategoryData . "];
+    var plotObj = $.plot($(\"#flot-pie-category\"), dataBrand, {
+        series: {
+            pie: {
+                show: true
+            }
+        },
+        grid: {
+            hoverable: true
+        },
+        tooltip: true,
+        tooltipOpts: {
+            content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            shifts: {
+                x: 20,
+                y: 0
+            },
+            defaultTheme: false
+        }
+    });
+
+});
+
+
+}); 
+
+");

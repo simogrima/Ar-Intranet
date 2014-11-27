@@ -3,14 +3,13 @@
 
 
 <div class="table">
-    <table class="table table-bordered table-hover" id="example1">
+    <table class="table table-bordered table-hover table-responsive" id="example1">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Computer</th>
                 <th>Azione</th>
                 <th>Destinatario</th>
-                <th>Stato</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -21,17 +20,18 @@
                         <?php echo $row->getId(); ?>
                     </td>
                     <td class="cell cell-model">
-                        <?php echo $row->getComputer()->getSerial(); ?>
+                        <a href="<?php echo $this->url('computer/show', array('computerId' => $row->getComputer()->getId())); ?>">
+                            <?php echo $row->getComputer()->getSerial(); ?>
+                        </a>                                               
                     </td>  
                     <td class="cell cell-model">
                         <?php echo $row->getAttributes()['action']; ?>
                     </td>                    
                     <td class="cell cell-model">
-                        <?php echo $row->getRecipient()->getDisplayName(); ?>
-                    </td>                      
-                    <td class="cell cell-model">
-                        <?php echo $row->getStatus(); ?>
-                    </td>                                      
+                        <a href="<?php echo $this->url('computer/userhistory', array('userId' => $row->getRecipient()->getId())); ?>">
+                            <?php echo $row->getRecipient()->getDisplayName(); ?>
+                        </a>                                               
+                    </td>                                                          
                     <td class="cell cell-ctrls">
                         <a href="<?php echo $this->url('computer/history/edit', array('historyId' => $row->getId())); ?>">
                             <?php echo $this->translate('Edit') ?>
@@ -58,19 +58,3 @@ echo $this->paginationControl(
         )
 );
 ?>
-
-
-<?php
-/* DataTables */
-$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/datatables/dataTables.bootstrap.css');
-
-$this->headScript()
-        ->appendFile($this->basePath() . '/js/plugins/datatables/jquery.dataTables.js')
-        ->appendFile($this->basePath() . '/js/plugins/datatables/dataTables.bootstrap.js');
-
-$this->inlineScript()->captureStart();
-echo <<<JS
-    $("#example1").dataTable();
-JS;
-$this->inlineScript()->captureEnd();
-?>  
