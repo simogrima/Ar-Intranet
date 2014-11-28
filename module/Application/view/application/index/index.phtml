@@ -1,66 +1,36 @@
-<?php
- $title = 'Dashboard';
- $this->headTitle($title);
- 
- //http://startbootstrap.com/templates/sb-admin-v2/
- //http://almsaeedstudio.com/AdminLTE/pages/UI/buttons.html
- ?>
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header"><?= $this->escapeHtml($title); ?></h1>
-    </div>
-    <!-- /.col-lg-12 -->
-</div>
-<!-- /.row -->
-
-<section class="content-header">
-                    <h1>
-                        Dashboard
-                        <small>Control panel</small>
-                    </h1>
-                    <ol class="breadcrumb">
-                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                        <li class="active">Dashboard</li>
-                    </ol>
-                </section>
-
+<?php echo $this->titleAndBread('Dashboard', false); ?>
+<?php $this->myFlashMessenger(); ?>   
 
 <div class="row">
-
-    <div class="col-md-4">
-        <div class="panel panel-default">
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Follow Development') ?></h3>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-laptop fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge"><?php echo $computerCount;  ?></div>
+                        <div>Computers presenti!</div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <p><?php echo sprintf($this->translate('Zend Framework 2 is under active development. If you are interested in following the development of ZF2, there is a special ZF2 portal on the official Zend Framework website which provides links to the ZF2 %swiki%s, %sdev blog%s, %sissue tracker%s, and much more. This is a great resource for staying up to date with the latest developments!'), '<a href="http://framework.zend.com/wiki/display/ZFDEV2/Home">', '</a>', '<a href="http://framework.zend.com/zf2/blog">', '</a>', '<a href="https://github.com/zendframework/zf2/issues">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://framework.zend.com/zf2" target="_blank"><?php echo $this->translate('ZF2 Development Portal') ?> &raquo;</a></p>
-            </div>
+            <a href="<?php echo $this->url('computer/list'); ?>">
+                <div class="panel-footer">
+                    <span class="pull-left">Mostra</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
         </div>
     </div>
+    <div class="col-lg-3 col-md-6">
 
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Discover Modules') ?></h3>
-            </div>
-            <div class="panel-body">
-                <p><?php echo sprintf($this->translate('The community is working on developing a community site to serve as a repository and gallery for ZF2 modules. The project is available %son GitHub%s. The site is currently live and currently contains a list of some of the modules already available for ZF2.'), '<a href="https://github.com/zendframework/modules.zendframework.com">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://modules.zendframework.com/" target="_blank"><?php echo $this->translate('Explore ZF2 Modules') ?> &raquo;</a></p>
-            </div>
-        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+
     </div>
 
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Help &amp; Support') ?></h3>
-            </div>
-            <div class="panel-body">
-                <p><?php echo sprintf($this->translate('If you need any help or support while developing with ZF2, you may reach us via IRC: %s#zftalk on Freenode%s. We\'d love to hear any questions or feedback you may have regarding the beta releases. Alternatively, you may subscribe and post questions to the %smailing lists%s.'), '<a href="irc://irc.freenode.net/zftalk">', '</a>', '<a href="http://framework.zend.com/wiki/display/ZFDEV/Mailing+Lists">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://webchat.freenode.net?channels=zftalk" target="_blank"><?php echo $this->translate('Ping us on IRC') ?> &raquo;</a></p>
-            </div>
-        </div>
-    </div>
 </div>
+
 

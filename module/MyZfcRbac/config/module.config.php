@@ -215,6 +215,7 @@ return array(
         'guards' => [
             'ZfcRbac\Guard\RouteGuard' => [
                 'zfcuser/login'    => ['guest'],
+                'zfcuser/logout'   => ['guest'],
                 'zfcuser/register' => ['guest'],
                 '*admin*'          => ['admin'],
                 '*'                => ['user'],

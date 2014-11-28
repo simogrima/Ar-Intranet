@@ -382,10 +382,6 @@ return array(
                         'label' => 'Dashboard',
                         'route' => 'computer',
                     ),
-                    'settings' => array(
-                        'label' => 'Impostazioni',
-                        'route' => 'computer/settings',
-                    ),
                     'list' => array(
                         'label' => 'Elenco',
                         'route' => 'computer/list',
@@ -408,7 +404,7 @@ return array(
                         'label' => 'Storico computer di un utente',
                         'route' => 'computer/userhistory',
                         'onlybread' => true,
-                    ),
+                    ),                  
                     //Category
                     'catlist' => array(
                         'label' => 'Categorie computer',
@@ -475,6 +471,10 @@ return array(
                             ),
                         ),
                     ),
+                    'settings' => array(
+                        'label' => 'Impostazioni',
+                        'route' => 'computer/settings',
+                    ),                      
                 ),
             ),
         ),

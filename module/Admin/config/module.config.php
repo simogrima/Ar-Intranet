@@ -48,9 +48,9 @@ return array(
     'navigation' => array(
         'myadmin' => array(
             'foo' => array(
-                'label' => 'Foo',
-                'route' => 'zfcadmin/foo',
-                'icon' => 'glyphicon glyphicon-tower'
+                'label' => 'Front-End',
+                'route' => 'home',
+                'icon' => 'glyphicon glyphicon-home'
             ),
             'zfcuseradmin' => array(
                 'label' => 'Users',

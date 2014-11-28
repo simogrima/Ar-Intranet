@@ -12,8 +12,6 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
-
 use Zend\Mail\Message;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
 use Zend\Mail\Transport\SmtpOptions;
@@ -23,15 +21,42 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
+        $users = fopen('./public/users.csv', "r");
+        if (($handle = $users) !== FALSE) {
+            while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+                $email = strtolower(trim($data[0]));
+                $a = explode('@', $email);
+                $b = explode('.', $a[0]);
+                $name = ucfirst($b[0]);
+                $lastname = ucfirst($b[1]);
+            }
+        }
+
+
+                $email = 'Enrico.Levantino@ariete.net';
+                $a = explode('@', $email);
+                $b = explode('.', $a[0]);
+                $name = $b[0];
+                $lastname = $b[1];
+                
+                $user = new \User\Entity\User();
+                $user->setDisplayName($name . ' ' . $lastname);
+                $user->setUsername($name . $lastname);
+                $user->setEmail($email);
+
+
+
         //test log
-        $this->getServiceLocator()->get('Zend\Log')->info('Informational message'); 
-        
-        return new ViewModel();
+        //$this->getServiceLocator()->get('Zend\Log')->info('Informational message'); 
+
+        return array(
+            'computerCount' => $this->getServiceLocator()->get('Computer\Mapper\ComputerMapper')->count(),
+        );
     }
-    
+
     public function functionName($param)
     {
-        
+
         /* Mail test */
         $message = new Message();
         $message->setEncoding("UTF-8");
@@ -42,8 +67,6 @@ class IndexController extends AbstractActionController
 
         //$transport = new SendmailTransport();
         //($transport->send($message);
-        
-        
         //Ariete
         $options = new SmtpOptions(array(
             'name' => 'ariete.net',
@@ -71,7 +94,7 @@ class IndexController extends AbstractActionController
 
         $transport = new SmtpTransport();
         $transport->setOptions($options);
-        $transport->send($message);        
+        $transport->send($message);
     }
 
 }
