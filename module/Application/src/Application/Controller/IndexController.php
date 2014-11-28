@@ -21,31 +21,6 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        $users = fopen('./public/users.csv', "r");
-        if (($handle = $users) !== FALSE) {
-            while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
-                $email = strtolower(trim($data[0]));
-                $a = explode('@', $email);
-                $b = explode('.', $a[0]);
-                $name = ucfirst($b[0]);
-                $lastname = ucfirst($b[1]);
-            }
-        }
-
-
-                $email = 'Enrico.Levantino@ariete.net';
-                $a = explode('@', $email);
-                $b = explode('.', $a[0]);
-                $name = $b[0];
-                $lastname = $b[1];
-                
-                $user = new \User\Entity\User();
-                $user->setDisplayName($name . ' ' . $lastname);
-                $user->setUsername($name . $lastname);
-                $user->setEmail($email);
-
-
-
         //test log
         //$this->getServiceLocator()->get('Zend\Log')->info('Informational message'); 
 
@@ -96,5 +71,51 @@ class IndexController extends AbstractActionController
         $transport->setOptions($options);
         $transport->send($message);
     }
+    
+    /**
+     * Tengo questo codice che ho usato per fare inserimento massibo utenti
+     */
+    public function AddUsers()
+    {
+        //Insertimento massivi utenti da file csv su /public
+        set_time_limit(1800);
+        ini_set('memory_limit', '-1');
+        
+        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $userService = $this->getServiceLocator()->get('zfcuser_user_service');
+        
+        //Ottengo il ruolo (guest) da assegnare di default
+        $role = $objectManager->getRepository('MyZfcRbac\Entity\FlatRole')->find(1);        
+        
+        $users = fopen('./public/users.csv', "r");
+        if (($handle = $users) !== FALSE) {
+            while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+                $email = strtolower(trim($data[0]));                
+                $a = explode('@', $email);
+                $b = explode('.', $a[0]);
+                $name = ucfirst($b[0]);
+                $lastname = ucfirst($b[1]);
+                $psw = '123456';
+                
+                $data = [
+                    'display_name' => $name . ' ' . $lastname,
+                    'username' => $name . $lastname,
+                    'password' => $psw,
+                    'passwordVerify' => $psw,
+                    'email' => strtolower($email),
+                ];
+                
+                //Aggiungo utente
+                $user = $userService->register($data);     
+                
+                //Assegno ruolo di default
+                $user->addRole($role);
+                $objectManager->persist($role);
+            }
+            
+            //Flush assegnazione ruoli
+            $objectManager->flush(); 
+        }        
+    }        
 
 }
