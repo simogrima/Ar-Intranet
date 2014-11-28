@@ -86,8 +86,8 @@ class IndexController extends AbstractActionController
             'port' => '465',
             'connection_config' => array(
                 'ssl' => 'ssl', /* Page would hang without this line being added */
-                'username' => 'simogrima@gmail.com',
-                'password' => 'alfolino72',
+                'username' => 'mygoogle@email',
+                'password' => 'mygooglepsw',
             ),
         ));
 
