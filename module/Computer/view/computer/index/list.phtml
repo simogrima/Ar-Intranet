@@ -32,7 +32,7 @@ if ($order_by == 'id') {
 
                 echo $this->form()->openTag($form);
                 echo $this->formSearch($form->get('search'));
-                echo $this->formButton()->render($form->get('submit'), 'Search');
+                echo $this->formButton()->render($form->get('submit'), 'Go!');
 
                 echo $this->form()->closeTag();
                 ?>               
@@ -41,8 +41,8 @@ if ($order_by == 'id') {
     </div>
 </div>
 
-<div class="table">
-    <table class="table table-bordered table-hover table-responsive" id="example1">
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
                 <th>
@@ -63,12 +63,12 @@ if ($order_by == 'id') {
                     </a> 
                     <?php if ($order_by == 'model'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
                 </th>    
+                <th>Stato</th>
                 <th>Possessore</th>
                 <th>Categoria</th>
                 <th>Brand</th>
                 <th>Possessore</th>
-                <th>Stato</th>
-                <th>&nbsp;</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -92,45 +92,44 @@ if ($order_by == 'id') {
                     <td class="cell cell-id">
                         <?php echo $computer->getId(); ?>
                     </td>
-                    <td class="cell cell-model">
+                    <td class="cell cell-serial">
                         <?php echo $computer->getSerial(); ?>
                     </td>         
-                    <td class="cell cell-model">
+                    <td class="cell">
                         <?php echo $computer->getModel(); ?>
                     </td>     
-                    <td class="cell cell-model">
+                    <td class="cell">
                         <a href="<?php echo $this->url('computer/userhistory', array('userId' => $computer->getRecipient()->getId())); ?>">
                             <?php echo $computer->getRecipient()->getDisplayName(); ?>
                         </a>                          
                     </td>  
-                    <td class="cell cell-model">
-                        <?php echo $computer->getCategory()->getName(); ?>
-                    </td>   
-                    <td class="cell cell-model">
-                        <?php echo $computer->getBrand()->getName(); ?>
-                    </td>   
-                    <td class="cell cell-model">
-                        <?php echo $computer->getProcessor()->getName(); ?>
-                    </td>                       
-                    <td class="cell cell-model text-center">
+                    <td class="cell text-center">
                         <span class="label label-<?php echo $statusClass; ?>">
                             <?php echo $computer->getStatus()->getName(); ?>
                         </span>
-                    </td>                   
-                    <td class="cell cell-ctrls">
-                        <a href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">
-                            <?php echo $this->translate('Show') ?>
-                        </a>
-                        |                        
-                        <a href="<?php echo $this->url('computer/edit', array('computerId' => $computer->getId())); ?>">
-                            <?php echo $this->translate('Edit') ?>
-                        </a>
-                        |
+                    </td>                       
+                    <td class="cell">
+                        <?php echo $computer->getCategory()->getName(); ?>
+                    </td>   
+                    <td class="cell">
+                        <?php echo $computer->getBrand()->getName(); ?>
+                    </td>   
+                    <td class="cell">
+                        <?php echo $computer->getProcessor()->getName(); ?>
+                    </td>                                       
+                    <td class="cell cell-ctrls text-center">
+                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">
+                            <span class="glyphicon glyphicon-eye-open"></span> Show
+                        </a>                         
+                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('computer/edit', array('computerId' => $computer->getId())); ?>">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a> 
                         <a href="<?php echo $this->url('computer/remove', array('computerId' => $computer->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Really delete computer?') ?>')">
-                               <?php echo $this->translate('Delete') ?>
+                           onclick="return confirm('<?php echo $this->translate('Really delete computer?') ?>')" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove"></span> Del
                         </a>
                     </td>
+
                 </tr>
             <?php endforeach; ?>
         </tbody>

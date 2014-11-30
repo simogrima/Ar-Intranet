@@ -34,7 +34,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Seriale',
             ),
             'attributes' => array(
-               // 'required' => true,
+                'required' => true,
                 'class' => 'form-control',
             )
         ));

@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <?php echo $this->headTitle('ZF2 ' . $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle('Ariete Intranet')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php
         echo $this->headMeta()
@@ -15,12 +15,12 @@
 
         <!-- Le styles -->
         <?php
-        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/favicon.ico'))
                 ->prependStylesheet($this->basePath() . '/css/custom.css', 'all')
-                ->prependStylesheet($this->basePath() . '/css/sb-admin-2.css')
-                ->prependStylesheet($this->basePath() . '/font-awesome-4.2.0/css/font-awesome.css')
-                ->prependStylesheet($this->basePath() . '/css/plugins/metisMenu/metisMenu.min.css')
-                ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css')
+                ->prependStylesheet($this->basePath() . '/css/sb-admin-2.css', 'all')
+                ->prependStylesheet($this->basePath() . '/font-awesome-4.2.0/css/font-awesome.css', 'all')
+                ->prependStylesheet($this->basePath() . '/css/plugins/metisMenu/metisMenu.min.css', 'all')
+                ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css', 'all')
         ?>       
     </head>
 
@@ -38,7 +38,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="<?php echo $this->url('home') ?>">
-                        <img style="width:200px" src="<?php echo $this->basePath('img/logo-intranet.png') ?>" alt="Ariete Intranet" style="vertical-align:baseline;"/>
+                        <img style="width:200px; vertical-align:baseline;" src="<?php echo $this->basePath('img/logo-intranet.png') ?>" alt="Ariete Intranet" />
                     </a>
                 </div>
                 <!-- /.navbar-header -->
