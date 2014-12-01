@@ -20,7 +20,7 @@ class IndexController extends AbstractActionController
 {
 
     public function indexAction()
-    {
+    {     
         //test log
         //$this->getServiceLocator()->get('Zend\Log')->info('Informational message'); 
 

@@ -318,6 +318,8 @@ class IndexController extends EntityUsingController
         $response = $this->getResponse();
         return $response;
     }
+    
+
 
     public function userHistoryAction()
     {
@@ -331,10 +333,19 @@ class IndexController extends EntityUsingController
                 'title' => 'Storico Computer di ' . $user->getDisplayName(),
                 'history' => $history,
             );
+        } else {
+            $objectManager = $this->getEntityManager();
+            $form = new \User\Form\SelectUserForm($objectManager);
+            return array(
+                'title' => 'Storico Computer',
+                'form' => $form,
+                //'history' => NULL,
+            );            
         }
+        
 
-        $response = $this->getResponse();
-        return $response;
+        //$response = $this->getResponse();
+        //return $response;
     }
     
     /**

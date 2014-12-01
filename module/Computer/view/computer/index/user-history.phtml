@@ -1,6 +1,6 @@
-    <?php echo $this->titleAndBread($title) ?>
+<?php echo $this->titleAndBread($title) ?>
 <?php $this->myFlashMessenger(); ?>   
-
+<?php if (isset($history)): ?>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
@@ -80,3 +80,32 @@
 
 <?php
 $this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
+else:
+?>
+<form class="form-inline" role="form">
+  <div class="form-group">
+    <div class="input-group">
+      <label class="sr-only" for="exampleInputEmail2">Email address</label>
+      <div class="input-group-addon">@</div>
+      <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email">
+    </div>
+  </div>
+  <button type="submit" class="btn btn-default">Sign in</button>
+</form>
+<div class="row">
+    <div class = "col-md-6">
+<?php
+$form->setAttribute('action', $this->serverUrl(TRUE));
+$form->setAttribute('class', 'form-inline');
+//$form->get('submit')->setValue('Edit History');
+$form->prepare();
+
+echo $this->form()->openTag($form);
+echo $this->ztbFormElement($form->get('userId'));
+echo $this->ztbFormElement($form->get('submit'));
+echo $this->form()->closeTag();
+?>
+    </div>
+</div>    
+<?php
+endif;

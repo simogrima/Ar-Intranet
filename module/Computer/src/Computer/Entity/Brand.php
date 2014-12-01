@@ -35,7 +35,7 @@ class Brand
      * @ORM\Column(type="smallint", options={"unsigned"=true, "default" = 0})
      */
     protected $status;     
-
+    
     
     /**
      * Get id

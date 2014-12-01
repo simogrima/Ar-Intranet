@@ -3,7 +3,6 @@ $env = getenv('APP_ENV') ?: 'production';
 
 // Use the $env value to determine which modules to load
 $modules = array(
-
         'DoctrineModule',
         'DoctrineORMModule',
         'ZfcBase',
