@@ -14,7 +14,6 @@ class SelectUserForm extends Form
     public function __construct(ObjectManager $objectManager)
     {
         parent::__construct('select-user-from');
-        $this->setAttribute('method', 'get');
 
         //$this->setHydrator(new DoctrineHydrator($objectManager));
         $this->setHydrator(new DoctrineHydrator($objectManager, 'User\Entity\User', true));

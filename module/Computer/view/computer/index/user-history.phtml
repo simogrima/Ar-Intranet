@@ -1,111 +1,106 @@
 <?php echo $this->titleAndBread($title) ?>
 <?php $this->myFlashMessenger(); ?>   
 <?php if (isset($history)): ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-clock-o fa-fw"></i> User History
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <ul class="timeline">
-                    <?php
-                    $count = 0;
-                    foreach ($history as $row):
-                        $count++;
-                        $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
-                        $desc = $row->getAttributes()['description'];
-                        $color = ($row->getStatus() == 1) ? 'success' : '';
-                        $icon = ($row->getStatus() == 1) ? 'fa-check' : 'fa-reply';
-                        ?>
-                        <li class="<?php echo $timelineClass; ?>">
-                            <div class="timeline-badge <?php echo $color; ?>"><i class="fa <?php echo $icon ?>"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title"><?php echo $row->getComputer()->getSerial(); ?></h4>
-                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> <?php
-                                            echo $this->dateFormat(
-                                                    $row->getEditDate(), IntlDateFormatter::LONG, // date
-                                                    IntlDateFormatter::SHORT, // time
-                                                    "it_IT");                                          
-                                            ?> [<?php echo $row->getEditBy()->getDisplayName(); ?>]</small>
-                                    </p>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-clock-o fa-fw"></i> User History
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <ul class="timeline">
+                        <?php
+                        $count = 0;
+                        foreach ($history as $row):
+                            $count++;
+                            $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
+                            $desc = $row->getAttributes()['description'];
+                            $color = ($row->getStatus() == 1) ? 'success' : '';
+                            $icon = ($row->getStatus() == 1) ? 'fa-check' : 'fa-reply';
+                            ?>
+                            <li class="<?php echo $timelineClass; ?>">
+                                <div class="timeline-badge <?php echo $color; ?>"><i class="fa <?php echo $icon ?>"></i>
                                 </div>
-                                <div class="timeline-body">
-                                    <p>
-                                        <strong>Modello:</strong> <?php echo $row->getComputer()->getModel(); ?><br/>
-                                        <strong>Categoria:</strong> <?php echo $row->getComputer()->getCategory()->getName(); ?><br/>
-                                        <strong>Brand:</strong> <?php echo $row->getComputer()->getBrand()->getName(); ?><br/>
-                                        <strong>Processore:</strong> <?php echo $row->getComputer()->getProcessor()->getName(); ?><br/>
-                                    </p>
-                                    <hr>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-gear"></i>  <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">                                            
-                                            <li>
-                                                <a href="<?php echo $this->url('computer/history/edit', array('historyId' => $row->getId())); ?>">
-                                                    <?php echo $this->translate('Edit') ?>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="<?php echo $this->url('computer/history/remove', array('historyId' => $row->getId())); ?>"
-                                                   onclick="return confirm('<?php echo $this->translate('Really delete history?') ?>')">
-                                                       <?php echo $this->translate('Delete') ?>
-                                                </a>                                            
-                                            </li>
-                                            <li class="divider"></li>
-                                            <li>
-                                                <a href="<?php echo $this->url('computer/show', array('computerId' => $row->getComputer()->getId(), 'historyType' => 0)); ?>">
-                                                       <?php echo $this->translate('Val al computer') ?>
-                                                </a>                                            
-                                            </li>                                            
-                                        </ul>
-                                    </div>                                
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h4 class="timeline-title"><?php echo $row->getComputer()->getSerial(); ?></h4>
+                                        <p><small class="text-muted"><i class="fa fa-clock-o"></i> <?php
+                                                echo $this->dateFormat(
+                                                        $row->getEditDate(), IntlDateFormatter::LONG, // date
+                                                        IntlDateFormatter::SHORT, // time
+                                                        "it_IT");
+                                                ?> [<?php echo $row->getEditBy()->getDisplayName(); ?>]</small>
+                                        </p>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p>
+                                            <strong>Modello:</strong> <?php echo $row->getComputer()->getModel(); ?><br/>
+                                            <strong>Categoria:</strong> <?php echo $row->getComputer()->getCategory()->getName(); ?><br/>
+                                            <strong>Brand:</strong> <?php echo $row->getComputer()->getBrand()->getName(); ?><br/>
+                                            <strong>Processore:</strong> <?php echo $row->getComputer()->getProcessor()->getName(); ?><br/>
+                                        </p>
+                                        <hr>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                                <i class="fa fa-gear"></i>  <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">                                            
+                                                <li>
+                                                    <a href="<?php echo $this->url('computer/history/edit', array('historyId' => $row->getId())); ?>">
+                                                        <?php echo $this->translate('Edit') ?>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="<?php echo $this->url('computer/history/remove', array('historyId' => $row->getId())); ?>"
+                                                       onclick="return confirm('<?php echo $this->translate('Really delete history?') ?>')">
+                                                           <?php echo $this->translate('Delete') ?>
+                                                    </a>                                            
+                                                </li>
+                                                <li class="divider"></li>
+                                                <li>
+                                                    <a href="<?php echo $this->url('computer/show', array('computerId' => $row->getComputer()->getId(), 'historyType' => 0)); ?>">
+                                                        <?php echo $this->translate('Val al computer') ?>
+                                                    </a>                                            
+                                                </li>                                            
+                                            </ul>
+                                        </div>                                
+                                    </div>
                                 </div>
-                            </div>
-                        </li>                    
-                    <?php endforeach; ?>                    
+                            </li>                    
+                        <?php endforeach; ?>                    
 
 
-                </ul>
-            </div>
-            <!-- /.panel-body -->
-        </div>  
-    </div>        
-</div>    
+                    </ul>
+                </div>
+                <!-- /.panel-body -->
+            </div>  
+        </div>        
+    </div>    
 
-<?php
-$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
+    <?php
+    $this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
 else:
-?>
-<form class="form-inline" role="form">
-  <div class="form-group">
-    <div class="input-group">
-      <label class="sr-only" for="exampleInputEmail2">Email address</label>
-      <div class="input-group-addon">@</div>
-      <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email">
-    </div>
-  </div>
-  <button type="submit" class="btn btn-default">Sign in</button>
-</form>
-<div class="row">
-    <div class = "col-md-6">
-<?php
-$form->setAttribute('action', $this->serverUrl(TRUE));
-$form->setAttribute('class', 'form-inline');
-//$form->get('submit')->setValue('Edit History');
-$form->prepare();
 
-echo $this->form()->openTag($form);
-echo $this->ztbFormElement($form->get('userId'));
-echo $this->ztbFormElement($form->get('submit'));
-echo $this->form()->closeTag();
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css');
+$this->headScript()
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js');
 ?>
-    </div>
-</div>    
+    <div class="row">
+        <div class = "col-md-6">
+            <?php
+            $form->setAttribute('action', $this->serverUrl(TRUE));
+            $form->setAttribute('class', 'form-inline');
+//$form->get('submit')->setValue('Edit History');
+            $form->prepare();
+
+            echo $this->form()->openTag($form);
+            echo $this->ztbFormElement($form->get('userId'));
+            echo $this->ztbFormElement($form->get('submit'));
+            echo $this->form()->closeTag();
+            ?>
+        </div>
+    </div>    
 <?php
 endif;

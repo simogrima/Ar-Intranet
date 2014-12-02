@@ -88,13 +88,86 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Line Chart Example
+                            Ultimi inserimenti
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-line-chart"></div>
-                            </div>
+                            <table class="table table-bordered table-hover" id="example1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Seriale</th>
+                <th>Modello</th>    
+                <th>Stato</th>
+                <th>Possessore</th>
+                <th>Categoria</th>
+                <th>Brand</th>
+                <th>Possessore</th>
+                <th>Action</th>
+            </tr>
+        </thead>    
+            <?php foreach ($this->computers as $computer): ?>
+<?php
+                                switch ($computer->getStatus()->getId()) {
+                                    case 1:
+                                        $statusClass = 'success';
+                                        break;
+                                    case 2:
+                                        $statusClass = 'warning';
+                                        break;
+                                    case 3:
+                                        $statusClass = 'danger';
+                                        break;                                    
+                                    default:
+                                        break;
+                                }
+?>
+                <tr>
+                    <td class="cell cell-id">
+                        <?php echo $computer->getId(); ?>
+                    </td>
+                    <td class="cell cell-serial">
+                        <?php echo $computer->getSerial(); ?>
+                    </td>         
+                    <td class="cell">
+                        <?php echo $computer->getModel(); ?>
+                    </td>     
+                    <td class="cell">
+                        <a href="<?php echo $this->url('computer/userhistory', array('userId' => $computer->getRecipient()->getId())); ?>">
+                            <?php echo $computer->getRecipient()->getDisplayName(); ?>
+                        </a>                          
+                    </td>  
+                    <td class="cell text-center">
+                        <span class="label label-<?php echo $statusClass; ?>">
+                            <?php echo $computer->getStatus()->getName(); ?>
+                        </span>
+                    </td>                       
+                    <td class="cell">
+                        <?php echo $computer->getCategory()->getName(); ?>
+                    </td>   
+                    <td class="cell">
+                        <?php echo $computer->getBrand()->getName(); ?>
+                    </td>   
+                    <td class="cell">
+                        <?php echo $computer->getProcessor()->getName(); ?>
+                    </td>                                       
+                    <td class="cell cell-ctrls text-center">
+                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">
+                            <span class="glyphicon glyphicon-eye-open"></span> Show
+                        </a>                         
+                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('computer/edit', array('computerId' => $computer->getId())); ?>">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a> 
+                        <a href="<?php echo $this->url('computer/remove', array('computerId' => $computer->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Really delete computer?') ?>')" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove"></span> Del
+                        </a>
+                    </td>
+
+                </tr>
+            <?php endforeach; ?>        
+        
+                            </table>
                         </div>
                         <!-- /.panel-body -->
                     </div>

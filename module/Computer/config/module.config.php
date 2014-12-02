@@ -129,9 +129,9 @@ return array(
                         ),
                     ),
                     'userhistory' => array(
-                        'type' => 'Segment',
+                        'type' => 'Segment',                       
                         'options' => array(
-                            'route' => '/user-history/:userId',
+                            'route' => '/user-history[/:userId]',
                             'defaults' => array(
                                 'controller' => 'Computer\Controller\Index',
                                 'action' => 'userHistory',
@@ -468,9 +468,14 @@ return array(
                                 'label' => 'Modifica storico computer',
                                 'route' => 'computer/history/edit',
                                 'onlybread' => true,
-                            ),
+                            ),                        
                         ),
                     ),
+                    'userhistory' => array(
+                        'label' => 'Storico computers utente',
+                        'route' => 'computer/userhistory',
+                        'onlybread' => false,
+                    ),                       
                     'settings' => array(
                         'label' => 'Impostazioni',
                         'route' => 'computer/settings',

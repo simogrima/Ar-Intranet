@@ -56,10 +56,20 @@ class IndexController extends EntityUsingController
     {
         $queryPieBrand = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, b.name FROM Computer\Entity\Computer c JOIN c.brand b GROUP BY c.brand');
         $queryPieCategory = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, t.name FROM Computer\Entity\Computer c JOIN c.category t GROUP BY c.category');
+        
+        $paginator = new Paginator\Paginator(
+            new DoctrinePaginator(new ORMPaginator($this->computerMapper->getSearchQuery('', 'c.id', 'DESC')))
+        );
+
+        $paginator->setItemCountPerPage(20);
+        $paginator->setCurrentPageNumber(1);
+           
+        
         return array(
             'computerCount' => $this->computerMapper->count(),
             'chartPieBrand' => $queryPieBrand->getResult(),
             'chartPieCategory' => $queryPieCategory->getResult(),
+            'computers' => $paginator,
         );
     }      
 
@@ -323,7 +333,12 @@ class IndexController extends EntityUsingController
 
     public function userHistoryAction()
     {
-        $userId = $this->getEvent()->getRouteMatch()->getParam('userId');
+        if ($this->request->isPost()) {
+            $userId = $this->request->getPost()->userId;
+        } else {
+            $userId = $this->getEvent()->getRouteMatch()->getParam('userId');
+        }
+        
         $user = $this->getServiceLocator()->get('zfcuser_user_mapper')->findById((int) $userId);
         if ($user) {
             $history = $this->getEntityManager()
