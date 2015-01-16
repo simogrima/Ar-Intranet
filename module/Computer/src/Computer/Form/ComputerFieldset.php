@@ -60,7 +60,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Nr. Fattura',
             ),
             'attributes' => array(
-                'required' => true,
+                'required' => false,
                 'class' => 'form-control',
             )
         ));
@@ -89,7 +89,7 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Nr. DDT',
             ),
             'attributes' => array(
-                'required' => true,
+                'required' => false,
                 'class' => 'form-control',
             )
         ));        
@@ -269,10 +269,10 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
             ),
             'invoice' => array(
-                'required' => true,
+                'required' => false,
             ),
             'ddt' => array(
-                'required' => true,
+                'required' => false,
             ),       
             'status' => array(
                 'required' => true,
