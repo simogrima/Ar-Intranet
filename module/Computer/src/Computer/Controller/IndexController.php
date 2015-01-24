@@ -25,6 +25,9 @@ use ZfcUserDoctrineORM\Mapper\User as ZfcUserDoctrineMapper;
 use Computer\Entity\History;
 use Application\Form\SearchForm;
 
+//ZfcRbac
+use ZfcRbac\Exception\UnauthorizedException;
+
 class IndexController extends EntityUsingController
 {
 
@@ -254,6 +257,11 @@ class IndexController extends EntityUsingController
 
     public function removeAction()
     {
+        //Solo superuser
+        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
+           throw new UnauthorizedException();
+        }
+        
         $objectManager = $this->getEntityManager();
 
         $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
@@ -310,6 +318,11 @@ class IndexController extends EntityUsingController
 
     public function clearHistoryAction()
     {
+        //Solo superuser
+        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
+           throw new UnauthorizedException();
+        }
+        
         $computerId = $this->getEvent()->getRouteMatch()->getParam('computerId');
         $computer = $this->getEntityManager()->getRepository($this->options->getComputerEntityClass())->find($computerId);
 

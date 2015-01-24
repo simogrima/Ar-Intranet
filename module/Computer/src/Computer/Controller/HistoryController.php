@@ -23,6 +23,8 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 //Form
 use Computer\Form\HistoryForm;
 
+//ZfcRbac
+use ZfcRbac\Exception\UnauthorizedException;
 
 class HistoryController extends EntityUsingController
 {
@@ -59,6 +61,11 @@ class HistoryController extends EntityUsingController
      
     public function editAction()
     {
+        //Solo superuser
+        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
+           throw new UnauthorizedException();
+        }        
+        
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getEntityManager();
 
@@ -106,6 +113,11 @@ class HistoryController extends EntityUsingController
     
     public function removeAction()
     {
+        //Solo superuser
+        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
+           throw new UnauthorizedException();
+        }
+        
         $historyId = $this->getEvent()->getRouteMatch()->getParam('historyId');
         $history = $this->getEntityManager()->getRepository($this->options->getHistoryEntityClass())->find($historyId);
 

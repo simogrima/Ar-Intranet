@@ -219,7 +219,7 @@ return array(
                 'zfcuser/register' => ['guest'],
                 '*admin*'          => ['admin'],
                 '*'                => ['user'],
-            ]
+            ],
         ],
     ],    
     

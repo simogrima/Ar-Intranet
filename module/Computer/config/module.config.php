@@ -369,7 +369,7 @@ return array(
     'computer_opt' => [
         'scortaId' => 2,
         'scortaUserId' => 2,
-    ],
+    ],   
     //Navigation menu/breadcrumb
     'navigation' => array(
         'leftnav' => array(
