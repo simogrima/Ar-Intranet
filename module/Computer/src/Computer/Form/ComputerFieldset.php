@@ -52,6 +52,19 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
         
+        //supplier
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'supplier',
+            'options' => array(
+                'label' => 'Fornitore',
+            ),
+            'attributes' => array(
+                'required' => false,
+                'class' => 'form-control',
+            )
+        ));        
+        
         //invoice
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -268,6 +281,9 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
             'model' => array(
                 'required' => true,
             ),
+            'supplier' => array(
+                'required' => false,
+            ),            
             'invoice' => array(
                 'required' => false,
             ),

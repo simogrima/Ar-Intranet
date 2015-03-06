@@ -40,6 +40,13 @@ class Computer
     /**
      * @var string|null
      *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $supplier;
+
+    /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=64)
      */
     protected $invoice;    
@@ -196,7 +203,30 @@ class Computer
         $this->model = $model;
 
         return $this;
-    }    
+    }   
+    
+    /**
+     * Get supplier
+     * 
+     * @return string
+     */
+    public function getSupplier()
+    {
+        return $this->supplier;
+    }
+    
+    /**
+     * Set supplier
+     * 
+     * @param string $supplier
+     * @return \Computer\Entity\Computer
+     */
+    public function setSupplier($supplier)
+    {
+        $this->supplier = $supplier;
+
+        return $this;
+    }       
 
     /**
      * Get invoice
