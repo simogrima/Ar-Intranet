@@ -1,11 +1,43 @@
-<h1><?php echo $this->translate('Samples') ?></h1>
-
-
+<?php echo $this->titleAndBread('Campionature'); ?>
+<?php $this->myFlashMessenger(); ?>    
+<?php
+$url_order = 'ASC';
+if ($order_by == 'id') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+} elseif ($order_by == 'customer') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+} elseif ($order_by == 'model') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+}
+?>
+<div class="row">
+    <div class="col-md-12">                
+        Trovate <?php echo $totalRecord; ?> campionature
+    </div>
+</div>   
 <div class="panel panel-default">
-    <div class="panel-body">
-        <a href="<?php echo $this->url('samples/create') ?>" class="btn btn-primary">
-            <?php echo $this->translate('Add New Sample Request') ?>
-        </a>
+    <div class="panel-body">        
+        <div class="row">
+            <div class="col-md-6">                
+                <a href="<?php echo $this->url('samples/create') ?>" class="btn btn-primary">
+                    <?php echo $this->translate('Richiedi nuova campionatura') ?>
+                </a>
+            </div>
+            <div class="col-md-6">
+                <?php
+                $form = $this->form;
+                $form->setAttribute('action', $this->url('samples/search'));
+                $form->setAttribute('class', 'navbar-form navbar-right');
+                $form->prepare();
+
+                echo $this->form()->openTag($form);
+                echo $this->formSearch($form->get('search'));
+                echo $this->formButton()->render($form->get('submit'), 'Go!');
+
+                echo $this->form()->closeTag();
+                ?>               
+            </div>
+        </div>
     </div>
 </div>
 
@@ -13,36 +45,63 @@
     <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Model</th>
-                <th>Country</th>
-                <th>&nbsp;</th>
+                <th>
+                    <a href="<?php echo $this->url('samples/list', array_filter(array('order_by' => 'id', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Id
+                    </a> 
+                    <?php if ($order_by == 'id'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>
+                <th>
+                    <a href="<?php echo $this->url('samples/list', array_filter(array('order_by' => 'model', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Seriale
+                    </a> 
+                    <?php if ($order_by == 'model'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>
+                <th>
+                    <a href="<?php echo $this->url('samples/list', array_filter(array('order_by' => 'customer', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Modello
+                    </a> 
+                    <?php if ($order_by == 'customer'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>    
+                <th>Richiedente</th>
+                <th>Stato</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($this->samples as $sample): ?>
-                <tr>
+            <?php
+            $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());   
+            ?>
+                <tr class="<?= $class; ?>">
                     <td class="cell cell-id">
                         <?php echo $sample->getId(); ?>
                     </td>
-                    <td class="cell cell-model">
+                    <td class="cell cell-serial">
                         <?php echo $sample->getModel(); ?>
-                    </td>
-                    <td class="cell cell-model">
-                        <?php if (null !== $sample->getCountry()): ?>
-                        <?php echo $sample->getCountry()->getName(); ?>
-                        <?php endif; ?>
-                    </td>                   
-                    <td class="cell cell-ctrls">
-                        <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
-                            <?php echo $this->translate('Edit') ?>
+                    </td>         
+                    <td class="cell">
+                        <?php echo $sample->getCustomer(); ?>
+                    </td>       
+                    <td class="cell">
+                        <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                    </td>    
+                    <td class="cell">
+                        <?php echo $sample->getStatus()->getName() . ' ' . count($sample->getAttachments()); ?>
+                    </td>                       
+                    <td class="cell cell-ctrls text-center">
+                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('computer/show', array('computerId' => $sample->getId())); ?>">
+                            <span class="glyphicon glyphicon-eye-open"></span> Show
+                        </a>                         
+                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('computer/edit', array('computerId' => $sample->getId())); ?>">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a> 
+                        <a href="<?php echo $this->url('computer/remove', array('computerId' => $sample->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Really delete computer?') ?>')" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove"></span> Del
                         </a>
-                        |
-                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Really delete sample?') ?>')">
-                               <?php echo $this->translate('Delete') ?>
-                        </a>
                     </td>
+
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -52,34 +111,10 @@
 <?php
 echo $this->paginationControl(
         $this->samples, 'Sliding', 'paginator-slide', array(
-    'order_by' => 'id',
-    'order' => 'ASC',
-    'search_by' => NULL,
+    'order_by' => $order_by,
+    'order' => $order,
+    'search_by' => $search_by,
     'pageAction' => $pageAction,
         )
 );
 ?>
-
-
-<?php
-/* DataTables */
-$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/datatables/dataTables.bootstrap.css');
-
-$this->headScript()
-        ->appendFile($this->basePath() . '/js/plugins/datatables/jquery.dataTables.js')
-        ->appendFile($this->basePath() . '/js/plugins/datatables/dataTables.bootstrap.js');
-
-$this->inlineScript()->captureStart();
-echo <<<JS
-                $("#example1").dataTable();
-                $('#example2').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": false,
-                    "bFilter": false,
-                    "bSort": true,
-                    "bInfo": true,
-                    "bAutoWidth": false
-                });
-JS;
-$this->inlineScript()->captureEnd();
-?>  

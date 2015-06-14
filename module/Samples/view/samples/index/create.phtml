@@ -1,3 +1,5 @@
+<?php echo $this->titleAndBread('Richiedi Campionatura'); ?>
+<?php $this->myFlashMessenger(); ?>    
 <?php
 /**
   echo $this->headLink()
@@ -7,11 +9,7 @@
   ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
  * 
  */
-$title = 'Add Sample';
-$this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
@@ -23,95 +21,117 @@ $form->prepare();
 
 echo $this->form()->openTag($form);
 ?>
-    <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('customer')); ?>
+<div class = "row">
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Richiesta
+            </div>
+            <div class="panel-body">
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('customer')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('country')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('model')); ?>
+                    </div>    
+                </div>
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('qta')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('requestedDeliveryDate')); ?>
+                    </div>    
+                </div>
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('paymentTerm')); ?>
+                    </div>   
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('standardProduct')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('approvalSample')); ?>
+                    </div>    
+                </div>   
+            </div>    
         </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('country')); ?>
-        </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('model')); ?>
-        </div>    
-    </div>
-    <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('qta')); ?>
-        </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
-        </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('requestedDeliveryDate')); ?>
-        </div>    
-    </div>
-    <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('paymentTerm')); ?>
-        </div>   
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('standardProduct')); ?>
-        </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('approvalSample')); ?>
-        </div>    
-    </div>    
+    </div>      
+</div>
 
-    <hr class="devider devider-db-dashed">
-    <fieldset>
-    <div class = "row">
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($sample->get('voltage')); ?>
-        </div>   
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($sample->get('frequency')); ?>
-        </div> 
-    </div>    
-    <div class = "row">
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($sample->get('plug')); ?>
-        </div>   
-        <div class = "col-md-6">
-            <?= $this->ztbFormElement($sample->get('cable')); ?>
-        </div> 
-    </div>  
-    <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('serigraphy')); ?>
-        </div>   
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('colors')); ?>
+<div class = "row">
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Dati tecnici
+            </div>
+            <div class="panel-body">
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($sample->get('voltage')); ?>
+                    </div>   
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($sample->get('frequency')); ?>
+                    </div> 
+                </div>    
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($sample->get('plug')); ?>
+                    </div>   
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($sample->get('cable')); ?>
+                    </div> 
+                </div>  
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('serigraphy')); ?>
+                    </div>   
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('colors')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('accessories')); ?>
+                    </div>    
+                </div> 
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('vpp')); ?>
+                    </div>   
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('booklet')); ?>
+                    </div>
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($sample->get('packaging')); ?>
+                    </div>    
+                </div>     
+            </div>    
         </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('accessories')); ?>
-        </div>    
-    </div> 
-    <div class = "row">
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('vpp')); ?>
-        </div>   
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('booklet')); ?>
-        </div>
-        <div class = "col-md-4">
-            <?= $this->ztbFormElement($sample->get('packaging')); ?>
-        </div>    
-    </div>   
-    </fieldset>
-    
-    <hr class="devider devider-db-dashed">
-    
-    <div class = "row">
-        <div class = "col-md-12">
-            <?= $this->ztbFormElement($sample->get('note')); ?>
-        </div>      
-    </div>       
-    
+    </div>      
+</div>
+
+
+
+
+
+<div class = "row">
+    <div class = "col-md-12">
+        <?= $this->ztbFormElement($sample->get('note')); ?>
+    </div>      
+</div>       
+
 <div>
-    <?= $this->ztbFormElement($form->get('csrf')); ?>
+    <?= $this->ztbFormElement($sample->get('applicant')); ?>
+    <?= $this->ztbFormElement($sample->get('status')); ?>
     <?= $this->ztbFormElement($form->get('submit')); ?>
 </div>    
-<?php 
+<?php
 echo $this->form()->closeTag();
 ?>
 <?php

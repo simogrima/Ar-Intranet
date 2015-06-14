@@ -17,11 +17,12 @@ $modules = array(
         'User',
         'MyZfcRbac',
         'Admin',
+        'ZF2FileUploadExamples',
         'Samples',
         'Computer'
 );
 if ($env == 'development') {
-    $modules[] = 'ZendDeveloperTools';
+    //$modules[] = 'ZendDeveloperTools';
 }
 
 return array(

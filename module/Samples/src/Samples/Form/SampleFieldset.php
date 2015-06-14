@@ -25,13 +25,26 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Hidden',
             'name' => 'id'
         ));
+        
+        //EditBy (richiedente)
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'applicant'
+        ));       
+        
+        //status
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'status'
+        ));        
+        
 
         //customer
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
             'name' => 'customer',
             'options' => array(
-                'label' => 'Customer',
+                'label' => 'Cliente',
             ),
             'attributes' => array(
                 'required' => true,
@@ -44,7 +57,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'model',
             'options' => array(
-                'label' => 'Model',
+                'label' => 'Modello',
             ),
             'attributes' => array(
                 'required' => true,
@@ -57,7 +70,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Number',
             'name' => 'qta',
             'options' => array(
-                'label' => 'Quantity'
+                'label' => 'Quantità'
             ),
             'attributes' => array(
                 'min' => '0',
@@ -67,17 +80,17 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
 
-
         //qtaExpected
         $this->add(array(
             'type' => 'Zend\Form\Element\Number',
             'name' => 'qtaExpected',
             'options' => array(
-                'label' => 'Expected Quantity'
+                'label' => 'Quantità Prevista'
             ),
             'attributes' => array(
                 'min' => '0',
                 'class' => 'form-control',
+                'placeholder' => 'Pezzi l\'anno',
             )
         ));
 
@@ -101,7 +114,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'paymentTerm',
             'options' => array(
-                'label' => 'Payment Term',
+                'label' => 'Termine di pagamento',
             ),
             'attributes' => array(
                 'required' => true,
@@ -114,7 +127,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Checkbox',
             'name' => 'standardProduct',
             'options' => array(
-                'label' => 'Standard Product',
+                'label' => 'Prodotto standard',
                 'use_hidden_element' => true,
                 'checked_value' => '1',
                 'unchecked_value' => '0'
@@ -129,7 +142,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Checkbox',
             'name' => 'approvalSample',
             'options' => array(
-                'label' => 'Approval Sample',
+                'label' => 'Campione per approvazione normativa',
                 'use_hidden_element' => true,
                 'checked_value' => '1',
                 'unchecked_value' => '0'
@@ -141,7 +154,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Select',
             'name' => 'voltage',
             'options' => array(
-                'label' => 'Voltage',
+                'label' => 'Tensione di rete',
                 'value_options' => array(
                     'Standard' => 'Standard',
                     '100 V' => '100 V',
@@ -165,7 +178,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Select',
             'name' => 'plug',
             'options' => array(
-                'label' => 'Plug',
+                'label' => 'Spina',
                 'value_options' => array(
                     'Standard' => 'Standard',
                     'Cebec 2P' => 'Cebec 2P',
@@ -191,7 +204,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Select',
             'name' => 'cable',
             'options' => array(
-                'label' => 'Cable',
+                'label' => 'Cavo',
                 'value_options' => array(
                     'Standard' => 'Standard',
                     'Europa' => 'Europa',
@@ -211,7 +224,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Select',
             'name' => 'frequency',
             'options' => array(
-                'label' => 'Frequency',
+                'label' => 'Frequenza',
                 'value_options' => array(
                     'Standard' => 'Standard',
                     '50 Hz' => '50 Hz',
@@ -231,7 +244,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'serigraphy',
             'options' => array(
-                'label' => 'Serigraphy',
+                'label' => 'Serigrafia',
             ),
             'attributes' => array(
                 'required' => true,
@@ -245,7 +258,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'colors',
             'options' => array(
-                'label' => 'Colors',
+                'label' => 'Colori',
             ),
             'attributes' => array(
                 'required' => true,
@@ -259,7 +272,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'accessories',
             'options' => array(
-                'label' => 'Accessories',
+                'label' => 'Accessori',
             ),
             'attributes' => array(
                 'required' => true,
@@ -273,7 +286,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'vpp',
             'options' => array(
-                'label' => 'VPP',
+                'label' => 'VPP riferimento',
             ),
             'attributes' => array(
                 'required' => true,
@@ -287,7 +300,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'booklet',
             'options' => array(
-                'label' => 'Booklet',
+                'label' => 'Libretto',
             ),
             'attributes' => array(
                 'required' => true,
@@ -301,7 +314,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Text',
             'name' => 'packaging',
             'options' => array(
-                'label' => 'Packaging',
+                'label' => 'Imballo',
             ),
             'attributes' => array(
                 'required' => true,
@@ -319,7 +332,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'attributes' => array(
                 'class' => 'form-control',
-                'placeholder' => 'Inserire massimo 255 caratteri - per note più consistenti potrete inserire degli allegati una volta invivato il modulo.',
+                'placeholder' => 'Inserire massimo 255 caratteri - per note più consistenti potrete inserire degli allegati una volta inviato il modulo.',
             )
         ));        
 
@@ -358,6 +371,12 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'id' => array(
                 'required' => false
             ),
+            'applicant' => array(
+                'required' => false
+            ),     
+            'status' => array(
+                'required' => false
+            ),               
             'customer' => array(
                 'required' => true,
             ),

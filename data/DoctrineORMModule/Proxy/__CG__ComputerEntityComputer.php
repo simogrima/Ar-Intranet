@@ -64,10 +64,10 @@ class Computer extends \Computer\Entity\Computer implements \Doctrine\ORM\Proxy\
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'serial', 'model', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
+            return array('__isInitialized__', 'id', 'serial', 'model', 'supplier', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
         }
 
-        return array('__isInitialized__', 'id', 'serial', 'model', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
+        return array('__isInitialized__', 'id', 'serial', 'model', 'supplier', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
     }
 
     /**
@@ -230,6 +230,28 @@ class Computer extends \Computer\Entity\Computer implements \Doctrine\ORM\Proxy\
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setModel', array($model));
 
         return parent::setModel($model);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSupplier()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSupplier', array());
+
+        return parent::getSupplier();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSupplier($supplier)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSupplier', array($supplier));
+
+        return parent::setSupplier($supplier);
     }
 
     /**

@@ -180,6 +180,40 @@ class Sample
      */
     protected $country;       
     
+    /**
+     * Richiedente campionatura 
+     * @var \User\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="User\Entity\User", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="applicant", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $applicant;         
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Samples\Entity\Attachments", mappedBy="sample", cascade={"remove"})
+     */
+    protected $attachments;   
+    
+    /**
+     * @var \Samples\Entity\Status
+     *
+     * @ORM\ManyToOne(targetEntity="Samples\Entity\Status", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="status_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $status;       
+    
+    /**
+     * Never forget to initialize all your collections !
+     */
+    public function __construct()
+    {
+        $this->attachments = new ArrayCollection();
+    }      
+    
  
     /**
      * Get id
@@ -627,6 +661,113 @@ class Sample
     
         return $this;
     }
+    
+    /**
+     * Set applicant
+     *
+     * @param \User\Entity\User
+     * @return \Samples\Entity\Sample
+     */
+    public function setApplicant(\User\Entity\User $user = null)
+    {
+        $this->applicant = $user;
+
+        return $this;
+    }   
+
+    /**
+     * Get recipient
+     *
+     * @return \User\Entity\User
+     */
+    public function getApplicant()
+    {
+        return $this->applicant;
+    }      
+    
+    /**
+     * Aggiunge gli allegati ad una richiesta.
+     * 
+     * @param Collection $attachments gli allegati da aggioungere
+     * @return \Samples\Entity\Sample
+     */
+    public function addAttachments(Collection $attachments)
+    {
+        foreach ($attachments as $row) {
+            $row->setComputer($this);
+            $this->attachments->add($row);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Rimuove gli allegati di una richiesta
+     * @param Collection $attachments gli allegati da rimuovere
+     * @return \Samples\Entity\Sample
+     */
+    public function removeAttachments(Collection $attachments)
+    {
+        foreach ($attachments as $row) {
+            $row->setComputer(null);
+            $this->attachments->removeElement($row);
+        }
+        
+        return $this;
+    }
+    
+    public function getAttachments($type = null)
+    {
+        
+        return $this->attachments;
+    }        
+
+    /**
+     * Get computer history
+     * @param int $type in tipo di history
+     * 0 -> all
+     * 1 -> Creazione
+     * 2 -> Modifica
+     * 3 -> Assegnazione
+     * 4 -> Cambio stato
+     * 
+     * @return Collection | Array
+     */
+    public function getHistory($type = 0)
+    {
+        if (is_numeric($type) && $type > 0) {
+            $history = [];
+            foreach ($this->getHistory() as $row) {
+                if ($row->getType() == $type)
+                $history[] = $row;
+            }
+            return $history;
+        }
+        return $this->history;
+    }   
+    
+    /**
+     * Set status
+     *
+     * @param \Computer\Entity\Status
+     * @return \Samples\Entity\Sample
+     */
+    public function setStatus(\Samples\Entity\Status $status = null)
+    {
+        $this->status = $status;
+    
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \Samples\Entity\Status 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }    
 
     /**
      * Get createDate

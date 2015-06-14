@@ -21,12 +21,7 @@ class SampleForm extends Form
         $sampleFieldset = new SampleFieldset($objectManager);
         $sampleFieldset->setUseAsBaseFieldset(true);
         $this->add($sampleFieldset);
-
-        
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Csrf',
-            'name' => 'csrf'
-        ));        
+     
 
         $this->add(array(
             'name' => 'submit',
