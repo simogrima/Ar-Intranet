@@ -53,18 +53,20 @@ if ($order_by == 'id') {
                 </th>
                 <th>
                     <a href="<?php echo $this->url('samples/list', array_filter(array('order_by' => 'model', 'order' => $url_order, 'search_by' => $search_by))); ?>">
-                        Seriale
+                        Modello
                     </a> 
                     <?php if ($order_by == 'model'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
                 </th>
                 <th>
                     <a href="<?php echo $this->url('samples/list', array_filter(array('order_by' => 'customer', 'order' => $url_order, 'search_by' => $search_by))); ?>">
-                        Modello
+                        Cliente
                     </a> 
                     <?php if ($order_by == 'customer'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
                 </th>    
                 <th>Richiedente</th>
                 <th>Stato</th>
+                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
+                <th class="text-center"><i class="fa fa-calendar fa-fw"></i></th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -84,22 +86,42 @@ if ($order_by == 'id') {
                         <?php echo $sample->getCustomer(); ?>
                     </td>       
                     <td class="cell">
+                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getApplicant()->getDisplayName(); ?>%22%7D">
                         <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                        </a>
                     </td>    
                     <td class="cell">
-                        <?php echo $sample->getStatus()->getName() . ' ' . count($sample->getAttachments()); ?>
-                    </td>                       
+                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getStatus()->getName(); ?>%22%7D">
+                        <?php echo $sample->getStatus()->getName(); ?>
+                        </a>    
+                    </td>    
+                    <td class="cell text-center">
+                        <?php echo  count($sample->getAttachments()); ?>
+                    </td>   
+                    <td class="cell text-center">
+                        <?php
+                        echo $this->dateFormat(
+                                $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        ?>                        
+                    </td>                      
                     <td class="cell cell-ctrls text-center">
-                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('computer/show', array('computerId' => $sample->getId())); ?>">
+                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
                             <span class="glyphicon glyphicon-eye-open"></span> Show
                         </a>                         
-                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('computer/edit', array('computerId' => $sample->getId())); ?>">
+                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
                             <span class="glyphicon glyphicon-edit"></span> Edit
                         </a> 
-                        <a href="<?php echo $this->url('computer/remove', array('computerId' => $sample->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Really delete computer?') ?>')" class="btn btn-danger btn-xs">
+                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la campionatura?') ?>')" class="btn btn-danger btn-xs">
                             <span class="glyphicon glyphicon-remove"></span> Del
                         </a>
+                        <?php if (!$sample->isShipped()): ?>
+                        <a class='btn btn-success btn-xs' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
+                            <i class="fa fa-plane"></i> Spedisci
+                        </a>                         
+                        <?php endif; ?>
                     </td>
 
                 </tr>

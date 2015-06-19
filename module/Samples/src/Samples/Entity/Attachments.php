@@ -163,7 +163,7 @@ class Attachments
      * 
      * @return string
      */
-    public function getAttachmetType()
+    public function getAttachmentType()
     {
         return $this->attachmentType;
     }          
@@ -191,7 +191,59 @@ class Attachments
         return $this;
     }    
     
-    
+    /**
+     * Metodo puramente logico che in base all'estensione del file restituisce 
+     * il nome dell'icona.
+     * @return string
+     */
+    public function getIcon()
+    {
+        $pos = strrpos($this->getFileName(), '.');
+        $extension = substr($this->getFileName(), $pos+1);
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+            case 'gif':    
+                return 'image.png';
+                break;
+            case 'png':    
+                return 'png.png';
+                break;
+            case 'doc':
+            case 'docx':    
+                return 'word.png';
+                break; 
+            case 'xls':
+            case 'xlsx':    
+                return 'excel.png';
+                break;       
+            case 'ppt':
+            case 'pptx':    
+                return 'pp.png';
+                break;    
+            case 'pdf':    
+                return 'pdf.png';
+                break;  
+            case 'ai':    
+                return 'ai.png';
+                break;    
+            case 'psd':    
+                return 'psd.png';
+                break;
+            case 'webm':
+            case 'flv':
+            case 'avi':    
+            case 'mp4': 
+            case 'wmv': 
+            case 'mov': 
+                return 'video.png';
+                break;            
+            default:
+                return 'generic.png';
+                break;
+        }
+    }        
+
     /**
      * @ORM\PrePersist
      */

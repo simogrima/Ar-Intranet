@@ -99,7 +99,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Date',
             'name' => 'requestedDeliveryDate',
             'options' => array(
-                'label' => 'Requested Delivery Date'
+                'label' => 'Data consegna richiesta'
             ),
             'attributes' => array(
                 'min' => date('Y-m-d', time()),
@@ -154,7 +154,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             'type' => 'Zend\Form\Element\Select',
             'name' => 'voltage',
             'options' => array(
-                'label' => 'Tensione di rete',
+                'label' => 'Tensione',
                 'value_options' => array(
                     'Standard' => 'Standard',
                     '100 V' => '100 V',
@@ -172,7 +172,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
             )
         ));
-
+           
         //plug
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
@@ -197,7 +197,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'plug',
                 'required' => true,
             )
-        ));
+        ));      
 
         //cable
         $this->add(array(
@@ -217,7 +217,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'cable',
                 'required' => true,
             )
-        ));
+        ));   
 
         //frequency
         $this->add(array(
@@ -238,7 +238,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
             )
         ));
-
+       
         //serigraphy
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -252,7 +252,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'serigraphy',
             )
         ));
-
+                 
         //colors
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -266,7 +266,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'colors',
             )
         ));
-
+               
         //accessories
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -280,7 +280,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'accessories',
             )
         ));
-        
+                    
         //vpp
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -308,7 +308,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'booklet',
             )
         )); 
-        
+                   
         //packaging
         $this->add(array(
             'type' => 'Zend\Form\Element\Text',
@@ -322,7 +322,7 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                 'id' => 'packaging',
             )
         )); 
-        
+                     
         //note
         $this->add(array(
             'type' => 'Zend\Form\Element\Textarea',

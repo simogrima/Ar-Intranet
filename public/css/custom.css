@@ -36,6 +36,7 @@ a:focus {outline: none; text-decoration: none; color: #72afd2;}
 .form-control {-webkit-border-radius: 0px !important;-moz-border-radius: 0px !important;border-radius: 0px !important;box-shadow: none;}
 .control-group {margin-bottom: 15px;}
 textarea {min-height: 200px}
+.error .help-inline {color: #a94442!important; list-style: none; padding-left: 10px}
 
 /* Titolo e breadcrumbs */
 .page-title {margin-top: 10px;}

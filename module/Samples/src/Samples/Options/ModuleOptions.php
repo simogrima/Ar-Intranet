@@ -11,11 +11,8 @@ class ModuleOptions extends AbstractOptions
      * @var string
      */
     protected $sampleEntityClass = 'Samples\Entity\Sample';
-    
-    /**
-     * @var string
-     */
     protected $attachmentsEntityClass = 'Samples\Entity\Attachments';    
+    protected $historyEntityClass = 'Samples\Entity\History'; 
 
     /**
      * set sample entity class name
@@ -60,5 +57,45 @@ class ModuleOptions extends AbstractOptions
     {
         return $this->attachmentsEntityClass;
     }    
+    
+    /**
+     * set history entity class name
+     *
+     * @param string $entityClass
+     * @return ModuleOptions
+     */
+    public function setHistoryEntityClass($entityClass)
+    {
+        $this->historyEntityClass = $entityClass;
+        return $this;
+    }
 
+    /**
+     * get history entity class name
+     *
+     * @return string
+     */
+    public function getHistoryEntityClass()
+    {
+        return $this->historyEntityClass;
+    }      
+
+    /**
+     * Getter path allegati
+     * @return string
+     */
+    function getAttachmentPath()
+    {
+        return $this->attachmentPath;
+    }
+
+    /**
+     * Setter path allegati
+     * 
+     * @param string $path
+     */
+    function setAttachmentPath($path)
+    {
+        $this->attachmentPath = $path;
+    }    
 }

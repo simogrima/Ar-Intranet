@@ -50,5 +50,16 @@ class SampleMapper extends BaseDoctrine
                 ->setParameter(1, '%' .$searchString . '%')
                 ->orderBy($orderBy, $order);
         return $qb->getQuery();
-    }    
+    }
+
+    //Rimuovo, fisicamente, anche aventuali files allegati
+    public function remove($entity)
+    {
+        $attachments = $entity->getAttachments();
+        foreach ($attachments as $attachment) {
+            $location = './public' . $this->options->getAttachmentPath() . $attachment->getFileName();
+            unlink($location);
+        }
+        parent::remove($entity);
+    }        
 }

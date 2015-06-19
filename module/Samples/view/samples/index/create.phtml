@@ -15,7 +15,7 @@
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
 $form->setAttribute('id', 'create-form');
-$form->get('submit')->setValue('Add new sample request');
+$form->get('submit')->setValue('Richiedi campionatura');
 $sample = $form->get('sample'); //fieldset
 $form->prepare();
 
@@ -134,9 +134,20 @@ echo $this->form()->openTag($form);
 <?php
 echo $this->form()->closeTag();
 ?>
+
+
+
+
+
+
+
+
+
+
 <?php
 $this->headScript()->appendScript("
 $(function() {
+    $('#standardProduct').prop('checked', true);
     defaultValue();
 
     $('#standardProduct').change(function() {
@@ -146,13 +157,16 @@ $(function() {
 
     function defaultValue () {
        var defaultValue = 'Standard';
+       console.log('ok');
 
         if($('#standardProduct').is(\":checked\")) {
-            $('#voltage, #serigraphy, #frequency, #plug, #cable, #colors, #accessories, #vpp, #booklet, #packaging').val(defaultValue).attr('readonly', true);
+            $('#voltage, #serigraphy, #frequency, #plug, #cable, #colors, #accessories, #booklet, #packaging').val(defaultValue).attr('readonly', true);
+            $('#vpp').val('//').attr('readonly', true);
         } else {
             $('#voltage, #serigraphy, #frequency, #plug, #cable, #colors, #accessories, #vpp, #booklet, #packaging').attr('readonly', false);
         }    
     }
+    
 }); 
 
 ");

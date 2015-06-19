@@ -1,4 +1,5 @@
 <?php
+
 namespace Samples;
 
 return array(
@@ -7,12 +8,14 @@ return array(
             'Samples\Options\ModuleOptions' => 'Samples\Factory\ModuleOptionsFactory',
             'Samples\Mapper\SampleMapper' => 'Samples\Factory\SampleMapperFactory',
             'Samples\Mapper\AttachmentsMapper' => 'Samples\Factory\AttachmentsMapperFactory',
+            'Samples\Mapper\HistoryMapper' => 'Samples\Factory\HistoryMapperFactory',
         ),
     ),
     'controllers' => array(
         'factories' => array(
             'Samples\Controller\Index' => 'Samples\Factory\Controller\IndexControllerFactory',
             'Samples\Controller\Attachments' => 'Samples\Factory\Controller\AttachmentsControllerFactory',
+            'Samples\Controller\History' => 'Samples\Factory\Controller\HistoryControllerFactory',
         ),
     ),
     'router' => array(
@@ -45,7 +48,7 @@ return array(
                                 'action' => 'list',
                             ),
                         ),
-                    ),                    
+                    ),
                     'search' => array(
                         'type' => 'Literal',
                         'options' => array(
@@ -55,7 +58,7 @@ return array(
                                 'action' => 'search',
                             ),
                         ),
-                    ),                    
+                    ),
                     'create' => array(
                         'type' => 'Literal',
                         'options' => array(
@@ -88,15 +91,19 @@ return array(
                             ),
                         ),
                     ),
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    'show' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/show/:sampleId/:historyType',
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Index',
+                                'action' => 'show',
+                                'sampleId' => 0,
+                                'historyType' => 0,
+                            ),
+                        ),
+                    ),
+                    //attachment
                     'attachments' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -109,6 +116,33 @@ return array(
                         ),
                         'may_terminate' => true,
                         'child_routes' => array(
+                            'list' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
+                                    'constraints' => array(
+                                        'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '[0-9]+',
+                                        'page' => '[0-9]+',
+                                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'order' => 'ASC|DESC',
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Samples\Controller\Attachments',
+                                        'action' => 'list',
+                                    ),
+                                ),
+                            ),
+                            'search' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/search',
+                                    'defaults' => array(
+                                        'controller' => 'Samples\Controller\Attachments',
+                                        'action' => 'search',
+                                    ),
+                                ),
+                            ),
                             'add' => array(
                                 'type' => 'Segment',
                                 'options' => array(
@@ -116,7 +150,7 @@ return array(
                                     'constraints' => array(
                                         'sample_id' => '[0-9]+',
                                         'type' => '[a-zA-Z][a-zA-Z0-9_\/-]*'
-                                    ),                                    
+                                    ),
                                     'defaults' => array(
                                         'controller' => 'Samples\Controller\Attachments',
                                         'action' => 'add',
@@ -125,35 +159,84 @@ return array(
                                     ),
                                 ),
                             ),
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:attachmentId',
+                                    'defaults' => array(
+                                        'controller' => 'Samples\Controller\Attachments',
+                                        'action' => 'remove',
+                                        'attachmentId' => 0
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ), // end attachment     
+                    
+                    'history' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/history',
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\History',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'list' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
+                                    'constraints' => array(
+                                        'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '[0-9]+',
+                                        'page' => '[0-9]+',
+                                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'order' => 'ASC|DESC',
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Samples\Controller\History',
+                                        'action' => 'index',
+                                    ),
+                                ),
+                            ),
                             'edit' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/edit/:brandId',
+                                    'route' => '/edit/:historyId',
                                     'defaults' => array(
-                                        'controller' => 'Computer\Controller\Brand',
+                                        'controller' => 'Samples\Controller\History',
                                         'action' => 'edit',
-                                        'brandId' => 0
+                                        'historyId' => 0
                                     ),
                                 ),
                             ),
                             'remove' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/remove/:brandId',
+                                    'route' => '/remove/:historyId',
                                     'defaults' => array(
-                                        'controller' => 'Computer\Controller\Brand',
+                                        'controller' => 'Samples\Controller\History',
                                         'action' => 'remove',
-                                        'brandId' => 0
+                                        'historyId' => 0
                                     ),
                                 ),
                             ),
+                            'shipping' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/shipping/:sampleId',
+                                    'defaults' => array(
+                                        'controller' => 'Samples\Controller\History',
+                                        'action' => 'shipping',
+                                        'sampleId' => 0
+                                    ),
+                                ),
+                            ),                            
                         ),
-                    ), // end brand                    
-                    
-                    
-                    
-                    
-
+                    ), // end history      
                     
                 ),
             ),
@@ -178,13 +261,14 @@ return array(
         ),
     ),
     //My module options
-    'sample_opt' => [],
-    
+    'sample_opt' => [
+        'attachmentPath' => '/data/attachments/',
+    ],
     //Navigation menu/breadcrumb
     'navigation' => array(
         'leftnav' => array(
             'samples' => array(
-                'label' => 'Campioni',
+                'label' => 'Campionature',
                 'route' => 'samples',
                 'icon' => 'fa fa-cubes fa-fw',
                 'pages' => array(
@@ -192,13 +276,13 @@ return array(
                         'label' => 'Dashboard',
                         'route' => 'samples',
                     ),
-                    'list' => array(
-                        'label' => 'Elenco',
-                        'route' => 'samples/list',
-                    ),
                     'add' => array(
-                        'label' => 'Nuova Campionatura',
+                        'label' => 'Richiedi Campionatura',
                         'route' => 'samples/create',
+                    ),
+                    'list' => array(
+                        'label' => 'Elenco Campionature',
+                        'route' => 'samples/list',
                     ),
                     'edit' => array(
                         'label' => 'Modifica Campionatura',
@@ -207,91 +291,29 @@ return array(
                     ),
                     'show' => array(
                         'label' => 'Mostra Campionatura',
-                        'route' => 'computer/show',
+                        'route' => 'samples/show',
                         'onlybread' => true,
                     ),
                     'userhistory' => array(
                         'label' => 'Storico computer di un utente',
                         'route' => 'computer/userhistory',
                         'onlybread' => true,
-                    ),                  
-                    //Category
-                    'catlist' => array(
-                        'label' => 'Categorie computer',
-                        'route' => 'computer/category',
-                        'onlybread' => true,
-                        'pages' => array(
-                            'catadd' => array(
-                                'label' => 'Nuova categoria computer',
-                                'route' => 'computer/category/create',
-                                'onlybread' => true,
-                            ),
-                            'catedit' => array(
-                                'label' => 'Modifica categoria computer',
-                                'route' => 'computer/category/edit',
-                                'onlybread' => true,
-                            ),
-                        ),
                     ),
-                    //brand
-                    'brandlist' => array(
-                        'label' => 'Brands computer',
-                        'route' => 'computer/brand',
-                        'onlybread' => true,
-                        'pages' => array(
-                            'branadd' => array(
-                                'label' => 'Nuovo brand computer',
-                                'route' => 'computer/brand/create',
-                                'onlybread' => true,
-                            ),
-                            'brandedit' => array(
-                                'label' => 'Modifica brand computer',
-                                'route' => 'computer/brand/edit',
-                                'onlybread' => true,
-                            ),
-                        ),
-                    ),
-                    //processor
-                    'processorlist' => array(
-                        'label' => 'Processore computer',
-                        'route' => 'computer/processor',
-                        'onlybread' => true,
-                        'pages' => array(
-                            'processoradd' => array(
-                                'label' => 'Nuovo processore computer',
-                                'route' => 'computer/processor/create',
-                                'onlybread' => true,
-                            ),
-                            'processoredit' => array(
-                                'label' => 'Modifica processore computer',
-                                'route' => 'computer/processor/edit',
-                                'onlybread' => true,
-                            ),
-                        ),
-                    ),
-                    //history
-                    'historylist' => array(
-                        'label' => 'Storico computers',
-                        'route' => 'computer/history',
-                        'pages' => array(
-                            'historyedit' => array(
-                                'label' => 'Modifica storico computer',
-                                'route' => 'computer/history/edit',
-                                'onlybread' => true,
-                            ),                        
-                        ),
-                    ),
-                    'userhistory' => array(
-                        'label' => 'Storico computers utente',
-                        'route' => 'computer/userhistory',
+                    //attachment
+                    'attachmentlist' => array(
+                        'label' => 'Elenco Allegati',
+                        'route' => 'samples/attachments/list',
                         'onlybread' => false,
-                    ),                       
-                    'settings' => array(
-                        'label' => 'Impostazioni',
-                        'route' => 'computer/settings',
-                    ),                      
+                        'pages' => array(                        
+                            'attachmentadd' => array(
+                                'label' => 'Aggiungi allegato/i',
+                                'route' => 'samples/attachments/add',
+                                'onlybread' => true,
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
-    ),    
+    ),
 );

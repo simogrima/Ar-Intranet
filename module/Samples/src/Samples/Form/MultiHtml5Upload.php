@@ -21,7 +21,7 @@ class MultiHtml5Upload extends Form
         $file = new Element\File('file');
         $file
             ->setLabel('Allegati')
-            ->setAttributes(array('multiple' => true));
+            ->setAttributes(array('multiple' => true, 'id' => 'file1'));
         $this->add($file);
         
         $this->add(array(
@@ -45,7 +45,7 @@ class MultiHtml5Upload extends Form
         $file->getFilterChain()->attachByName(
             'filerenameupload',
             array(
-                'target'          => './data/tmpuploads/',
+                'target'          => './public' . $this->options['attachmentPath'], //'./data/tmpuploads/',
                 'overwrite'       => true,
                 'use_upload_name' => true,
                 'randomize' => true,

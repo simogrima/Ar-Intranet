@@ -16,7 +16,8 @@ class Status
     const STATUS_TYPE_PRODUCT_REQUIRED = 5; //Prodotto richiesto    
     const STATUS_TYPE_PRODUCT_ARRIVED = 10; //Prodotto richiesto
     const STATUS_TYPE_PROCESSED = 15; //Evasa
-    const STATUS_TYPE_CANCELED = 20; //Annullata
+    const STATUS_TYPE_SHIPPED = 20; //Spedita
+    const STATUS_TYPE_CANCELED = 25; //Annullata
 
     /**
      * @var int|null
@@ -90,13 +91,14 @@ class Status
                 return 'info';
                 break;
             case self::STATUS_TYPE_PROCESSED:
+            case self::STATUS_TYPE_SHIPPED:
                 return 'success';
                 break;         
             case self::STATUS_TYPE_CANCELED:
                 return 'danger';
                 break;            
             default: //1
-                return '';
+                return 'default';
                 break;
         }
     }        

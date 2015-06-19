@@ -1,0 +1,51 @@
+<?php echo $this->titleAndBread('Modifica storico'); ?>
+<?php $this->myFlashMessenger(); ?>    
+<?php
+//$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
+$form->setAttribute('action', $this->serverUrl(TRUE));
+$form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('id', 'edit-form');
+$form->get('submit')->setValue('Modifica storico');
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+<div class="row">
+    <div class = "col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Modifica storico (solo in casi particolari)
+            </div>
+            <div class="panel-body">
+                <h4>
+                    Campionatura: 
+                    <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                        <?php echo $sample->getId(); ?>
+                    </a>                    
+                </h4> 
+                <?= $this->ztbFormElement($form->get('sampleStatus')); ?>
+                <?= $this->ztbFormElement($form->get('editDate')); ?>
+                
+            </div>    
+        </div>
+    </div>    
+</div>     
+<div class="row">
+    <div class = "col-md-6">
+        <?= $this->ztbFormElement($form->get('id')); ?>
+        <?= $this->ztbFormElement($form->get('editBy')); ?>
+        <?= $this->ztbFormElement($form->get('sample')); ?>
+        <?= $this->ztbFormElement($form->get('submit')); ?>
+    </div>
+</div>    
+<?php
+echo $this->form()->closeTag();
+?>
+<?php
+$this->headScript()->appendScript("
+$(function() {
+
+}); 
+");
+
+

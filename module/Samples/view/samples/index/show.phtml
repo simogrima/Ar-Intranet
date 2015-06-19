@@ -1,0 +1,539 @@
+<?php echo $this->titleAndBread('Campionatura ' . $sample->getId()) ?>
+<?php $this->myFlashMessenger(); ?>   
+<?php
+$status = $sample->getStatus()->getId();
+switch ($status) {
+    case 5:
+        $class = 'yellow';
+        $icon = 'mail-forward';
+        break;
+    case 10:
+        $class = 'info';
+        $icon = 'mail-reply';
+        break;    
+    case 15:
+        $class = 'green';
+        $icon = 'check';
+        break;        
+    case 20:
+        $class = 'green';
+        $icon = 'plane';
+        break;        
+    case 25:
+        $class = 'red';
+        $icon = 'trash';
+        break;
+    default:
+        $class = 'default';
+        $icon = 'clock-o';
+        break;
+}
+?>
+<div class="row">
+    <div class="col-md-12">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-<?php echo $class; ?>">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <i class="fa fa-<?php echo $icon; ?> fa-5x"></i>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                        <div class="huge"><?php echo $sample->getStatus()->getName(); ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-user fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <a href="<?php echo $this->url('computer/userhistory', array('userId' => $sample->getApplicant()->getId())); ?>">
+                                <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                            </a>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>           
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-cubes fa-fw"></i>
+                Campionatura
+
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Actions
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <li>
+                                <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
+                                    <?php echo $this->translate('Edit') ?>
+                                </a>                                
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
+                                   onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la campionatura') ?>')">
+                                       <?php echo $this->translate('Delete') ?>
+                                </a>                                
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Richiesta N°:
+                            <small><?php echo $sample->getId(); ?></small>
+                        </h2>                
+                        <h2>Cliente:
+                            <small><?php echo $sample->getCustomer(); ?></small>
+                        </h2>
+                        <h2>Modello:
+                            <small><?php echo $sample->getModel(); ?></small>
+                        </h2>
+                        <h2>Quantità prevista pz/anno:
+                            <small><?php echo $sample->getQtaExpected(); ?></small>
+                        </h2>     
+                        <h2>Prodotto standard:
+                            <small><?php echo $sample->getStandardProduct(true); ?></small>
+                        </h2>                         
+                        <h2>Campione per approvazione:
+                            <small><?php echo $sample->getApprovalSample(true); ?></small>
+                        </h2>                                           
+                    </div>
+
+                    <div class="col-md-6">
+                        <h2>Del:
+                            <small><?php
+                                echo $this->dateFormat(
+                                        $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        "it_IT");
+                                ?></small>
+                        </h2>                
+                        <h2>Paese:
+                            <small><?php echo $sample->getCountry()->getName(); ?></small>
+                        </h2>
+                        <h2>Quantità:
+                            <small><?php echo $sample->getQta(); ?></small>
+                        </h2>
+                        <h2>Termine di pagamento:
+                            <small><?php echo $sample->getPaymentTerm(); ?></small>
+                        </h2>                        
+                        <h2>VPP riferimento:
+                            <small><?php echo $sample->getVpp(); ?></small>
+                        </h2>         
+                        <h2>Consegna richiesta il:
+                            <small><?php
+                                echo $this->dateFormat(
+                                        $sample->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        "it_IT");
+                                ?></small>
+                        </h2>          
+
+                    </div>
+                </div>                    
+
+                <hr class="devider devider-db-dotted"> 
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Note:</h2><br/>
+                        <small><?php echo nl2br($sample->getNote()); ?></small>
+
+                    </div></div>
+
+
+
+            </div>
+            <!-- /.panel-body -->
+        </div>        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-th-list fa-fw"></i>
+                Dati Tenici
+            </div>
+            <div class="panel-body">
+
+
+
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th></th>
+                            <th>Richiesta</th>
+                            <th>Fornita</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Tensione</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltage(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltageProvided(); ?>
+                            </td>                            
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Frequenza</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getFrequency(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getFrequencyProvided(); ?>
+                            </td>                            
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Assorbimento</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltage(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltageProvided(); ?>
+                            </td>                            
+                        </tr>  
+                        <tr>
+                            <td>
+                                <strong>Pressione</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltage(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltageProvided(); ?>
+                            </td>                            
+                        </tr>        
+                        <tr>
+                            <td>
+                                <strong>Sfasamento</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltage(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltageProvided(); ?>
+                            </td>                            
+                        </tr>     
+                        <tr>
+                            <td>
+                                <strong>EDT</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltage(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getVoltageProvided(); ?>
+                            </td>                            
+                        </tr>     
+                        <tr>
+                            <td>
+                                <strong>Spina</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getPlug(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getPlugProvided(); ?>
+                            </td>                            
+                        </tr>     
+                        <tr>
+                            <td>
+                                <strong>Cavo</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getCable(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getCableProvided(); ?>
+                            </td>                            
+                        </tr>     
+                        <tr>
+                            <td>
+                                <strong>Serigrafia</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getSerigraphy(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getSerigraphyProvided(); ?>
+                            </td>                            
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Colori</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getColors(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getColorsProvided(); ?>
+                            </td>                            
+                        </tr>   
+                        <tr>
+                            <td>
+                                <strong>Accessori</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getAccessories(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getAccessoriesProvided(); ?>
+                            </td>                            
+                        </tr>     
+                        <tr>
+                            <td>
+                                <strong>Libretto</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getBooklet(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getBookletProvided(); ?>
+                            </td>                            
+                        </tr>              
+                        <tr>
+                            <td>
+                                <strong>Imballo</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getPackaging(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getPackagingProvided(); ?>
+                            </td>                            
+                        </tr>    
+                        <tr>
+                            <td>
+                                <strong>Altro</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getBooklet(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getBookletProvided(); ?>
+                            </td>                            
+                        </tr>       
+                        <tr>
+                            <td>
+                                <strong>Consegna prevista</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getBooklet(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getBookletProvided(); ?>
+                            </td>                            
+                        </tr>      
+                        <tr>
+                            <td>
+                                <strong>Responsabile</strong> 
+                            </td>
+                            <td>
+                                <?php echo $sample->getBooklet(); ?>
+                            </td>
+                            <td>
+                                <?php echo $sample->getBookletProvided(); ?>
+                            </td>                            
+                        </tr>                           
+                    </table>
+                </div>
+
+
+
+
+            </div>
+            <!-- /.panel-body -->
+        </div>        
+    </div>    
+</div>    
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-paperclip fa-fw"></i>
+                Allegati
+            </div>
+            <div class="panel-body">
+
+                <?php
+                $att['Richiesta'] = $sample->getAttachments(\Samples\Entity\Attachments::ATTACHMENT_TYPE_REQUEST);
+                $att['Evasione'] = $sample->getAttachments(\Samples\Entity\Attachments::ATTACHMENT_TYPE_CLASSIFIED);
+                if ((count($att['Richiesta']) < 1) && (count($att['Evasione']) < 1)):
+                    ?>
+                    <div class="huge text-center">
+                        Nessun allegato presente!
+                    </div>
+                <?php else: ?>                
+                    <?php foreach ($att as $key => $value): ?>
+        <?php if (!count($value) < 1): ?>                
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th colspan="3"><?= $key ?></th>
+                                    </tr>
+            <?php foreach ($value as $attachment): ?>                        
+                                        <tr>
+                                            <td class="col-md-2">
+                                                <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                    <img class="img-responsive" style="max-height: 70px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
+                                                </a>
+                                            </td>
+                                            <td class="col-md-6">
+                                                <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                <?php echo $attachment->getFileName(); ?>
+                                                </a>
+                                            </td>
+                                            <td class="col-md-4">
+                                                <?php
+                                                echo $this->dateFormat(
+                                                        $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                                        IntlDateFormatter::NONE, // time
+                                                        "it_IT");
+                                                ?>
+                                            </td>                            
+                                        </tr>
+            <?php endforeach; ?>                         
+                                </table>
+                            </div>
+                        <?php endif; ?>                
+                    <?php endforeach; ?>                
+<?php endif; ?>                
+
+
+
+            </div>
+            <!-- /.panel-body -->
+        </div>        
+    </div>    
+</div>    
+
+
+
+<!-- History -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-clock-o fa-fw"></i> History
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Actions
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <?php
+                            $items = array(
+                                0 => 'Mostra Tutti',
+                                \Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION => 'Richiesta',
+                                \Samples\Entity\Status::STATUS_TYPE_PRODUCT_REQUIRED  => 'Prodotto Richiesto',
+                                \Samples\Entity\Status::STATUS_TYPE_PRODUCT_ARRIVED  => 'Prodotto Arrivato',
+                                \Samples\Entity\Status::STATUS_TYPE_PROCESSED  => 'Evasa',
+                                \Samples\Entity\Status::STATUS_TYPE_SHIPPED => 'Spedita',
+                                \Samples\Entity\Status::STATUS_TYPE_CANCELED => 'Annullata',
+                            );
+                            foreach ($items as $key => $value):
+                                $class = ($historyType == $key) ? 'active' : '';
+                                ?>
+                                <li class="<?php echo $class; ?>">
+                                    <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId(), 'historyType' => $key)); ?>">
+    <?php echo $value; ?>
+                                    </a>
+                                </li>                            
+<?php endforeach; ?>                                                      
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <ul class="timeline">
+                    <?php
+                    $count = 0;
+                    $history = $sample->getHistory($historyType);
+                    foreach ($history as $row):
+                        $count++;
+                        $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
+                        ?>
+                        <li class="<?php echo $timelineClass; ?>">
+                            <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
+                            </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title"><?php echo $row->getSampleStatus()->getName(); ?></h4>
+                                    <p>
+                                        <small class="text-muted"><i class="fa fa-clock-o"></i> <?php
+                                            echo $this->dateFormat(
+                                                    $row->getEditDate(), IntlDateFormatter::LONG, // date
+                                                    IntlDateFormatter::SHORT, // time
+                                                    "it_IT");
+                                            ?>
+                                        </small>
+                                    </p>
+                                    <p>
+                                        <small class="text-muted">
+                                            <i class="fa fa-user"></i>
+                                            <?php echo $row->getEditBy()->getDisplayName(); ?>
+                                        </small>
+                                    </p>  
+                                </div>
+                                <div class="timeline-body">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </li>                    
+<?php endforeach; ?>                    
+
+
+                </ul>
+            </div>
+            <!-- /.panel-body -->
+        </div>  
+    </div>        
+</div>   
+<!-- Fine History -->
+
+<?php
+$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');

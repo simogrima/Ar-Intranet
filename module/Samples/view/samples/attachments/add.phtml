@@ -1,15 +1,23 @@
 <?php echo $this->titleAndBread('Aggiungi Allegati'); ?>
 <?php $this->myFlashMessenger(); ?>    
-<?php
-/**
-  echo $this->headLink()
-  ->appendStylesheet($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css');
-  echo $this->headScript()
-  ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.min.js')
-  ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
- * 
- */
-?>
+
+
+<?php if ($type == 'richiesta'): ?>
+    <div class="alert alert-success">
+        <h3>La Campionatura Nr. <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>" class="alert-link"><?= $sample->getId(); ?></a> è stata richiesta</h3>
+        La data prevista di evasione è il 
+        <strong>
+        <?php
+        echo $this->dateFormat(
+                $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                IntlDateFormatter::NONE, // time
+                "it_IT");
+        ?>.</strong><br/>
+        Se desideri aggiungere degli allegati alla campionatura puo farlo qua sotto.
+    </div>
+<?php endif; ?>
+
+
 <?php
 // Init Form
 $form = $this->form;
@@ -17,15 +25,15 @@ $form->setAttribute('class', 'form-horizontal');
 $form->prepare();
 
 // Configure Errors Helper
-$errorsHelper  = $this->plugin('formelementerrors');
+$errorsHelper = $this->plugin('formelementerrors');
 $errorsHelper
-    ->setMessageOpenFormat('<div class="help-block">')
-    ->setMessageSeparatorString('</div><div class="help-block">')
-    ->setMessageCloseString('</div>');
+        ->setMessageOpenFormat('<div class="help-block">')
+        ->setMessageSeparatorString('</div><div class="help-block">')
+        ->setMessageCloseString('</div>');
 ?>
 <?php echo $this->form()->openTag($form); ?>
 <fieldset>
-    <legend><?php echo ($this->legend) ?: 'Files Upload' ?></legend>
+    <legend><?php echo ($this->legend) ? : 'Files Upload' ?></legend>
 
 
 
@@ -47,9 +55,9 @@ $errorsHelper
                 -->
                 <div class="help-block">
                     Uploaded: <ul>
-                    <?php foreach ($this->tempFiles as $tempFile) { ?>
-                        <li><?php echo $this->escapeHtml($tempFile['name']) ?></li>
-                    <?php } ?>
+                        <?php foreach ($this->tempFiles as $tempFile) { ?>
+                            <li><?php echo $this->escapeHtml($tempFile['name']) ?></li>
+                        <?php } ?>
                     </ul>
                 </div>
             <?php } ?>
@@ -58,11 +66,41 @@ $errorsHelper
     <?= $this->ztbFormElement($form->get('sample_id')); ?>
     <?= $this->ztbFormElement($form->get('type')); ?>
 
+    <hr>
     <div class="control-group">
         <div class="controls">
-            <button class="btn btn-primary">Aggiungi</button>
+            <button class="btn btn-primary">Aggiungi Allegati</button>
+            <?php if ($type == 'richiesta'): ?>
+            <a class="btn btn-default" href="<?php echo $this->url('samples/list'); ?>">Continua senza allegare</a>
+            <?php else: ?>
+            <a class="btn btn-default" href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">Annulla</a>
+            <?php endif; ?>
         </div>
     </div>
 
 </fieldset>
 <?php echo $this->form()->closeTag($form); ?>
+
+<?php
+echo $this->headLink()
+        ->appendStylesheet($this->basePath() . '/js/plugins/bootstrap-fileinput/css/fileinput.min.css');
+echo $this->headScript()
+        ->prependFile($this->basePath() . '/js/plugins/bootstrap-fileinput/js/fileinput.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/bootstrap-fileinput/js/fileinput_locale_it.js');
+
+$this->inlineScript()->captureStart();
+echo <<<JS
+$(document).ready(function() {
+
+	$("#file1").fileinput({
+		showUpload: false,
+		showCaption: false,
+		browseClass: "btn btn-primary btn-lg",
+		fileType: "any",
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>"
+	});
+
+});
+JS;
+$this->inlineScript()->captureEnd();
+

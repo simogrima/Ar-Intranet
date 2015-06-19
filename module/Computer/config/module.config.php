@@ -129,7 +129,7 @@ return array(
                         ),
                     ),
                     'userhistory' => array(
-                        'type' => 'Segment',                       
+                        'type' => 'Segment',
                         'options' => array(
                             'route' => '/user-history[/:userId]',
                             'defaults' => array(
@@ -287,28 +287,25 @@ return array(
                                 'action' => 'index',
                             ),
                         ),
-
                         'may_terminate' => true,
                         'child_routes' => array(
-                    'list' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
-                            'constraints' => array(
-                                'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id' => '[0-9]+',
-                                'page' => '[0-9]+',
-                                'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'order' => 'ASC|DESC',
+                            'list' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
+                                    'constraints' => array(
+                                        'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '[0-9]+',
+                                        'page' => '[0-9]+',
+                                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'order' => 'ASC|DESC',
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Computer\Controller\History',
+                                        'action' => 'index',
+                                    ),
+                                ),
                             ),
-                            'defaults' => array(
-                                'controller' => 'Computer\Controller\History',
-                                'action' => 'index',
-                            ),
-                        ),       
-                    ),                            
-                            
-                            
                             'edit' => array(
                                 'type' => 'Segment',
                                 'options' => array(
@@ -342,7 +339,7 @@ return array(
                                 ),
                             ),
                         ),
-                    ), // end processor                      
+                    ), // end history                    
                 ),
             ),
         ),
@@ -369,7 +366,7 @@ return array(
     'computer_opt' => [
         'scortaId' => 2,
         'scortaUserId' => 2,
-    ],   
+    ],
     //Navigation menu/breadcrumb
     'navigation' => array(
         'leftnav' => array(
@@ -404,7 +401,7 @@ return array(
                         'label' => 'Storico computer di un utente',
                         'route' => 'computer/userhistory',
                         'onlybread' => true,
-                    ),                  
+                    ),
                     //Category
                     'catlist' => array(
                         'label' => 'Categorie computer',
@@ -468,18 +465,18 @@ return array(
                                 'label' => 'Modifica storico computer',
                                 'route' => 'computer/history/edit',
                                 'onlybread' => true,
-                            ),                        
+                            ),
                         ),
                     ),
                     'userhistory' => array(
                         'label' => 'Storico computers utente',
                         'route' => 'computer/userhistory',
                         'onlybread' => false,
-                    ),                       
+                    ),
                     'settings' => array(
                         'label' => 'Impostazioni',
                         'route' => 'computer/settings',
-                    ),                      
+                    ),
                 ),
             ),
         ),

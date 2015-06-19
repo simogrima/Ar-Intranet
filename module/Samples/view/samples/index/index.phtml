@@ -1,1 +1,303 @@
-hola
+<?php echo $this->titleAndBread('Campionature'); ?>
+<?php $this->myFlashMessenger(); ?>   
+
+<div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-cubes fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><?= $sampleCount; ?></div>
+                                    <div>Campionatuer presenti!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="<?php echo $this->url('samples/list'); ?>">
+                            <div class="panel-footer">
+                                <span class="pull-left">Mostra</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-check fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><?= $processedCount; ?></div>
+                                    <div>Campionature evase!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="<?php echo $this->url('computer/settings'); ?>">
+                            <div class="panel-footer">
+                                <span class="pull-left">Mostra</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-clock-o fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><?= $processedCount; ?></div>
+                                    <div>Campionature in corso!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">Mostra</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-trash fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge"><?= $cancelCount; ?></div>
+                                    <div>Campionature annullate!</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#">
+                            <div class="panel-footer">
+                                <span class="pull-left">Mostra</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Ultimi inserimenti
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table class="table table-bordered table-hover" id="example1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Modello</th>
+                <th>Cliente</th>    
+                <th>Richiedente</th>
+                <th>Stato</th>
+                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
+                <th class="text-center"><i class="fa fa-calendar fa-fw"></i></th>
+                <th>Action</th>
+            </tr>
+        </thead>    
+            <?php foreach ($this->samples as $sample): ?>
+            <?php
+            $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());   
+            ?>
+                <tr class="<?= $class; ?>">
+                    <td class="cell cell-id">
+                        <?php echo $sample->getId(); ?>
+                    </td>
+                    <td class="cell cell-serial">
+                        <?php echo $sample->getModel(); ?>
+                    </td>         
+                    <td class="cell">
+                        <?php echo $sample->getCustomer(); ?>
+                    </td>       
+                    <td class="cell">
+                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getApplicant()->getDisplayName(); ?>%22%7D">
+                        <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                        </a>
+                    </td>    
+                    <td class="cell">
+                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getStatus()->getName(); ?>%22%7D">
+                        <?php echo $sample->getStatus()->getName(); ?>
+                        </a>    
+                    </td>    
+                    <td class="cell text-center">
+                        <?php echo  count($sample->getAttachments()); ?>
+                    </td>   
+                    <td class="cell text-center">
+                        <?php
+                        echo $this->dateFormat(
+                                $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        ?>                        
+                    </td>                      
+                    <td class="cell cell-ctrls text-center">
+                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                            <span class="glyphicon glyphicon-eye-open"></span> Show
+                        </a>                         
+                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a> 
+                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
+                           onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la campionatura?') ?>')" class="btn btn-danger btn-xs">
+                            <span class="glyphicon glyphicon-remove"></span> Del
+                        </a>
+                        <?php if (!$sample->isShipped()): ?>
+                        <a class='btn btn-success btn-xs' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
+                            <i class="fa fa-plane"></i> Spedisci
+                        </a>                         
+                        <?php endif; ?>
+                    </td>
+
+                </tr>
+            <?php endforeach; ?>    
+        
+                            </table>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Per Brand
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-pie-brand"></div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Per categoria
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-pie-category"></div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-6 -->
+
+
+            </div>
+
+<!-- Flot Charts JavaScript --> 
+<?php
+$this->headScript()
+        //->prependFile($this->basePath() . '/js/plugins/flot/flot-data.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.tooltip.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.resize.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.pie.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/jquery.flot.js')
+        ->prependFile($this->basePath() . '/js/plugins/flot/excanvas.min.js');
+
+
+$pieBrandData = '';
+foreach ($chartPieBrand as $item) {
+    $pieBrandData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+}
+
+$pieCategoryData = '';
+foreach ($chartPieCategory as $item) {
+    $pieCategoryData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+}
+
+$this->headScript()->appendScript("
+$(function() {
+//Flot Pie Chart
+$(function() {
+
+    //Brand
+    var dataBrand = [" . $pieBrandData . "];
+    var plotObj = $.plot($(\"#flot-pie-brand\"), dataBrand, {
+        series: {
+            pie: {
+                show: true
+            }
+        },
+        grid: {
+            hoverable: true
+        },
+        tooltip: true,
+        tooltipOpts: {
+            content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            shifts: {
+                x: 20,
+                y: 0
+            },
+            defaultTheme: false
+        }
+    });
+    
+    //Category
+    var dataCategory = [" . $pieCategoryData . "];
+    var plotObj = $.plot($(\"#flot-pie-category\"), dataCategory, {
+        series: {
+            pie: {
+                show: true
+            }
+        },
+        grid: {
+            hoverable: true
+        },
+        tooltip: true,
+        tooltipOpts: {
+            content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            shifts: {
+                x: 20,
+                y: 0
+            },
+            defaultTheme: false
+        }
+    });
+
+});
+
+
+}); 
+
+");

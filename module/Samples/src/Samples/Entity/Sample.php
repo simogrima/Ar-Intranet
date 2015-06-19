@@ -133,13 +133,6 @@ class Sample
      *
      * @ORM\Column(type="string", length=128)
      */
-    protected $vpp;
-    
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", length=128)
-     */
     protected $booklet;  
     
     /**
@@ -147,7 +140,78 @@ class Sample
      *
      * @ORM\Column(type="string", length=128)
      */
-    protected $packaging;     
+    protected $packaging;      
+    
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="voltage_provided", type="string", nullable=true, length=128)
+     */
+    protected $voltageProvided; //tensione
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="plug_provided", type="string", nullable=true, length=128)
+     */
+    protected $plugProvided; //spina
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="frequency_provided", type="string", nullable=true, length=128)
+     */
+    protected $frequencyProvided; //frequenza
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="serigraphy_provided", type="string", nullable=true, length=128)
+     */
+    protected $serigraphyProvided; //serigrafia
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="colors_provided", type="string", nullable=true, length=128)
+     */
+    protected $colorsProvided; //frequenza
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="cable_provided", type="string", nullable=true, length=128)
+     */
+    protected $cableProvided; //frequenza
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="accessories_provided", type="string", nullable=true, length=128)
+     */
+    protected $accessoriesProvided;    
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="booklet_provided", type="string", nullable=true, length=128)
+     */
+    protected $bookletProvided;  
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="packaging_provided", type="string", nullable=true, length=128)
+     */
+    protected $packagingProvided;     
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $vpp;   
     
     /**
      * @var string
@@ -197,6 +261,11 @@ class Sample
     protected $attachments;   
     
     /**
+     * @ORM\OneToMany(targetEntity="Samples\Entity\History", mappedBy="sample", cascade={"remove"})
+     */
+    protected $history;      
+    
+    /**
      * @var \Samples\Entity\Status
      *
      * @ORM\ManyToOne(targetEntity="Samples\Entity\Status", cascade={"persist"})
@@ -212,6 +281,7 @@ class Sample
     public function __construct()
     {
         $this->attachments = new ArrayCollection();
+        $this->history = new ArrayCollection();
     }      
     
  
@@ -313,6 +383,52 @@ class Sample
     public function setQtaExpected($qtaExpected)
     {
         $this->qtaExpected = $qtaExpected;
+
+        return $this;
+    }      
+    
+    /**
+     * Get requestedDeliveryDate
+     * 
+     * @return \DateTime 
+     */
+    public function getRequestedDeliveryDate()
+    {
+        return $this->requestedDeliveryDate;
+    }    
+
+    /**
+     * Set requestedDeliveryDate
+     * 
+     * @param \DateTime $requestedDeliveryDate
+     * @return \Samples\Entity\Sample
+     */
+    public function setRequestedDeliveryDate(\DateTime $requestedDeliveryDate)
+    {
+        $this->requestedDeliveryDate = $requestedDeliveryDate;
+
+        return $this;
+    }     
+    
+    /**
+     * Get paymentTerm
+     * 
+     * @return string
+     */
+    public function getPaymentTerm()
+    {
+        return $this->paymentTerm;
+    }
+    
+    /**
+     * Set paymentTerm
+     * 
+     * @param string $paymentTerm
+     * @return \Samples\Entity\Sample
+     */
+    public function setPaymentTerm($paymentTerm)
+    {
+        $this->paymentTerm = $paymentTerm;
 
         return $this;
     }      
@@ -479,58 +595,268 @@ class Sample
     }    
     
     /**
-     * Get requestedDeliveryDate
-     * 
-     * @return \DateTime 
-     */
-    public function getRequestedDeliveryDate()
-    {
-        return $this->requestedDeliveryDate;
-    }    
-
-    /**
-     * Set requestedDeliveryDate
-     * 
-     * @param \DateTime $requestedDeliveryDate
-     * @return \Samples\Entity\Sample
-     */
-    public function setRequestedDeliveryDate(\DateTime $requestedDeliveryDate)
-    {
-        $this->requestedDeliveryDate = $requestedDeliveryDate;
-
-        return $this;
-    }     
-    
-    /**
-     * Get paymentTerm
+     * Get booklet
      * 
      * @return string
-     */
-    public function getPaymentTerm()
+     */       
+    public function getBooklet()
     {
-        return $this->paymentTerm;
+        return $this->booklet;
+    }
+
+    /**
+     * Set booklet
+     * 
+     * @param string $booklet
+     * @return \Samples\Entity\Sample
+     */        
+    public function setBooklet($booklet)
+    {
+        $this->booklet = $booklet;
+        
+        return $this;
     }
     
     /**
-     * Set paymentTerm
+     * Get packaging
      * 
-     * @param string $paymentTerm
+     * @return string
+     */       
+    public function getPackaging()
+    {
+        return $this->packaging;
+    } 
+
+    /**
+     * Set packaging
+     * 
+     * @param string $packaging
+     * @return \Samples\Entity\Sample
+     */        
+    public function setPackaging($packaging)
+    {
+        $this->packaging = $packaging;
+        
+        return $this;
+    } 
+    
+    /**
+     * Get voltageProvided
+     * 
+     * @return string
+     */
+    public function getVoltageProvided()
+    {
+        return $this->voltageProvided;
+    }
+    
+    /**
+     * Set voltageProvided
+     * 
+     * @param string $voltageProvided
      * @return \Samples\Entity\Sample
      */
-    public function setPaymentTerm($paymentTerm)
+    public function setVoltageProvided($voltageProvided)
     {
-        $this->paymentTerm = $paymentTerm;
+        $this->voltageProvided = $voltageProvided;
 
         return $this;
-    }       
+    }    
+
+    /**
+     * Get plugProvided
+     * 
+     * @return string
+     */
+    public function getPlugProvided()
+    {
+        return $this->plugProvided;
+    }
+
+    /**
+     * Set plugProvided
+     * 
+     * @param string $plugProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setPlugProvided($plugProvided)
+    {
+        $this->plugProvided = $plugProvided;
+
+        return $this;
+    }    
+
+    /**
+     * Get frequencyV
+     * 
+     * @return string
+     */
+    public function getFrequencyProvided()
+    {
+        return $this->frequencyProvided;
+    }
+    
+    /**
+     * Set frequencyProvided
+     * 
+     * @param string $frequencyProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setFrequencyProvided($frequencyProvided)
+    {
+        $this->frequencyProvided = $frequencyProvided;
+
+        return $this;
+    }    
+
+    /**
+     * Get serigraphyProvided
+     * 
+     * @return string
+     */
+    public function getSerigraphyProvided()
+    {
+        return $this->serigraphyProvided;
+    }
+
+    /**
+     * Set serigraphyProvided
+     * 
+     * @param string $serigraphyProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setSerigraphyProvided($serigraphyProvided)
+    {
+        $this->serigraphyProvided = $serigraphyProvided;
+
+        return $this;
+    }    
+
+    /**
+     * Get colorsProvided
+     * 
+     * @return string
+     */
+    public function getColorsProvided()
+    {
+        return $this->colorsProvided;
+    }
+    
+    /**
+     * Set colorsProvided
+     * 
+     * @param string $colorsProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setColorsProvided($colorsProvided)
+    {
+        $this->colorsProvided = $colorsProvided;
+
+        return $this;
+    }    
+
+    /**
+     * Get cableProvided
+     * 
+     * @return string
+     */
+    public function getCableProvided()
+    {
+        return $this->cableProvided;
+    }
+
+    /**
+     * Set cableProvided
+     * 
+     * @param string $cableProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setCableProvided($cableProvided)
+    {
+        $this->cableProvided = $cableProvided;
+
+        return $this;
+    }    
+
+    /**
+     * Get accessoriesProvided
+     * 
+     * @return string
+     */
+    public function getAccessoriesProvided()
+    {
+        return $this->accessoriesProvided;
+    }
+    
+    /**
+     * Set accessoriesProvided
+     * 
+     * @param string $accessoriesProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setAccessoriesProvided($accessoriesProvided)
+    {
+        $this->accessoriesProvided = $accessoriesProvided;
+
+        return $this;
+    }    
+    
+    /**
+     * Get bookletProvided
+     * 
+     * @return string
+     */       
+    public function getBookletProvided()
+    {
+        return $this->bookletProvided;
+    }
+
+    /**
+     * Set bookletProvided
+     * 
+     * @param string $bookletProvided
+     * @return \Samples\Entity\Sample
+     */        
+    public function setBookletProvided($bookletProvided)
+    {
+        $this->bookletProvided = $bookletProvided;
+        
+        return $this;
+    }
+    
+    /**
+     * Get packagingProvided
+     * 
+     * @return string
+     */       
+    public function getPackagingProvided()
+    {
+        return $this->packagingProvided;
+    } 
+
+    /**
+     * Set packagingProvided
+     * 
+     * @param string $packagingProvided
+     * @return \Samples\Entity\Sample
+     */        
+    public function setPackagingProvided($packagingProvided)
+    {
+        $this->packagingProvided = $packagingProvided;
+        
+        return $this;
+    }     
     
     /**
      * Get standardProduct
      * 
      * @return string
      */    
-    public function getStandardProduct()
+    public function getStandardProduct($human = FALSE)
     {
+        if ($human) {
+            return ($this->standardProduct == 1) ? 'Yes' : 'No';
+        }
         return $this->standardProduct;
     }
 
@@ -552,8 +878,11 @@ class Sample
      * 
      * @return string
      */        
-    public function getApprovalSample()
+    public function getApprovalSample($human = FALSE)
     {
+        if ($human) {
+            return ($this->approvalSample == 1) ? 'Yes' : 'No';
+        }        
         return $this->approvalSample;
     }
 
@@ -568,38 +897,8 @@ class Sample
         $this->approvalSample = $approvalSample;
         
         return $this;
-    }
+    }    
     
-    /**
-     * Get vpp
-     * 
-     * @return string
-     */       
-    public function getVpp()
-    {
-        return $this->vpp;
-    }
-
-    /**
-     * Get booklet
-     * 
-     * @return string
-     */       
-    public function getBooklet()
-    {
-        return $this->booklet;
-    }
-
-    /**
-     * Get packaging
-     * 
-     * @return string
-     */       
-    public function getPackaging()
-    {
-        return $this->packaging;
-    }
-
     /**
      * Set vpp
      * 
@@ -612,32 +911,16 @@ class Sample
         
         return $this;
     }
-
+    
     /**
-     * Set booklet
+     * Get vpp
      * 
-     * @param string $booklet
-     * @return \Samples\Entity\Sample
-     */        
-    public function setBooklet($booklet)
+     * @return string
+     */       
+    public function getVpp()
     {
-        $this->booklet = $booklet;
-        
-        return $this;
-    }
-
-    /**
-     * Set packaging
-     * 
-     * @param string $packaging
-     * @return \Samples\Entity\Sample
-     */        
-    public function setPackaging($packaging)
-    {
-        $this->packaging = $packaging;
-        
-        return $this;
-    } 
+        return $this->vpp;
+    }       
     
     /**
      * Get note
@@ -657,7 +940,7 @@ class Sample
      */
     public function setNote($note)
     {
-        $this->content = $note;
+        $this->note = $note;
     
         return $this;
     }
@@ -718,18 +1001,50 @@ class Sample
     
     public function getAttachments($type = null)
     {
+        if ($type && in_array($type, \Samples\Entity\Attachments::getAttachmentTypeValues())) {
+            $attachments = [];
+            foreach ($this->getAttachments() as $row) {
+                if ($row->getAttachmentType() == $type)
+                $attachments[] = $row;
+            }
+            return $attachments;
+        }
         
         return $this->attachments;
     }        
 
+    public function addHistory(Collection $history)
+    {
+        foreach ($history as $row) {
+            $row->setSample($this);
+            $this->history->add($row);
+        }
+    }
+
+    /**
+     * Rimuove lo storico di un computer
+     * @param Collection $history lo storico da rimuovere
+     * @return \Samples\Entity\Sample
+     */
+    public function removeHistory(Collection $history)
+    {
+        foreach ($history as $row) {
+            $row->setSample(null);
+            $this->history->removeElement($row);
+        }
+        
+        return $this;
+    }
+
     /**
      * Get computer history
      * @param int $type in tipo di history
-     * 0 -> all
-     * 1 -> Creazione
-     * 2 -> Modifica
-     * 3 -> Assegnazione
-     * 4 -> Cambio stato
+     * 1 -> Emessa
+     * 5 -> Prodotto richiesto
+     * 10 -> Prodotto arrivato
+     * 15 -> Evasa
+     * 20 -> Spedita
+     * 25 -> Annullata
      * 
      * @return Collection | Array
      */
@@ -738,7 +1053,7 @@ class Sample
         if (is_numeric($type) && $type > 0) {
             $history = [];
             foreach ($this->getHistory() as $row) {
-                if ($row->getType() == $type)
+                if ($row->getSampleStatus()->getId() == $type)
                 $history[] = $row;
             }
             return $history;
@@ -808,7 +1123,7 @@ class Sample
      * @param \DateTime $editDate
      * @return \Samples\Entity\Sample
      */
-    public function setEditdDate(\DateTime $createdDate)
+    public function setEditDate(\DateTime $createdDate)
     {
         $this->editDate = $createdDate;
 
@@ -837,6 +1152,16 @@ class Sample
     {
         return $this->country;
     }    
+    
+    /**
+     * Metodo logico che mi dice se la campionatura è in stato spedito.
+     * 
+     * @return boolean
+     */
+    public function isShipped()
+    {
+        return ($this->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_SHIPPED);
+    }        
 
     /**
      * @ORM\PrePersist
@@ -848,7 +1173,7 @@ class Sample
             $this->setCreatedDate(new \Datetime());
         }
     
-        $this->setEditdDate(new \Datetime());
+        $this->setEditDate(new \Datetime());
 
     }
     
