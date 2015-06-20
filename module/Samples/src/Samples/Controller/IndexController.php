@@ -69,10 +69,15 @@ class IndexController extends EntityUsingController
             \Samples\Entity\Status::STATUS_TYPE_PROCESSED,
             \Samples\Entity\Status::STATUS_TYPE_SHIPPED 
         ];
+        
+        
+        $config = $this->getEntityManager()->getConfiguration();
+$config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
+        
         $queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus). ')');
         $queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
         $queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);   
-        $queryPieCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s ');   
+        $queryPieCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');   
 
         var_dump($queryPieCount->getResult());
         return array(
