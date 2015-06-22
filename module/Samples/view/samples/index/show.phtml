@@ -74,7 +74,6 @@ switch ($status) {
             <div class="panel-heading">
                 <i class="fa fa-cubes fa-fw"></i>
                 Campionatura
-
                 <div class="pull-right">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -154,16 +153,18 @@ switch ($status) {
 
                     </div>
                 </div>                    
-
-                <hr class="devider devider-db-dotted"> 
+                <hr> 
                 <div class="row">
                     <div class="col-md-6">
-                        <h2>Note:</h2><br/>
-                        <small><?php echo nl2br($sample->getNote()); ?></small>
+                        <h2>Note Richiesta:</h2>
+                        <?php echo nl2br($sample->getNote()); ?>
 
-                    </div></div>
-
-
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Note Evasione:</h2>
+                        <?php echo nl2br($sample->getNoteProvided()); ?>
+                    </div>                  
+                </div>
 
             </div>
             <!-- /.panel-body -->
@@ -223,10 +224,9 @@ switch ($status) {
                                 <strong>Assorbimento</strong> 
                             </td>
                             <td>
-                                <?php echo $sample->getVoltage(); ?>
                             </td>
                             <td>
-                                <?php echo $sample->getVoltageProvided(); ?>
+                                <?php echo $sample->getAbsorptionProvided(); ?>
                             </td>                            
                         </tr>  
                         <tr>
@@ -234,10 +234,9 @@ switch ($status) {
                                 <strong>Pressione</strong> 
                             </td>
                             <td>
-                                <?php echo $sample->getVoltage(); ?>
                             </td>
                             <td>
-                                <?php echo $sample->getVoltageProvided(); ?>
+                                <?php echo $sample->getPressureProvided(); ?>
                             </td>                            
                         </tr>        
                         <tr>
@@ -245,10 +244,9 @@ switch ($status) {
                                 <strong>Sfasamento</strong> 
                             </td>
                             <td>
-                                <?php echo $sample->getVoltage(); ?>
                             </td>
                             <td>
-                                <?php echo $sample->getVoltageProvided(); ?>
+                                <?php echo $sample->getSfasamentoProvided(); ?>
                             </td>                            
                         </tr>     
                         <tr>
@@ -256,10 +254,9 @@ switch ($status) {
                                 <strong>EDT</strong> 
                             </td>
                             <td>
-                                <?php echo $sample->getVoltage(); ?>
                             </td>
                             <td>
-                                <?php echo $sample->getVoltageProvided(); ?>
+                                <?php echo $sample->getEdtProvided(); ?>
                             </td>                            
                         </tr>     
                         <tr>

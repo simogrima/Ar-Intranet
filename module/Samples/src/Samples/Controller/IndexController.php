@@ -52,34 +52,35 @@ class IndexController extends EntityUsingController
         $this->sampleMapper = $mapper;
         $this->historyMapper = $mapperHistory;
     }
-    
+
     public function indexAction()
     {
         $queryPieBrand = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, b.name FROM Computer\Entity\Computer c JOIN c.brand b GROUP BY c.brand');
         $queryPieCategory = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, t.name FROM Computer\Entity\Computer c JOIN c.category t GROUP BY c.category');
-        
+
         $paginator = new Paginator\Paginator(
-            new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getSearchQuery('', 's.id', 'DESC')))
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getSearchQuery('', 's.id', 'DESC')))
         );
 
         $paginator->setItemCountPerPage(20);
         $paginator->setCurrentPageNumber(1);
-        
+
         $processedStatus = [
             \Samples\Entity\Status::STATUS_TYPE_PROCESSED,
-            \Samples\Entity\Status::STATUS_TYPE_SHIPPED 
+            \Samples\Entity\Status::STATUS_TYPE_SHIPPED
         ];
-        
-        
+
+
         $config = $this->getEntityManager()->getConfiguration();
-$config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
-        
-        $queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus). ')');
+        $config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
+
+        $queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus) . ')');
         $queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
-        $queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);   
-        $queryPieCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');   
+        $queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
+        $queryPieCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
 
         var_dump($queryPieCount->getResult());
+        var_dump($this->generateScheduledDeliveryDate());
         return array(
             'sampleCount' => $this->sampleMapper->count(),
             'processedCount' => $queryProcessedCount->getResult()[0]['nr'],
@@ -89,7 +90,7 @@ $config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
             'chartPieCategory' => $queryPieCategory->getResult(),
             'samples' => $paginator,
         );
-    }      
+    }
 
     public function listAction()
     {
@@ -322,4 +323,94 @@ $config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
         $this->historyMapper->update($history);
         //$this->flashMessenger()->setNamespace('success')->addMessage('History add successfully');
     }
+
+    protected function generateScheduledDeliveryDate()
+    {
+        $consegnaRichiesta = date('Y-m-d', strtotime('2015-06-27')); //da cambiare con data richiesta
+        $qta = 5; //da cambiare con quantita della richiesta
+        
+        //Sistemo eventualemte data consegna richiesta (non sabato o domenica)
+        switch (date('w', strtotime($consegnaRichiesta))) {
+            case 6: //sabato
+                $consegnaRichiesta = date('Y-m-d', strtotime("+2 day", strtotime($consegnaRichiesta)));
+                break;
+            case 0: //domenica
+                $consegnaRichiesta = date('Y-m-d', strtotime("+1 day", strtotime($consegnaRichiesta)));
+                break;
+            default:
+                break;
+        }
+        
+    
+        
+    
+        $today = date('Y-m-d');
+        // add 3 days to date
+        $newDate = Date('Y-m-d', strtotime("+3 days"));
+        echo $newDate;
+
+
+        /**
+         * Calcolo la data consegna materiale prevista. Dato che la navetta è il
+         * venerdì, se siamo Giove o Vene si va al venerdì dopo. 
+         * Altrimenti si va al venerdì prossimo. 
+         */
+        $weekDay = date('w', strtotime($today));
+        switch (date('w', strtotime($today))) {
+            case 1://lunedì
+                $add = 4;
+                break;
+            case 2://martedì
+                $add = 3;
+                break;
+            case 3://mercoledì
+                $add = 2;
+                break;
+            case 4://giovedì
+                $add = 8;
+                break;
+            case 5://venerdì
+                $add = 7;
+                break;
+            case 6://sabato
+                $add = 6;
+                break;
+            case 0://domenica
+                $add = 5;
+                break;
+            default:
+                break;
+        }
+
+        $dataPrevista = date('Y-m-d', strtotime("+$add day", strtotime($today)));
+
+
+        /**
+         * Se la data di richiesta è successiva a quella calcolata prendo quella richiesta
+         * (sistemando eventualmente sabato e domenica)
+         */
+        $datetime1 = new \DateTime($consegnaRichiesta);
+        $datetime2 = new \DateTime($dataPrevista);
+        $interval = $datetime2->diff($datetime1);
+        $interval = (int) $interval->format('%R%a');
+
+        if ($interval > 0) {
+            $dataPrevista = $consegnaRichiesta;
+        }
+        var_dump($dataPrevista);
+        
+        
+        
+        //Quanrdo quanti campioni sono previsti il giorno di consegna prevista
+        $config = $this->getEntityManager()->getConfiguration();
+        $config->addCustomStringFunction('DATE_FORMAT', 'DoctrineExtensions\Query\Mysql\DateFormat');
+        $query = $this->getEntityManager()->createQuery("SELECT SUM(s.qta) qta FROM Samples\Entity\Sample s WHERE DATE_FORMAT(s.scheduledDeliveryDate, '%Y-%m-%d') = '$dataPrevista'");
+        echo $query->getSql();
+        $campPrev = $query->getResult()[0]['qta'];
+        $campPrev = isset($campPrev) ? ((int) $campPrev) + $qta : $qta;
+        var_dump($campPrev);
+        
+        
+    }
+
 }

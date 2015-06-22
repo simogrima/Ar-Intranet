@@ -209,6 +209,34 @@ class Sample
     /**
      * @var string|null
      *
+     * @ORM\Column(name="absorption_provided", type="string", nullable=true, length=128)
+     */
+    protected $absorptionProvided;    
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="pressure_provided", type="string", nullable=true, length=128)
+     */
+    protected $pressureProvided;      
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="sfasamento_provided", type="string", nullable=true, length=128)
+     */
+    protected $sfasamentoProvided;       
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="edt_provided", type="string", nullable=true, length=128)
+     */
+    protected $edtProvided;       
+    
+    /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=128)
      */
     protected $vpp;   
@@ -219,6 +247,13 @@ class Sample
      * @ORM\Column(type="text", nullable=true)
      */
     protected $note;    
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="note_provided", type="text", nullable=true)
+     */
+    protected $noteProvided;        
       
     /**
      * @var \DateTime
@@ -233,6 +268,13 @@ class Sample
      * @ORM\Column(name="edit_date", type="datetime", nullable=false)
      */
     protected $editDate;
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="scheduled_delivery_date", type="datetime", nullable=true)
+     */
+    protected $scheduledDeliveryDate;    
     
     /**
      * @var \Application\Entity\Country
@@ -848,6 +890,98 @@ class Sample
     }     
     
     /**
+     * Get absorptionProvided
+     * 
+     * @return string
+     */       
+    public function getAbsorptionProvided()
+    {
+        return $this->absorptionProvided;
+    } 
+
+    /**
+     * Set absorptionProvided
+     * 
+     * @param string $absorptionProvided
+     * @return \Samples\Entity\Sample
+     */        
+    public function setAbsorptionProvided($absorptionProvided)
+    {
+        $this->absorptionProvided = $absorptionProvided;
+        
+        return $this;
+    }  
+    
+    /**
+     * Get pressureProvided
+     * 
+     * @return string
+     */       
+    public function getPressureProvided()
+    {
+        return $this->pressureProvided;
+    } 
+
+    /**
+     * Set pressureProvided
+     * 
+     * @param string $pressureProvided
+     * @return \Samples\Entity\Sample
+     */        
+    public function setPressureProvided($pressureProvided)
+    {
+        $this->pressureProvided = $pressureProvided;
+        
+        return $this;
+    }      
+    
+    /**
+     * Get sfasamentoProvided
+     * 
+     * @return string
+     */       
+    public function getSfasamentoProvided()
+    {
+        return $this->sfasamentoProvided;
+    } 
+
+    /**
+     * Set sfasamentoProvided
+     * 
+     * @param string $sfasamentoProvided
+     * @return \Samples\Entity\Sample
+     */        
+    public function setSfasamentoProvided($sfasamentoProvided)
+    {
+        $this->sfasamentoProvided = $sfasamentoProvided;
+        
+        return $this;
+    }   
+    
+    /**
+     * Get edtProvided
+     * 
+     * @return string
+     */       
+    public function getEdtProvided()
+    {
+        return $this->edtProvided;
+    } 
+
+    /**
+     * Set edtProvided
+     * 
+     * @param string $edtProvided
+     * @return \Samples\Entity\Sample
+     */        
+    public function setEdtProvided($edtProvided)
+    {
+        $this->edtProvided = $edtProvided;
+        
+        return $this;
+    }      
+    
+    /**
      * Get standardProduct
      * 
      * @return string
@@ -944,6 +1078,29 @@ class Sample
     
         return $this;
     }
+    
+    /**
+     * Get noteProvided
+     *
+     * @return string 
+     */
+    public function getNoteProvided()
+    {
+        return $this->noteProvided;
+    }      
+    
+    /**
+     * Set noteProvided
+     *
+     * @param string $noteProvided
+     * @return \Samples\Entity\Sample
+     */
+    public function setNoteProvided($note)
+    {
+        $this->noteProvided = $note;
+    
+        return $this;
+    }    
     
     /**
      * Set applicant
@@ -1082,7 +1239,30 @@ class Sample
     public function getStatus()
     {
         return $this->status;
+    }  
+    
+    /**
+     * Get scheduledDeliveryDate
+     * 
+     * @return \DateTime 
+     */
+    public function getScheduledDeliveryDate()
+    {
+        return $this->scheduledDeliveryDate;
     }    
+
+    /**
+     * Set scheduledDeliveryDate
+     * 
+     * @param \DateTime $scheduledDeliveryDate
+     * @return \Samples\Entity\Sample
+     */
+    public function setScheduledDeliveryDate(\DateTime $scheduledDeliveryDate)
+    {
+        $this->scheduledDeliveryDate = $scheduledDeliveryDate;
+
+        return $this;
+    }     
 
     /**
      * Get createDate

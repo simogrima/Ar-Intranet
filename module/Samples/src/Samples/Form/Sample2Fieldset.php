@@ -159,6 +159,58 @@ class Sample2Fieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));   
         
+        //absorptionProvided
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'absorptionProvided',
+            'options' => array(
+                'label' => 'Assorbimento fornito',
+            ),
+            'attributes' => array(
+                'required' => FALSE,
+                'class' => 'form-control',
+            )
+        ));  
+        
+        //pressureProvided
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'pressureProvided',
+            'options' => array(
+                'label' => 'Pressione fornito',
+            ),
+            'attributes' => array(
+                'required' => FALSE,
+                'class' => 'form-control',
+            )
+        ));  
+        
+        //sfasamentoProvided
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'sfasamentoProvided',
+            'options' => array(
+                'label' => 'Sfasamento fornito',
+            ),
+            'attributes' => array(
+                'required' => FALSE,
+                'class' => 'form-control',
+            )
+        ));  
+        
+        //edtProvided
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'edtProvided',
+            'options' => array(
+                'label' => 'EDT fornita',
+            ),
+            'attributes' => array(
+                'required' => FALSE,
+                'class' => 'form-control',
+            )
+        ));          
+        
         //status
         $this->add(
                 array(
@@ -189,10 +241,10 @@ class Sample2Fieldset extends Fieldset implements InputFilterProviderInterface
                 )
         );        
         
-        //note
+        //noteProvided
         $this->add(array(
             'type' => 'Zend\Form\Element\Textarea',
-            'name' => 'note',
+            'name' => 'noteProvided',
             'options' => array(
                 'label' => 'Note evasione',
             ),
