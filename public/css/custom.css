@@ -5,7 +5,7 @@ and open the template in the editor.
 */
 /* 
     Created on : 12-giu-2014, 14.32.55
-    Author     : GrimaniSimone
+    Author     : GrimaniSimone 
 */
 
 
@@ -31,6 +31,10 @@ a:focus {outline: none; text-decoration: none; color: #72afd2;}
 .pagination,
 .pagination>li:first-child>a, .pagination>li:first-child>span,
 .pagination>li:last-child>a, .pagination>li:last-child>span {border-radius: 0;}
+
+#top-nav {background-color: #4184f3;}
+#top-nav .dropdown-toggle, #top-nav #sidebar-toggle a {color: #fff!important; border-color: #fff;}
+.navbar-default .navbar-toggle .icon-bar {background-color: #fff;}
 
 /* Forms */
 .form-control {-webkit-border-radius: 0px !important;-moz-border-radius: 0px !important;border-radius: 0px !important;box-shadow: none;}

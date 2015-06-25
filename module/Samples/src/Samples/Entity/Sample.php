@@ -77,7 +77,14 @@ class Sample
      *
      * @ORM\Column(name="approval_sample", type="smallint", nullable=false, options={"default" = 0})
      */
-    protected $approvalSample;        
+    protected $approvalSample;      
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="painting", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $painting;       
         
     /**
      * @var string|null
@@ -1032,6 +1039,32 @@ class Sample
         
         return $this;
     }    
+    
+    /**
+     * Get painting
+     * 
+     * @return string
+     */        
+    public function getPainting($human = FALSE)
+    {
+        if ($human) {
+            return ($this->painting == 1) ? 'Yes' : 'No';
+        }        
+        return $this->painting;
+    }
+
+    /**
+     * Set painting
+     * 
+     * @param string $painting
+     * @return \Samples\Entity\Sample
+     */      
+    public function setPainting($painting)
+    {
+        $this->painting = $painting;
+        
+        return $this;
+    }      
     
     /**
      * Set vpp

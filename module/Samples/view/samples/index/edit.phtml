@@ -80,7 +80,7 @@ echo $this->form()->openTag($form);
                         <h2>Consegna prevista il:
                             <small><?php
                                 echo $this->dateFormat(
-                                        $sample->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
+                                        $sample->getScheduledDeliveryDate(), IntlDateFormatter::LONG, // date
                                         IntlDateFormatter::NONE, // time
                                         "it_IT");
                                 ?></small>
@@ -89,19 +89,27 @@ echo $this->form()->openTag($form);
                     </div>
                 </div>     
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <h2>Modello: <small><?php echo $sample->getModel(); ?></small></h2>
                     </div>
+                    <div class="col-md-6">
+                        <h2>Da verniciare: <small><?php echo $sample->getPainting(true); ?></small></h2>
+                    </div>                    
                 </div>   
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
                         <h2>Note Richiesta:</h2>
-                        <?php echo nl2br($sample->getNote()); ?>
+                        <blockquote>
+                            <?php echo nl2br($sample->getNote()); ?>
+                        </blockquote>           
                     </div>
                     <div class="col-md-6">
                         <h2>Note Evasione:</h2>
-                        <?php echo nl2br($sample->getNoteProvided()); ?>
+                        <blockquote>
+                            <?php echo nl2br($sample->getNoteProvided()); ?>
+                        </blockquote>
+                        
                     </div>                    
                 </div>                
             </div>    
@@ -216,6 +224,11 @@ echo $this->form()->openTag($form);
                         <?= $this->ztbFormElement($fieldset->get('status')); ?>
                     </div>                    
                 </div>
+                <div class = "row">
+                    <div class = "col-md-12">
+                        <?= $this->ztbFormElement($fieldset->get('painting')); ?>
+                    </div>      
+                </div>                 
                 <div class = "row">
                     <div class = "col-md-12">
                         <?= $this->ztbFormElement($fieldset->get('noteProvided')); ?>
@@ -426,14 +439,16 @@ $this->inlineScript()->captureStart();
 echo <<<JS
 $(document).ready(function() {
 
-	$("#edit-btn").click(function(e){
-e.preventDefault();
-alert('zzz');
-a = $('#edit-form');
-alert(a);
-a.submit();
-$('#edit-form').submit();
-	});
+    $('#edit-form').submit(function(e) {
+        var status = $('#status').val();
+        if (status == 15) {
+            var code = $('#model').val();
+            var r = confirm("Stai evadendo la compinatura con il codice: " + code + "\\\n Vuoi continuare?");
+            if (r == false) {
+                e.preventDefault();
+            }
+        }    
+    });
 
 });
 JS;

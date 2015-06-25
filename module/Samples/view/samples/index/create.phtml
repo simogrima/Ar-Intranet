@@ -1,14 +1,10 @@
 <?php echo $this->titleAndBread('Richiedi Campionatura'); ?>
 <?php $this->myFlashMessenger(); ?>    
 <?php
-/**
-  echo $this->headLink()
-  ->appendStylesheet($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css');
-  echo $this->headScript()
-  ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.min.js')
-  ->prependFile($this->basePath() . '/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput-angular.js');
- * 
- */
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all');
+$this->headScript()
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js');
 ?>
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
@@ -145,9 +141,16 @@ echo $this->form()->closeTag();
 
 
 <?php
+if (!$isPost) {
+    $check = "$('#standardProduct').prop('checked', true);";
+} else {
+    $check = '';    
+}
 $this->headScript()->appendScript("
 $(function() {
-    $('#standardProduct').prop('checked', true);
+    //$('#standardProduct').prop('checked', true);
+    //defaultValue();
+    $check
     defaultValue();
 
     $('#standardProduct').change(function() {

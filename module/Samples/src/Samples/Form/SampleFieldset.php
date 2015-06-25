@@ -359,8 +359,9 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                     ),
                     'attributes' => array(
                         'required' => true,
-                        'class' => 'form-control',
-                    )
+                        'class' => 'form-control selectpicker',
+                        'data-live-search' => 'true',
+                    )                    
                 )
         );
     }

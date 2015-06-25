@@ -212,7 +212,7 @@ class History
      */
     public function prePersist()
     {
-        $this->setEditDate(new \Datetime());
+        //$this->setEditDate(new \Datetime());
     }
 
 }

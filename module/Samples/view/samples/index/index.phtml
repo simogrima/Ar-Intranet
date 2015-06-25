@@ -192,12 +192,12 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Per Brand
+                            All time
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-pie-brand"></div>
+                                <div class="flot-chart-content" id="flot-pie-status"></div>
                             </div>
                         </div>
                         <!-- /.panel-body -->
@@ -208,12 +208,12 @@
                 <div class="col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Per categoria
+                            <?= date('Y')?>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-pie-category"></div>
+                                <div class="flot-chart-content" id="flot-pie-status-y"></div>
                             </div>
                         </div>
                         <!-- /.panel-body -->
@@ -340,14 +340,14 @@ $this->headScript()
 
 $this->headLink()->prependStylesheet('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css', 'all');
 
-$pieBrandData = '';
-foreach ($chartPieBrand as $item) {
-    $pieBrandData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+$pieStatusData = '';
+foreach ($chartPieStatus as $item) {
+    $pieStatusData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
 }
 
-$pieCategoryData = '';
-foreach ($chartPieCategory as $item) {
-    $pieCategoryData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+$pieStatusYData = '';
+foreach ($chartPieStatusY as $item) {
+    $pieStatusYData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
 }
 
 $this->headScript()->appendScript("
@@ -355,9 +355,10 @@ $(function() {
 //Flot Pie Chart
 
 
-    //Brand
-    var dataBrand = [" . $pieBrandData . "];
-    var plotObj = $.plot($(\"#flot-pie-brand\"), dataBrand, {
+    //Status
+    var dataStatus = [" . $pieStatusData . "];
+    var plotObj = $.plot($(\"#flot-pie-status\"), dataStatus, {
+        colors: [\"#f5f5f5\", \"#edc240\",\"#5bc0de\",\"#5cb85c\", \"green\",\"#d9534f\"],
         series: {
             pie: {
                 show: true
@@ -377,9 +378,10 @@ $(function() {
         }
     });
     
-    //Category
-    var dataCategory = [" . $pieCategoryData . "];
-    var plotObj = $.plot($(\"#flot-pie-category\"), dataCategory, {
+    //StatusY
+    var dataStatusY = [" . $pieStatusYData . "];
+    var plotObj = $.plot($(\"#flot-pie-status-y\"), dataStatusY, {
+        colors: [\"#f5f5f5\", \"#edc240\",\"#5bc0de\",\"#5cb85c\", \"green\",\"#d9534f\"],
         series: {
             pie: {
                 show: true
@@ -434,12 +436,6 @@ $(function() {
 
 
 
-
-
-
-
-
-
     Morris.Bar({
         element: 'morris-bar-chart',
         data: [{
@@ -477,12 +473,6 @@ $(function() {
         hideHover: 'auto',
         resize: true
     });
-
-
-
-
-
-
 
 }); 
 

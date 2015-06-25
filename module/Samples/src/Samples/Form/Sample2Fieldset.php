@@ -36,6 +36,7 @@ class Sample2Fieldset extends Fieldset implements InputFilterProviderInterface
             'attributes' => array(
                 'required' => true,
                 'class' => 'form-control',
+                'id' => 'model',
             )
         ));
 
@@ -239,7 +240,22 @@ class Sample2Fieldset extends Fieldset implements InputFilterProviderInterface
                         'id' => 'status',
                     )
                 )
-        );        
+        );   
+        
+        //paynting
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Checkbox',
+            'name' => 'painting',
+            'options' => array(
+                'label' => 'Da verniciare',
+                'use_hidden_element' => true,
+                'checked_value' => '1',
+                'unchecked_value' => '0'
+            ),         
+            'attributes' => array(
+                'id' => 'painting',
+            )               
+        ));        
         
         //noteProvided
         $this->add(array(

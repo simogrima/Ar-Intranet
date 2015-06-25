@@ -64,10 +64,10 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'vpp', 'note', 'createdDate', 'editDate', 'country', 'applicant', 'attachments', 'history', 'status');
+            return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'painting', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'absorptionProvided', 'pressureProvided', 'sfasamentoProvided', 'edtProvided', 'vpp', 'note', 'noteProvided', 'createdDate', 'editDate', 'scheduledDeliveryDate', 'country', 'applicant', 'attachments', 'history', 'status');
         }
 
-        return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'vpp', 'note', 'createdDate', 'editDate', 'country', 'applicant', 'attachments', 'history', 'status');
+        return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'painting', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'absorptionProvided', 'pressureProvided', 'sfasamentoProvided', 'edtProvided', 'vpp', 'note', 'noteProvided', 'createdDate', 'editDate', 'scheduledDeliveryDate', 'country', 'applicant', 'attachments', 'history', 'status');
     }
 
     /**
@@ -719,6 +719,94 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getAbsorptionProvided()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAbsorptionProvided', array());
+
+        return parent::getAbsorptionProvided();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAbsorptionProvided($absorptionProvided)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAbsorptionProvided', array($absorptionProvided));
+
+        return parent::setAbsorptionProvided($absorptionProvided);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPressureProvided()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPressureProvided', array());
+
+        return parent::getPressureProvided();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPressureProvided($pressureProvided)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPressureProvided', array($pressureProvided));
+
+        return parent::setPressureProvided($pressureProvided);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSfasamentoProvided()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSfasamentoProvided', array());
+
+        return parent::getSfasamentoProvided();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSfasamentoProvided($sfasamentoProvided)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSfasamentoProvided', array($sfasamentoProvided));
+
+        return parent::setSfasamentoProvided($sfasamentoProvided);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEdtProvided()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEdtProvided', array());
+
+        return parent::getEdtProvided();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEdtProvided($edtProvided)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEdtProvided', array($edtProvided));
+
+        return parent::setEdtProvided($edtProvided);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getStandardProduct($human = false)
     {
 
@@ -763,6 +851,28 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getPainting($human = false)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPainting', array($human));
+
+        return parent::getPainting($human);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPainting($painting)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPainting', array($painting));
+
+        return parent::setPainting($painting);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setVpp($vpp)
     {
 
@@ -802,6 +912,28 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNote', array($note));
 
         return parent::setNote($note);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNoteProvided()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNoteProvided', array());
+
+        return parent::getNoteProvided();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setNoteProvided($note)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNoteProvided', array($note));
+
+        return parent::setNoteProvided($note);
     }
 
     /**
@@ -912,6 +1044,28 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStatus', array());
 
         return parent::getStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getScheduledDeliveryDate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getScheduledDeliveryDate', array());
+
+        return parent::getScheduledDeliveryDate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setScheduledDeliveryDate(\DateTime $scheduledDeliveryDate)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setScheduledDeliveryDate', array($scheduledDeliveryDate));
+
+        return parent::setScheduledDeliveryDate($scheduledDeliveryDate);
     }
 
     /**

@@ -25,6 +25,10 @@ use Samples\Form\SampleForm;
 use Application\Form\SearchForm;
 //ZfcRbac
 use ZfcRbac\Exception\UnauthorizedException;
+//per migrazione dati
+use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\Adapter;
+//fine per migrazione
 
 class IndexController extends EntityUsingController
 {
@@ -55,9 +59,6 @@ class IndexController extends EntityUsingController
 
     public function indexAction()
     {
-        $queryPieBrand = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, b.name FROM Computer\Entity\Computer c JOIN c.brand b GROUP BY c.brand');
-        $queryPieCategory = $this->getEntityManager()->createQuery('SELECT COUNT(c.id) nr, t.name FROM Computer\Entity\Computer c JOIN c.category t GROUP BY c.category');
-
         $paginator = new Paginator\Paginator(
                 new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getSearchQuery('', 's.id', 'DESC')))
         );
@@ -74,6 +75,8 @@ class IndexController extends EntityUsingController
         $config = $this->getEntityManager()->getConfiguration();
         $config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
 
+        $queryPieStatus = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name FROM Samples\Entity\Sample s JOIN s.status t GROUP BY s.status');
+        $queryPieStatusY = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name FROM Samples\Entity\Sample s JOIN s.status t WHERE YEAR(s.createdDate) = ' . date('Y'). ' GROUP BY s.status');
         $queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus) . ')');
         $queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
         $queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
@@ -86,8 +89,8 @@ class IndexController extends EntityUsingController
             'processedCount' => $queryProcessedCount->getResult()[0]['nr'],
             'pendingCount' => $queryPendingCount->getResult()[0]['nr'],
             'cancelCount' => $queryCancelCount->getResult()[0]['nr'],
-            'chartPieBrand' => $queryPieBrand->getResult(),
-            'chartPieCategory' => $queryPieCategory->getResult(),
+            'chartPieStatus' => $queryPieStatus->getResult(),
+            'chartPieStatusY' => $queryPieStatusY->getResult(),
             'samples' => $paginator,
         );
     }
@@ -129,6 +132,29 @@ class IndexController extends EntityUsingController
             'pageAction' => 'samples/list',
         );
     }
+    
+    public function updateAction()
+    {
+        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
+        $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
+        $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
+
+        $paginator = new Paginator\Paginator(
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getActive( 's.' . $order_by, $order)))
+        );
+
+        $paginator->setItemCountPerPage(30);
+        $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
+
+        return array(
+            'order_by' => $order_by,
+            'order' => $order,
+            'page' => $page,
+            'totalRecord' => $paginator->getTotalItemCount(),
+            'samples' => $paginator,
+            'pageAction' => 'samples/update',
+        );
+    }    
 
     public function createAction()
     {
@@ -151,6 +177,7 @@ class IndexController extends EntityUsingController
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
+                $sample->setPainting('0');
 
 
                 //***** History
@@ -160,12 +187,14 @@ class IndexController extends EntityUsingController
                             ->findById($this->zfcUserAuthentication()
                                     ->getIdentity()->getId()),
                     'sampleStatus' => $sample->getStatus(),
+                    'editDate' => new \DateTime('NOW'),
                 );
 
                 //Aggiungo un record per nuova richiesta
                 $this->addHistory($data);
                 //***** Fine History           
 
+                
                 $this->sampleMapper->insert($sample);
 
                 return $this->redirect()->toRoute('samples/attachments/add', array(
@@ -179,7 +208,7 @@ class IndexController extends EntityUsingController
             }
         }
 
-        return array('form' => $form);
+        return array('form' => $form, 'isPost' => $this->request->isPost());
     }
 
     public function editAction()
@@ -223,6 +252,7 @@ class IndexController extends EntityUsingController
                             ->findById($this->zfcUserAuthentication()
                                     ->getIdentity()->getId()),
                     'sampleStatus' => $sample->getStatus(),
+                    'editDate' => new \DateTime('NOW'),
                 );
                 //Cambio stato
                 if (isset($changeset['status'])) {
@@ -328,7 +358,6 @@ class IndexController extends EntityUsingController
     {
         $consegnaRichiesta = date('Y-m-d', strtotime('2015-06-27')); //da cambiare con data richiesta
         $qta = 5; //da cambiare con quantita della richiesta
-        
         //Sistemo eventualemte data consegna richiesta (non sabato o domenica)
         switch (date('w', strtotime($consegnaRichiesta))) {
             case 6: //sabato
@@ -340,10 +369,10 @@ class IndexController extends EntityUsingController
             default:
                 break;
         }
-        
-    
-        
-    
+
+
+
+
         $today = date('Y-m-d');
         // add 3 days to date
         $newDate = Date('Y-m-d', strtotime("+3 days"));
@@ -398,9 +427,9 @@ class IndexController extends EntityUsingController
             $dataPrevista = $consegnaRichiesta;
         }
         var_dump($dataPrevista);
-        
-        
-        
+
+
+
         //Quanrdo quanti campioni sono previsti il giorno di consegna prevista
         $config = $this->getEntityManager()->getConfiguration();
         $config->addCustomStringFunction('DATE_FORMAT', 'DoctrineExtensions\Query\Mysql\DateFormat');
@@ -409,8 +438,278 @@ class IndexController extends EntityUsingController
         $campPrev = $query->getResult()[0]['qta'];
         $campPrev = isset($campPrev) ? ((int) $campPrev) + $qta : $qta;
         var_dump($campPrev);
-        
-        
     }
+
+    public function migrationAction()
+    {
+        //Amumento il limite tempo dello script a 30 min e memoria
+        set_time_limit(1800);
+        ini_set('memory_limit', '-1');
+        
+        //Leggo tabella di migrazione
+        $dbAdapterConfig = array(
+            'driver' => 'Mysqli',
+            'database' => 'intranet',
+            'username' => 'root',
+            'password' => 'grimax'
+        );
+        $dbAdapter = new Adapter($dbAdapterConfig);
+
+        $sql = new Sql($dbAdapter);
+        $select = $sql->select();
+        $select->from('campionature')->limit(200)->offset(10439);
+        //$select->where(array('myColumn' => 5));
+        
+        //echo $select->getSqlString();
+         //return $this->getResponse();
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $objectManager = $this->getEntityManager();
+        $class = $this->options->getSampleEntityClass();
+
+        $userMapper = $this->getServiceLocator()->get('zfcuser_user_mapper');
+        //$user = $userMapper->findByEmail('grimani@ariete.net');
+        //var_dump($user);
+
+        $notFound = [];
+        $allegatiRichiesta = [];
+        $allegatiEvasione = [];
+        
+        
+        //object
+        $countryRepo = $objectManager->getRepository('Application\Entity\Country');
+        $statusRepo = $objectManager->getRepository('Samples\Entity\Status');
+        
+        //default
+        $defaultApplicant = $userMapper->findByEmail('anonymous@ariete.net');
+        $defaultEditor = $userMapper->findByEmail('gianni.maggini@ariete.net');
+        $defaultShipper = $userMapper->findByEmail('riccardo.peschi@ariete.net');
+        $defaultCountry = $countryRepo->find(105);
+        
+        foreach ($result as $value) {
+            $createdDate = new \DateTime($value['data']);
+
+            
+            $sample = new $class();
+            $sample->setCustomer(utf8_encode ($value['cliente']));
+            $sample->setModel(utf8_encode ($value['modello']));
+
+            $sample->setQta($value['quantita']);
+            $sample->setQtaExpected($value['quantitaprevista']);
+            $sample->setPaymentTerm(utf8_encode ($value['terminedipagamento']));
+            $sample->setVpp(utf8_encode ($value['vpp']));
+            $sample->setVoltage(utf8_encode ($value['tensione']));
+            $sample->setFrequency(utf8_encode ($value['frequenza']));
+            $sample->setPlug(utf8_encode ($value['spina']));
+            $sample->setCable(utf8_encode ($value['cavo']));
+            $sample->setSerigraphy(utf8_encode ($value['serigrafia']));
+            $sample->setColors(utf8_encode ($value['colori']));
+            $sample->setAccessories(utf8_encode ($value['accessori']));
+            $sample->setBooklet(utf8_encode ($value['libretto']));
+            $sample->setPackaging(utf8_encode ($value['imballo']));         
+            $sample->setNote(utf8_encode ($value['note']));
+
+            $tmp = ($value['xlami']) ? 1 : 0;
+            $sample->setPainting($tmp);
+            $tmp = ($value['prodottostandard'] == 'si') ? 1 : 0;
+            $sample->setStandardProduct($tmp);
+            $tmp = ($value['campioneperapprovazione'] == 'si') ? 1 : 0;
+            $sample->setApprovalSample($tmp);
+
+
+            $sample->setVoltageProvided(utf8_encode ($value['tensioneevasa']));
+            $sample->setFrequencyProvided(utf8_encode ($value['frequenzaevasa']));
+            $sample->setPlugProvided(utf8_encode ($value['spinaevasa']));
+            $sample->setCableProvided(utf8_encode ($value['cavoevaso']));
+            $sample->setSerigraphyProvided(utf8_encode ($value['serigrafiaevasa']));
+            $sample->setColorsProvided(utf8_encode ($value['coloreevaso']));
+            $sample->setAccessoriesProvided(utf8_encode ($value['accessorievasi']));
+            $sample->setBookletProvided(utf8_encode ($value['librettoevaso']));
+            $sample->setPackagingProvided(utf8_encode ($value['imballoevaso']));
+            $sample->setEdtProvided(utf8_encode ($value['edtevaso']));
+            $sample->setAbsorptionProvided(utf8_encode ($value['assorbimentoevaso']));
+            $sample->setSfasamentoProvided(utf8_encode ($value['cosevaso']));
+            $sample->setPressureProvided(utf8_encode ($value['pressioneevasa']));
+            $sample->setNoteProvided(utf8_encode ($value['altroevaso']));
+
+            $sample->setCreatedDate($createdDate);
+            $sample->setEditDate($createdDate);
+            $sample->setRequestedDeliveryDate(new \DateTime($value['dataconsegnarichiesta']));
+
+            $tmp = (!empty($value['dataconsegnaprevista'])) ? $value['dataconsegnaprevista'] : $value['dataconsegnarichiesta'];
+            $sample->setScheduledDeliveryDate(new \DateTime($tmp));
+
+            //Richiedente
+            $key = $value['richiedente'];
+            $applicant = $userMapper->findByEmail($key);
+            if (!isset($applicant)) {
+                $applicant = $defaultApplicant;
+            }
+            $sample->setApplicant($applicant);
+            // Fine Richiedente
+            
+            //Country
+            $key = $value['paese'];
+            $country = $countryRepo->find((int) $key);
+            if (!isset($country)) {
+                $country = $defaultCountry;
+                
+            }
+            $sample->setCountry($country);
+            // Fine Country       
+            
+                   
+  
+            
+            //Allegati
+            for ($i = 1; $i<=12; $i++) {
+                $tmp = $value['allegatorichiesta' . $i];
+                if ((!empty($tmp)) && ($tmp != '-')) {
+                    //$allegatiRichiesta[] = basename($tmp);
+                    $data = [
+                        'sample' => $sample,
+                        'fileName' => basename($tmp),
+                        'attachmentType' => 'richiesta',
+                    ];
+                    $this->addAttachment($data);
+                }
+            }
+            for ($i = 1; $i<=12; $i++) {
+                $tmp = $value['allegatoevaso' . $i];
+                if ((!empty($tmp)) && ($tmp != '-')) {
+                    //$allegatiEvasione[] = basename($tmp);
+                    $data = [
+                        'sample' => $sample,
+                        'fileName' => basename($tmp),
+                        'attachmentType' => 'evasione',
+                    ];            
+                    $this->addAttachment($data);
+                }
+            }       
+            //Fine Allegati
+            
+            
+       
+            //Editor
+            $key = $value['compilatoda'];
+            $editor = $userMapper->findByEmail($key);
+            if (!isset($editor)) {
+                $editor = $defaultEditor;
+            }
+            // Editor            
+            
+            //History
+            //1)
+            $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION);
+            $data = array(
+                'sample' => $sample,
+                'editBy' => $applicant,
+                'sampleStatus' => $status,
+                'editDate' => $createdDate,
+                );         
+            $this->addHistory($data);
+            
+            //5
+            if ($value['prodrichiesti']) {
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PRODUCT_REQUIRED);
+                $data = array(
+                    'sample' => $sample,
+                    'editBy' => $editor,
+                    'sampleStatus' => $status,
+                    'editDate' => $createdDate,
+                );         
+                $this->addHistory($data);                
+            }
+            
+            //10
+            if ($value['prodarrivati']) {
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PRODUCT_ARRIVED);
+                $data = array(
+                    'sample' => $sample,
+                    'editBy' => $editor,
+                    'sampleStatus' => $status,
+                    'editDate' => $createdDate,
+                );         
+                $this->addHistory($data);                
+            }     
+            
+            //15
+            if ($value['evasa']) {
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PROCESSED);
+                if (!empty($value['dataevasione'])) {
+                    $processingDate = new \DateTime($value['dataevasione']);
+                } else {
+                    $processingDate = $createdDate;
+                }
+                $data = array(
+                    'sample' => $sample,
+                    'editBy' => $editor,
+                    'sampleStatus' => $status,
+                    'editDate' => $processingDate,
+                );         
+                $this->addHistory($data);                
+            }  
+            
+            //20
+            if (!empty($value['dataspediz'])) {
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_SHIPPED);
+                $data = array(
+                    'sample' => $sample,
+                    'editBy' => $defaultShipper,
+                    'sampleStatus' => $status,
+                    'editDate' => new \DateTime($value['dataspediz']),
+                );         
+                $this->addHistory($data);                
+            }      
+            
+            //25
+            var_dump($value['annullata']);
+            if ($value['annullata']) {
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_CANCELED);
+                $data = array(
+                    'sample' => $sample,
+                    'editBy' => $editor,
+                    'sampleStatus' => $status,
+                    'editDate' => $createdDate,
+                );         
+                $this->addHistory($data);                
+            }            
+            
+            //Fine History
+            
+            //var_dump($sample);
+            $sample->setStatus($status);
+            $this->sampleMapper->insert($sample);
+         
+            //echo $sample->getId() . ' --> ' . $value['id'] . '<br/>';
+        }
+        
+        echo 'finito!';
+        
+        
+
+
+
+        return $this->getResponse();
+    }
+    
+    /**
+     * Aggiunge un record alla tabella sample_attachment. (usato per migrazione)
+     * 
+     * @param array $data
+     */
+    protected function addAttachment($data)
+    {
+        $attachmentsClass = $this->options->getAttachmentsEntityClass();
+        $attachment = new $attachmentsClass();
+        $hydrator = new DoctrineHydrator($this->getEntityManager(), $attachmentsClass);
+        $attachment = $hydrator->hydrate($data, $attachment);
+
+        //var_dump($attachment);
+        $this->getServiceLocator()->get('Samples\Mapper\AttachmentsMapper')->insert($attachment);
+
+    }    
 
 }

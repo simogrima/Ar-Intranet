@@ -49,6 +49,33 @@ return array(
                             ),
                         ),
                     ),
+                    'update' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => '/update[/:action][/:id][/page/:page][/order_by/:order_by][/:order]',
+                            'constraints' => array(
+                                'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                                'page' => '[0-9]+',
+                                'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'order' => 'ASC|DESC',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Index',
+                                'action' => 'update',
+                            ),
+                        ),
+                    ),                    
+                    'migration' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/migration',
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Index',
+                                'action' => 'migration',
+                            ),
+                        ),
+                    ),                    
                     'search' => array(
                         'type' => 'Literal',
                         'options' => array(
@@ -283,7 +310,11 @@ return array(
                     'list' => array(
                         'label' => 'Elenco Campionature',
                         'route' => 'samples/list',
-                    ),
+                    ),   
+                    'update' => array(
+                        'label' => 'Aggiorna dati',
+                        'route' => 'samples/update',
+                    ),                    
                     'edit' => array(
                         'label' => 'Modifica Campionatura',
                         'route' => 'samples/edit',
