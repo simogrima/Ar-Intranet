@@ -9,7 +9,7 @@
         <strong>
         <?php
         echo $this->dateFormat(
-                $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                $sample->getScheduledDeliveryDate(), IntlDateFormatter::LONG, // date
                 IntlDateFormatter::NONE, // time
                 "it_IT");
         ?>.</strong><br/>

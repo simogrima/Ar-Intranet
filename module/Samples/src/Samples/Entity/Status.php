@@ -101,6 +101,23 @@ class Status
                 return 'default';
                 break;
         }
-    }        
+    }      
+    
+    static private $statusTypeValues = null;
+    static public function getStatusTypeValues()
+    {
+    	if (self::$statusTypeValues == null) {
+    		self::$statusTypeValues = array();
+    		$oClass = new \ReflectionClass(__NAMESPACE__ . '\Status');
+    		$classConstants = $oClass->getConstants();
+    		$constantPrefix = "STATUS_TYPE_";
+    		foreach ($classConstants as $key => $val) {
+    			if (substr($key, 0, strlen($constantPrefix)) === $constantPrefix) {
+    				self::$statusTypeValues[$val] = $val;
+    			}
+    		}
+    	}
+    	return self::$statusTypeValues;
+    }    
 
 }

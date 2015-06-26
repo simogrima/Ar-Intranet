@@ -39,10 +39,11 @@ if ($order_by == 'id') {
                     <?php if ($order_by == 'customer'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
                 </th>    
                 <th>Richiedente</th>
-                <th>Stato</th>
-                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
+                <th>Stato</th>             
+                <th class="text-center">Qta</th>
                 <th class="text-center">Data consegna richiesta</th>
                 <th class="text-center">Data consegna prevista</th>
+                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
                 <th class="text-center"><i class="fa fa-paint-brush fa-fw"></i></th>
                 <th>Action</th>
             </tr>
@@ -69,10 +70,10 @@ if ($order_by == 'id') {
                     </td>    
                     <td class="cell">
                         <?php echo $sample->getStatus()->getName(); ?>
-                    </td>    
+                    </td>     
                     <td class="cell text-center">
-                        <?php echo  count($sample->getAttachments()); ?>
-                    </td>   
+                        <?php echo  $sample->getQta(); ?>
+                    </td>                     
                     <td class="cell text-center">
                         <?php
                         echo $this->dateFormat(
@@ -91,6 +92,9 @@ if ($order_by == 'id') {
                         ?>       
                         <?php endif; ?>
                     </td>  
+                    <td class="cell text-center">
+                        <?php echo  count($sample->getAttachments()); ?>
+                    </td>                      
                     <td class="cell text-center">
                         <?php if ($sample->getPainting()): ?>
                         <i class="fa fa-check fa-fw"></i>

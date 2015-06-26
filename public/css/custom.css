@@ -32,7 +32,7 @@ a:focus {outline: none; text-decoration: none; color: #72afd2;}
 .pagination>li:first-child>a, .pagination>li:first-child>span,
 .pagination>li:last-child>a, .pagination>li:last-child>span {border-radius: 0;}
 
-#top-nav {background-color: #4184f3;}
+#top-nav {background-color: #428bca;}
 #top-nav .dropdown-toggle, #top-nav #sidebar-toggle a {color: #fff!important; border-color: #fff;}
 .navbar-default .navbar-toggle .icon-bar {background-color: #fff;}
 

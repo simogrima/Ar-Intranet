@@ -28,6 +28,7 @@ use ZfcRbac\Exception\UnauthorizedException;
 //per migrazione dati
 use Zend\Db\Sql\Sql;
 use Zend\Db\Adapter\Adapter;
+
 //fine per migrazione
 
 class IndexController extends EntityUsingController
@@ -71,28 +72,58 @@ class IndexController extends EntityUsingController
             \Samples\Entity\Status::STATUS_TYPE_SHIPPED
         ];
 
+        //ottengo tutti gli stati (per fixare grafico a torta)
+        $objectManager = $this->getEntityManager();
+        $statusList = $objectManager->getRepository('Samples\Entity\Status')->findAll();
 
         $config = $this->getEntityManager()->getConfiguration();
         $config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
 
-        $queryPieStatus = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name FROM Samples\Entity\Sample s JOIN s.status t GROUP BY s.status');
-        $queryPieStatusY = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name FROM Samples\Entity\Sample s JOIN s.status t WHERE YEAR(s.createdDate) = ' . date('Y'). ' GROUP BY s.status');
-        $queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus) . ')');
-        $queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
-        $queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
-        $queryPieCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
+        $queryPieStatus = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name, t.id id FROM Samples\Entity\Sample s JOIN s.status t GROUP BY s.status');
+        $queryPieStatusY = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name, t.id id FROM Samples\Entity\Sample s JOIN s.status t WHERE YEAR(s.createdDate) = ' . date('Y') . ' GROUP BY s.status');
+        //$queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus) . ')');
+        //$queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
+        //$queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
+        $queryStatCountByYear = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
 
-        var_dump($queryPieCount->getResult());
-        var_dump($this->generateScheduledDeliveryDate());
+
         return array(
             'sampleCount' => $this->sampleMapper->count(),
-            'processedCount' => $queryProcessedCount->getResult()[0]['nr'],
-            'pendingCount' => $queryPendingCount->getResult()[0]['nr'],
-            'cancelCount' => $queryCancelCount->getResult()[0]['nr'],
-            'chartPieStatus' => $queryPieStatus->getResult(),
-            'chartPieStatusY' => $queryPieStatusY->getResult(),
+            //'processedCount' => $queryProcessedCount->getResult()[0]['nr'],
+            //'pendingCount' => $queryPendingCount->getResult()[0]['nr'],
+            //'cancelCount' => $queryCancelCount->getResult()[0]['nr'],
+            'chartPieStatus' => $this->fixPieValue($statusList, $queryPieStatus->getResult()),
+            'chartPieStatusY' => $this->fixPieValue($statusList, $queryPieStatusY->getResult()),
+            'chartStatCountByYear' => $queryStatCountByYear->getResult(),
             'samples' => $paginator,
         );
+    }
+
+    /**
+     * Serve per fixare i valori del grafico a torta, che provengono da query con group by "status".
+     * potrebba mancare uno elemento se nessu ordine si trova in uno degli statu disponibili. Io voglio che siano
+     * rappresentati tutti sul grafico e se non c'è viene valorizzato a zero. Sennò sbaglia i colori.
+     * 
+     * @param array $statusList l'elenco completo degli stati disponibili
+     * @param array $data i dati provenienti d query a (cui potrebbe mancare degli stati)
+     * @return array
+     */
+    protected function fixPieValue($statusList, $data)
+    {
+        $result = [];
+        foreach ($statusList as $status) {
+            $find = 0;
+            foreach ($data as $value) {
+                if ($value['id'] == $status->getId()) {
+                    $find = $value['nr'];
+                    break;
+                }
+            }
+
+            $result[$status->getId()] = ['nr' => $find, 'name' => $status->getName()];
+        }
+
+        return $result;
     }
 
     public function listAction()
@@ -132,7 +163,7 @@ class IndexController extends EntityUsingController
             'pageAction' => 'samples/list',
         );
     }
-    
+
     public function updateAction()
     {
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
@@ -140,7 +171,7 @@ class IndexController extends EntityUsingController
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
 
         $paginator = new Paginator\Paginator(
-                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getActive( 's.' . $order_by, $order)))
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getActive('s.' . $order_by, $order)))
         );
 
         $paginator->setItemCountPerPage(30);
@@ -154,12 +185,11 @@ class IndexController extends EntityUsingController
             'samples' => $paginator,
             'pageAction' => 'samples/update',
         );
-    }    
+    }
 
     public function createAction()
     {
-        // Get your ObjectManager from the ServiceManager
-        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $objectManager = $this->getEntityManager();
 
         // Create the form and inject the ObjectManager
         $form = new SampleForm($objectManager);
@@ -178,6 +208,8 @@ class IndexController extends EntityUsingController
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $sample->setPainting('0');
+                $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
+                $sample->setScheduledDeliveryDate(new \DateTime($this->generateScheduledDeliveryDate($sample)));
 
 
                 //***** History
@@ -194,7 +226,7 @@ class IndexController extends EntityUsingController
                 $this->addHistory($data);
                 //***** Fine History           
 
-                
+
                 $this->sampleMapper->insert($sample);
 
                 return $this->redirect()->toRoute('samples/attachments/add', array(
@@ -295,7 +327,7 @@ class IndexController extends EntityUsingController
             $this->flashMessenger()->addSuccessMessage('La campionatura è stata eliminata!');
         }
 
-        return $this->redirect()->toRoute('samples/list');
+        return $this->redirect()->toRoute('samples/update');
     }
 
     /**
@@ -329,8 +361,16 @@ class IndexController extends EntityUsingController
     {
         $sampleId = $this->getEvent()->getRouteMatch()->getParam('sampleId');
         $historyType = (int) $this->getEvent()->getRouteMatch()->getParam('historyType');
+        $sample = $this->getEntityManager()->getRepository($this->options->getSampleEntityClass())->find($sampleId);
+
+        if (!$sample) {
+            throw new \Exception('Campionatura non trovata!');
+        }
+
+        $this->generateScheduledDeliveryDate($sample);
+
         return array(
-            'sample' => $this->getEntityManager()->getRepository($this->options->getSampleEntityClass())->find($sampleId),
+            'sample' => $sample,
             'historyType' => $historyType,
             'attachmentPath' => $this->options->getAttachmentPath(),
         );
@@ -354,11 +394,11 @@ class IndexController extends EntityUsingController
         //$this->flashMessenger()->setNamespace('success')->addMessage('History add successfully');
     }
 
-    protected function generateScheduledDeliveryDate()
+    protected function generateScheduledDeliveryDate(\Samples\Entity\Sample $sample)
     {
-        $consegnaRichiesta = date('Y-m-d', strtotime('2015-06-27')); //da cambiare con data richiesta
-        $qta = 5; //da cambiare con quantita della richiesta
-        //Sistemo eventualemte data consegna richiesta (non sabato o domenica)
+        $consegnaRichiesta = date('Y-m-d', $sample->getRequestedDeliveryDate()->getTimestamp());
+        $qta = $sample->getQta();
+        //Sistemo (non dovrebbe succedere) data consegna richiesta (non sabato o domenica)
         switch (date('w', strtotime($consegnaRichiesta))) {
             case 6: //sabato
                 $consegnaRichiesta = date('Y-m-d', strtotime("+2 day", strtotime($consegnaRichiesta)));
@@ -370,21 +410,14 @@ class IndexController extends EntityUsingController
                 break;
         }
 
-
-
-
-        $today = date('Y-m-d');
-        // add 3 days to date
-        $newDate = Date('Y-m-d', strtotime("+3 days"));
-        echo $newDate;
-
-
         /**
-         * Calcolo la data consegna materiale prevista. Dato che la navetta è il
-         * venerdì, se siamo Giove o Vene si va al venerdì dopo. 
+         * Calcolo la data consegna materiale prevista. 
+         * Parto da "oggi" visto che il materiale viene richiesto subito.
+         * Dato che la navetta è il venerdì, se siamo Giove o Vene si va al venerdì dopo. 
          * Altrimenti si va al venerdì prossimo. 
          */
-        $weekDay = date('w', strtotime($today));
+        $today = date("Y-m-d");
+        $today = date("Y-m-d", $sample->getCreatedDate()->getTimestamp());
         switch (date('w', strtotime($today))) {
             case 1://lunedì
                 $add = 4;
@@ -412,6 +445,7 @@ class IndexController extends EntityUsingController
         }
 
         $dataPrevista = date('Y-m-d', strtotime("+$add day", strtotime($today)));
+        //Fine Calcolo la data consegna materiale prevista. 
 
 
         /**
@@ -422,30 +456,52 @@ class IndexController extends EntityUsingController
         $datetime2 = new \DateTime($dataPrevista);
         $interval = $datetime2->diff($datetime1);
         $interval = (int) $interval->format('%R%a');
-
         if ($interval > 0) {
             $dataPrevista = $consegnaRichiesta;
         }
-        var_dump($dataPrevista);
 
-
-
-        //Quanrdo quanti campioni sono previsti il giorno di consegna prevista
+        //Quando quanti campioni sono previsti il giorno di consegna prevista
         $config = $this->getEntityManager()->getConfiguration();
         $config->addCustomStringFunction('DATE_FORMAT', 'DoctrineExtensions\Query\Mysql\DateFormat');
-        $query = $this->getEntityManager()->createQuery("SELECT SUM(s.qta) qta FROM Samples\Entity\Sample s WHERE DATE_FORMAT(s.scheduledDeliveryDate, '%Y-%m-%d') = '$dataPrevista'");
-        echo $query->getSql();
+
+        $i = $this->tmp($dataPrevista, $qta);
+        while ($i > 10) {
+            switch (date('w', strtotime($dataPrevista))) {
+                case 5://venerdì
+                    $add = 3; //vado a lunedì
+                    break;
+                case 6://sabato
+                    $add = 2; //vado a lunedì
+                    break;
+                default:
+                    $add = 1; //aggiungo 1 gg
+                    break;
+            }
+
+            $dataPrevista = date('Y-m-d', strtotime("+$add day", strtotime($dataPrevista)));
+            $i = $this->tmp($dataPrevista, $qta);
+            var_dump($i);
+        }//end while
+        
+        //var_dump($dataPrevista);
+        return $dataPrevista;
+    }
+
+    public function tmp($date, $qta)
+    {
+        $query = $this->getEntityManager()->createQuery(
+                "SELECT SUM(s.qta) qta FROM {$this->options->getSampleEntityClass()} s WHERE DATE_FORMAT(s.scheduledDeliveryDate, '%Y-%m-%d') = '$date'");
+        //echo $query->getSql();
         $campPrev = $query->getResult()[0]['qta'];
-        $campPrev = isset($campPrev) ? ((int) $campPrev) + $qta : $qta;
-        var_dump($campPrev);
+        return (isset($campPrev)) ? ((int) $campPrev) + $qta : $qta;
     }
 
     public function migrationAction()
     {
         //Amumento il limite tempo dello script a 30 min e memoria
-        set_time_limit(1800);
+        set_time_limit(18000);
         ini_set('memory_limit', '-1');
-        
+
         //Leggo tabella di migrazione
         $dbAdapterConfig = array(
             'driver' => 'Mysqli',
@@ -459,9 +515,8 @@ class IndexController extends EntityUsingController
         $select = $sql->select();
         $select->from('campionature')->limit(200)->offset(10439);
         //$select->where(array('myColumn' => 5));
-        
         //echo $select->getSqlString();
-         //return $this->getResponse();
+        //return $this->getResponse();
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -476,40 +531,40 @@ class IndexController extends EntityUsingController
         $notFound = [];
         $allegatiRichiesta = [];
         $allegatiEvasione = [];
-        
-        
+
+
         //object
         $countryRepo = $objectManager->getRepository('Application\Entity\Country');
         $statusRepo = $objectManager->getRepository('Samples\Entity\Status');
-        
+
         //default
         $defaultApplicant = $userMapper->findByEmail('anonymous@ariete.net');
         $defaultEditor = $userMapper->findByEmail('gianni.maggini@ariete.net');
         $defaultShipper = $userMapper->findByEmail('riccardo.peschi@ariete.net');
         $defaultCountry = $countryRepo->find(105);
-        
+
         foreach ($result as $value) {
             $createdDate = new \DateTime($value['data']);
 
-            
+
             $sample = new $class();
-            $sample->setCustomer(utf8_encode ($value['cliente']));
-            $sample->setModel(utf8_encode ($value['modello']));
+            $sample->setCustomer(utf8_encode($value['cliente']));
+            $sample->setModel(utf8_encode($value['modello']));
 
             $sample->setQta($value['quantita']);
             $sample->setQtaExpected($value['quantitaprevista']);
-            $sample->setPaymentTerm(utf8_encode ($value['terminedipagamento']));
-            $sample->setVpp(utf8_encode ($value['vpp']));
-            $sample->setVoltage(utf8_encode ($value['tensione']));
-            $sample->setFrequency(utf8_encode ($value['frequenza']));
-            $sample->setPlug(utf8_encode ($value['spina']));
-            $sample->setCable(utf8_encode ($value['cavo']));
-            $sample->setSerigraphy(utf8_encode ($value['serigrafia']));
-            $sample->setColors(utf8_encode ($value['colori']));
-            $sample->setAccessories(utf8_encode ($value['accessori']));
-            $sample->setBooklet(utf8_encode ($value['libretto']));
-            $sample->setPackaging(utf8_encode ($value['imballo']));         
-            $sample->setNote(utf8_encode ($value['note']));
+            $sample->setPaymentTerm(utf8_encode($value['terminedipagamento']));
+            $sample->setVpp(utf8_encode($value['vpp']));
+            $sample->setVoltage(utf8_encode($value['tensione']));
+            $sample->setFrequency(utf8_encode($value['frequenza']));
+            $sample->setPlug(utf8_encode($value['spina']));
+            $sample->setCable(utf8_encode($value['cavo']));
+            $sample->setSerigraphy(utf8_encode($value['serigrafia']));
+            $sample->setColors(utf8_encode($value['colori']));
+            $sample->setAccessories(utf8_encode($value['accessori']));
+            $sample->setBooklet(utf8_encode($value['libretto']));
+            $sample->setPackaging(utf8_encode($value['imballo']));
+            $sample->setNote(utf8_encode($value['note']));
 
             $tmp = ($value['xlami']) ? 1 : 0;
             $sample->setPainting($tmp);
@@ -519,20 +574,20 @@ class IndexController extends EntityUsingController
             $sample->setApprovalSample($tmp);
 
 
-            $sample->setVoltageProvided(utf8_encode ($value['tensioneevasa']));
-            $sample->setFrequencyProvided(utf8_encode ($value['frequenzaevasa']));
-            $sample->setPlugProvided(utf8_encode ($value['spinaevasa']));
-            $sample->setCableProvided(utf8_encode ($value['cavoevaso']));
-            $sample->setSerigraphyProvided(utf8_encode ($value['serigrafiaevasa']));
-            $sample->setColorsProvided(utf8_encode ($value['coloreevaso']));
-            $sample->setAccessoriesProvided(utf8_encode ($value['accessorievasi']));
-            $sample->setBookletProvided(utf8_encode ($value['librettoevaso']));
-            $sample->setPackagingProvided(utf8_encode ($value['imballoevaso']));
-            $sample->setEdtProvided(utf8_encode ($value['edtevaso']));
-            $sample->setAbsorptionProvided(utf8_encode ($value['assorbimentoevaso']));
-            $sample->setSfasamentoProvided(utf8_encode ($value['cosevaso']));
-            $sample->setPressureProvided(utf8_encode ($value['pressioneevasa']));
-            $sample->setNoteProvided(utf8_encode ($value['altroevaso']));
+            $sample->setVoltageProvided(utf8_encode($value['tensioneevasa']));
+            $sample->setFrequencyProvided(utf8_encode($value['frequenzaevasa']));
+            $sample->setPlugProvided(utf8_encode($value['spinaevasa']));
+            $sample->setCableProvided(utf8_encode($value['cavoevaso']));
+            $sample->setSerigraphyProvided(utf8_encode($value['serigrafiaevasa']));
+            $sample->setColorsProvided(utf8_encode($value['coloreevaso']));
+            $sample->setAccessoriesProvided(utf8_encode($value['accessorievasi']));
+            $sample->setBookletProvided(utf8_encode($value['librettoevaso']));
+            $sample->setPackagingProvided(utf8_encode($value['imballoevaso']));
+            $sample->setEdtProvided(utf8_encode($value['edtevaso']));
+            $sample->setAbsorptionProvided(utf8_encode($value['assorbimentoevaso']));
+            $sample->setSfasamentoProvided(utf8_encode($value['cosevaso']));
+            $sample->setPressureProvided(utf8_encode($value['pressioneevasa']));
+            $sample->setNoteProvided(utf8_encode($value['altroevaso']));
 
             $sample->setCreatedDate($createdDate);
             $sample->setEditDate($createdDate);
@@ -549,22 +604,16 @@ class IndexController extends EntityUsingController
             }
             $sample->setApplicant($applicant);
             // Fine Richiedente
-            
             //Country
             $key = $value['paese'];
             $country = $countryRepo->find((int) $key);
             if (!isset($country)) {
                 $country = $defaultCountry;
-                
             }
             $sample->setCountry($country);
             // Fine Country       
-            
-                   
-  
-            
             //Allegati
-            for ($i = 1; $i<=12; $i++) {
+            for ($i = 1; $i <= 12; $i++) {
                 $tmp = $value['allegatorichiesta' . $i];
                 if ((!empty($tmp)) && ($tmp != '-')) {
                     //$allegatiRichiesta[] = basename($tmp);
@@ -576,7 +625,7 @@ class IndexController extends EntityUsingController
                     $this->addAttachment($data);
                 }
             }
-            for ($i = 1; $i<=12; $i++) {
+            for ($i = 1; $i <= 12; $i++) {
                 $tmp = $value['allegatoevaso' . $i];
                 if ((!empty($tmp)) && ($tmp != '-')) {
                     //$allegatiEvasione[] = basename($tmp);
@@ -584,14 +633,11 @@ class IndexController extends EntityUsingController
                         'sample' => $sample,
                         'fileName' => basename($tmp),
                         'attachmentType' => 'evasione',
-                    ];            
+                    ];
                     $this->addAttachment($data);
                 }
-            }       
+            }
             //Fine Allegati
-            
-            
-       
             //Editor
             $key = $value['compilatoda'];
             $editor = $userMapper->findByEmail($key);
@@ -599,7 +645,6 @@ class IndexController extends EntityUsingController
                 $editor = $defaultEditor;
             }
             // Editor            
-            
             //History
             //1)
             $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION);
@@ -608,9 +653,9 @@ class IndexController extends EntityUsingController
                 'editBy' => $applicant,
                 'sampleStatus' => $status,
                 'editDate' => $createdDate,
-                );         
+            );
             $this->addHistory($data);
-            
+
             //5
             if ($value['prodrichiesti']) {
                 $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PRODUCT_REQUIRED);
@@ -619,10 +664,10 @@ class IndexController extends EntityUsingController
                     'editBy' => $editor,
                     'sampleStatus' => $status,
                     'editDate' => $createdDate,
-                );         
-                $this->addHistory($data);                
+                );
+                $this->addHistory($data);
             }
-            
+
             //10
             if ($value['prodarrivati']) {
                 $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PRODUCT_ARRIVED);
@@ -631,10 +676,10 @@ class IndexController extends EntityUsingController
                     'editBy' => $editor,
                     'sampleStatus' => $status,
                     'editDate' => $createdDate,
-                );         
-                $this->addHistory($data);                
-            }     
-            
+                );
+                $this->addHistory($data);
+            }
+
             //15
             if ($value['evasa']) {
                 $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PROCESSED);
@@ -648,10 +693,10 @@ class IndexController extends EntityUsingController
                     'editBy' => $editor,
                     'sampleStatus' => $status,
                     'editDate' => $processingDate,
-                );         
-                $this->addHistory($data);                
-            }  
-            
+                );
+                $this->addHistory($data);
+            }
+
             //20
             if (!empty($value['dataspediz'])) {
                 $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_SHIPPED);
@@ -660,10 +705,10 @@ class IndexController extends EntityUsingController
                     'editBy' => $defaultShipper,
                     'sampleStatus' => $status,
                     'editDate' => new \DateTime($value['dataspediz']),
-                );         
-                $this->addHistory($data);                
-            }      
-            
+                );
+                $this->addHistory($data);
+            }
+
             //25
             var_dump($value['annullata']);
             if ($value['annullata']) {
@@ -673,28 +718,27 @@ class IndexController extends EntityUsingController
                     'editBy' => $editor,
                     'sampleStatus' => $status,
                     'editDate' => $createdDate,
-                );         
-                $this->addHistory($data);                
-            }            
-            
+                );
+                $this->addHistory($data);
+            }
+
             //Fine History
-            
             //var_dump($sample);
             $sample->setStatus($status);
             $this->sampleMapper->insert($sample);
-         
+
             //echo $sample->getId() . ' --> ' . $value['id'] . '<br/>';
         }
-        
+
         echo 'finito!';
-        
-        
+
+
 
 
 
         return $this->getResponse();
     }
-    
+
     /**
      * Aggiunge un record alla tabella sample_attachment. (usato per migrazione)
      * 
@@ -709,7 +753,6 @@ class IndexController extends EntityUsingController
 
         //var_dump($attachment);
         $this->getServiceLocator()->get('Samples\Mapper\AttachmentsMapper')->insert($attachment);
-
-    }    
+    }
 
 }

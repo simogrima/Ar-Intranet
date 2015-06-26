@@ -2,328 +2,208 @@
 <?php $this->myFlashMessenger(); ?>   
 
 <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-cubes fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge"><?= $sampleCount; ?></div>
-                                    <div>Campionatuer presenti!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="<?php echo $this->url('samples/list'); ?>">
-                            <div class="panel-footer">
-                                <span class="pull-left">Mostra</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-cubes fa-5x"></i>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-check fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge"><?= $processedCount; ?></div>
-                                    <div>Campionature evase!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="<?php echo $this->url('computer/settings'); ?>">
-                            <div class="panel-footer">
-                                <span class="pull-left">Mostra</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-clock-o fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge"><?= $processedCount; ?></div>
-                                    <div>Campionature in corso!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Mostra</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-trash fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge"><?= $cancelCount; ?></div>
-                                    <div>Campionature annullate!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Mostra</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge"><?php
+                                                echo $this->numberFormat(
+                                                        $sampleCount, NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DEFAULT, "it_IT"
+                                                );
+                                                ?></div>
+                        <div>Campionatuer presenti!</div>
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Ultimi inserimenti
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <table class="table table-bordered table-hover" id="example1">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Modello</th>
-                <th>Cliente</th>    
-                <th>Richiedente</th>
-                <th>Stato</th>
-                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
-                <th class="text-center"><i class="fa fa-calendar fa-fw"></i></th>
-                <th>Action</th>
-            </tr>
-        </thead>    
-            <?php foreach ($this->samples as $sample): ?>
-            <?php
-            $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());   
-            ?>
-                <tr class="<?= $class; ?>">
-                    <td class="cell cell-id">
-                        <?php echo $sample->getId(); ?>
-                    </td>
-                    <td class="cell cell-serial">
-                        <?php echo $sample->getModel(); ?>
-                    </td>         
-                    <td class="cell">
-                        <?php echo $sample->getCustomer(); ?>
-                    </td>       
-                    <td class="cell">
-                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getApplicant()->getDisplayName(); ?>%22%7D">
-                        <?php echo $sample->getApplicant()->getDisplayName(); ?>
-                        </a>
-                    </td>    
-                    <td class="cell">
-                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getStatus()->getName(); ?>%22%7D">
-                        <?php echo $sample->getStatus()->getName(); ?>
-                        </a>    
-                    </td>    
-                    <td class="cell text-center">
-                        <?php echo  count($sample->getAttachments()); ?>
-                    </td>   
-                    <td class="cell text-center">
-                        <?php
-                        echo $this->dateFormat(
-                                $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
-                                IntlDateFormatter::NONE, // time
-                                "it_IT");
-                        ?>                        
-                    </td>                      
-                    <td class="cell cell-ctrls text-center">
-                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
-                            <span class="glyphicon glyphicon-eye-open"></span> Show
-                        </a>                         
-                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
-                            <span class="glyphicon glyphicon-edit"></span> Edit
-                        </a> 
-                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la campionatura?') ?>')" class="btn btn-danger btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span> Del
-                        </a>
-                        <?php if (!$sample->isShipped()): ?>
-                        <a class='btn btn-success btn-xs' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
-                            <i class="fa fa-plane"></i> Spedisci
-                        </a>                         
-                        <?php endif; ?>
-                    </td>
-
-                </tr>
-            <?php endforeach; ?>    
-        
-                            </table>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
+            <a href="<?php echo $this->url('samples/list'); ?>">
+                <div class="panel-footer">
+                    <span class="pull-left">Mostra Tutte</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
                 </div>
-                <!-- /.col-lg-12 -->
-                <div class="col-lg-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            All time
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-pie-status"></div>
-                            </div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-6 -->
-                <div class="col-lg-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <?= date('Y')?>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-pie-status-y"></div>
-                            </div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-6 -->
+            </a>
+        </div>
+    </div>
 
 
-            </div>
+
+</div>
 
 
 <div class="row">
-                    <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Bar Chart Example
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-bar-chart"></div>
-                            </div>
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-pencil"></i> Ultimi inserimenti
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <table class="table table-bordered table-hover" id="example1">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Modello</th>
+                            <th>Cliente</th>    
+                            <th>Richiedente</th>
+                            <th>Stato</th>
+                            <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
+                            <th class="text-center"><i class="fa fa-calendar fa-fw"></i></th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>    
+                    <?php foreach ($this->samples as $sample): ?>
+                        <?php
+                        $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());
+                        ?>
+                        <tr class="<?= $class; ?>">
+                            <td class="cell cell-id">
+                                <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                                    <?php echo $sample->getId(); ?>
+                                </a>
+                            </td>
+                            <td class="cell cell-serial">
+                                <?php echo $sample->getModel(); ?>
+                            </td>         
+                            <td class="cell">
+                                <?php echo $sample->getCustomer(); ?>
+                            </td>       
+                            <td class="cell">
+                                <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getApplicant()->getDisplayName(); ?>%22%7D">
+                                    <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                                </a>
+                            </td>    
+                            <td class="cell">
+                                <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getStatus()->getName(); ?>%22%7D">
+                                    <?php echo $sample->getStatus()->getName(); ?>
+                                </a>    
+                            </td>    
+                            <td class="cell text-center">
+                                <?php echo count($sample->getAttachments()); ?>
+                            </td>   
+                            <td class="cell text-center">
+                                <?php
+                                echo $this->dateFormat(
+                                        $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        "it_IT");
+                                ?>                        
+                            </td>                      
+                            <td class="cell cell-ctrls text-center">
+                                <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                                    <span class="glyphicon glyphicon-eye-open"></span> Show
+                                </a>                         
+                            </td>
+
+                        </tr>
+                    <?php endforeach; ?>    
+
+                </table>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+
+    
+    
+<hr>
+<h1>Statistiche</h1>
+<hr>
+
+<div class="row">    
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-pie-chart"></i> All time
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="flot-chart">
+                    <div class="flot-chart-content" id="flot-pie-status"></div>
                 </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-pie-chart"></i> <?= date('Y') ?>
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="flot-chart">
+                    <div class="flot-chart-content" id="flot-pie-status-y"></div>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+
+
 </div>
 
 
 
-                            <div class="panel-body">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Date</th>
-                                                    <th>Time</th>
-                                                    <th>Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>3326</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>3:29 PM</td>
-                                                    <td>$321.33</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3325</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>3:20 PM</td>
-                                                    <td>$234.34</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3324</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>3:03 PM</td>
-                                                    <td>$724.17</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3323</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>3:00 PM</td>
-                                                    <td>$23.71</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3322</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>2:49 PM</td>
-                                                    <td>$8345.23</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3321</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>2:23 PM</td>
-                                                    <td>$245.12</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3320</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>2:15 PM</td>
-                                                    <td>$5663.54</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3319</td>
-                                                    <td>10/21/2013</td>
-                                                    <td>2:13 PM</td>
-                                                    <td>$943.45</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- /.table-responsive -->
-                                </div>
-                                <!-- /.col-lg-4 (nested) -->
-                                <div class="col-lg-8">
-                                    <div id="morris-bar-chart"></div>
-                                </div>
-                                <!-- /.col-lg-8 (nested) -->
-                            </div>
-                            <!-- /.row -->
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart"></i> Campionature per anno
+            </div>
+            <!-- /.panel-heading -->
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Anno</th>
+                                        <th>Campionature</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($chartStatCountByYear as $item): ?>
+                                        <tr>
+                                            <td><?= $item['y']; ?></td>
+                                            <td><?php
+                                                echo $this->numberFormat(
+                                                        $item['nr'], NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DEFAULT, "it_IT"
+                                                );
+                                                ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- /.panel-body -->
+                        <!-- /.table-responsive -->
                     </div>
-                    <!-- /.panel -->
+                    <!-- /.col-lg-4 (nested) -->
+                    <div class="col-lg-8">
+                        <div id="morris-bar-chart"></div>
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
 
 
 <!-- Flot Charts JavaScript --> 
@@ -342,12 +222,17 @@ $this->headLink()->prependStylesheet('//cdnjs.cloudflare.com/ajax/libs/morris.js
 
 $pieStatusData = '';
 foreach ($chartPieStatus as $item) {
-    $pieStatusData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+    $pieStatusData .= '{label: "' . $item['name'] . '",data: ' . $item['nr'] . '}, ' . PHP_EOL;
 }
 
 $pieStatusYData = '';
 foreach ($chartPieStatusY as $item) {
-    $pieStatusYData .= '{label: "' . $item['name'] . '",data: ' . $item['nr']. '}, ' . PHP_EOL;
+    $pieStatusYData .= '{label: "' . $item['name'] . '",data: ' . $item['nr'] . '}, ' . PHP_EOL;
+}
+
+$chartStatCountByYearData = '';
+foreach ($chartStatCountByYear as $item) {
+    $chartStatCountByYearData .= '{y: "' . $item['y'] . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
 }
 
 $this->headScript()->appendScript("
@@ -401,75 +286,15 @@ $(function() {
         }
     });
 
-//Flot Bar Chart
-    var barOptions = {
-        series: {
-            bars: {
-                show: true,
-                barWidth: 43200000
-            }
-        },
-        xaxis: {
-            mode: \"time\",
-            timeformat: \"%Y\",
-            minTickSize: [1, \"year\"]
-        },
-        grid: {
-            hoverable: true
-        },
-        legend: {
-            show: false
-        },
-        tooltip: true,
-        tooltipOpts: {
-            content: \"x: %x, y: %y\"
-        }
-    };
-    var barData = {
-        label: \"bar\",
-        data: [
-            [1420070400000, 1000],
-            [1355571900000, 6000]
-        ]
-    };
-    $.plot($('#flot-bar-chart'), [barData], barOptions);
 
 
-
+    var data2 = [" . $chartStatCountByYearData . "];
     Morris.Bar({
         element: 'morris-bar-chart',
-        data: [{
-            y: '2006',
-            a: 100,
-            b: 90
-        }, {
-            y: '2007',
-            a: 75,
-            b: 65
-        }, {
-            y: '2008',
-            a: 50,
-            b: 40
-        }, {
-            y: '2009',
-            a: 75,
-            b: 65
-        }, {
-            y: '2010',
-            a: 50,
-            b: 40
-        }, {
-            y: '2011',
-            a: 75,
-            b: 65
-        }, {
-            y: '2012',
-            a: 100,
-            b: 90
-        }],
+        data: data2,
         xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['Evasi', 'Annullati'],
+        ykeys: ['a'],
+        labels: ['Campionature'],
         hideHover: 'auto',
         resize: true
     });
