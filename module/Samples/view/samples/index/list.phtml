@@ -91,12 +91,20 @@ if ($order_by == 'id') {
                         <?php echo $sample->getCustomer(); ?>
                     </td>       
                     <td class="cell">
-                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getApplicant()->getDisplayName(); ?>%22%7D">
+                        <a href="
+                            <?php echo $this->url(
+                                'samples/list', 
+                                ['search_by' => json_encode(['search' => $sample->getApplicant()->getDisplayName()])]); ?>
+                           ">                      
                         <?php echo $sample->getApplicant()->getDisplayName(); ?>
                         </a>
                     </td>    
                     <td class="cell">
-                        <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getStatus()->getName(); ?>%22%7D">
+                        <a href="
+                            <?php echo $this->url(
+                                'samples/list', 
+                                ['search_by' => json_encode(['search' => $sample->getStatus()->getName()])]); ?>                           
+                           ">
                         <?php echo $sample->getStatus()->getName(); ?>
                         </a>    
                     </td>     
@@ -153,4 +161,11 @@ echo $this->paginationControl(
     'pageAction' => $pageAction,
         )
 );
-?>
+
+
+$this->url(
+        'samples/search', 
+        [], 
+        [
+            'query' =>['search_by' => json_encode($sample->getApplicant()->getDisplayName())]
+        ]);

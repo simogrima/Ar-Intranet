@@ -254,7 +254,11 @@ $(function() {
         },
         tooltip: true,
         tooltipOpts: {
-            content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            //content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            content: function(label, xval, yval) {
+                var content = \"%p.0%, %s (\" + yval + \")\";
+                return content;
+            },
             shifts: {
                 x: 20,
                 y: 0
@@ -277,7 +281,11 @@ $(function() {
         },
         tooltip: true,
         tooltipOpts: {
-            content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            //content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+            content: function(label, xval, yval) {
+                var content = \"%p.0%, %s (\" + yval + \")\";
+                return content;
+            },            
             shifts: {
                 x: 20,
                 y: 0
