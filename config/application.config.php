@@ -18,6 +18,7 @@ $modules = array(
         'MyZfcRbac',
         'Admin',
         'ZF2FileUploadExamples',
+        'EmailZF2',
         'Samples',
         'Computer'
 );

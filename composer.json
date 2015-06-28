@@ -20,7 +20,8 @@
         "zf-commons/zfc-rbac": "2.0.*",
         "mwillbanks/zfc-twitter-bootstrap": "dev-master",
         "cgm/zf2-file-upload-examples": ">=1.0.0",
-        "beberlei/DoctrineExtensions": "dev-master"
+        "beberlei/DoctrineExtensions": "dev-master",
+        "email-zf2/emailzf2": "dev-master"
     },
     "require-dev": {
         "zendframework/zend-developer-tools": "dev-master",
