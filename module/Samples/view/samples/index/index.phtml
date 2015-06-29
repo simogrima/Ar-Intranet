@@ -11,10 +11,10 @@
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge"><?php
-                                                echo $this->numberFormat(
-                                                        $sampleCount, NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DEFAULT, "it_IT"
-                                                );
-                                                ?></div>
+                            echo $this->numberFormat(
+                                    $sampleCount, NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DEFAULT, "it_IT"
+                            );
+                            ?></div>
                         <div>Campionatuer presenti!</div>
                     </div>
                 </div>
@@ -110,8 +110,8 @@
     <!-- /.col-lg-12 -->
 </div>
 
-    
-    
+
+
 <hr>
 <h1>Statistiche</h1>
 <hr>
@@ -120,12 +120,29 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-pie-chart"></i> All time
+                <i class="fa fa-pie-chart"></i> <?= $year?> tutte per mese
+
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Anno
+                            <span class="caret"></span>
+                        </button>
+                        <?php $range = range(2003, date('Y')) ?>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <?php foreach ($range as $y): ?>
+                            <li><a href="<?= $this->url('samples', [], ['query' =>['year' => $y]]); ?>"><?= $y; ?></a></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>                
+
+
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="flot-chart">
-                    <div class="flot-chart-content" id="flot-pie-status"></div>
+                    <div class="flot-chart-content" id="morris-bar-chart2"></div>
                 </div>
             </div>
             <!-- /.panel-body -->
@@ -136,7 +153,7 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-pie-chart"></i> <?= date('Y') ?>
+                <i class="fa fa-pie-chart"></i> <?= date('Y') ?> per stato
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -220,10 +237,6 @@ $this->headScript()
 
 $this->headLink()->prependStylesheet('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css', 'all');
 
-$pieStatusData = '';
-foreach ($chartPieStatus as $item) {
-    $pieStatusData .= '{label: "' . $item['name'] . '",data: ' . $item['nr'] . '}, ' . PHP_EOL;
-}
 
 $pieStatusYData = '';
 foreach ($chartPieStatusY as $item) {
@@ -235,38 +248,17 @@ foreach ($chartStatCountByYear as $item) {
     $chartStatCountByYearData .= '{y: "' . $item['y'] . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
 }
 
+$chartStatCountByMonthData = '';
+foreach ($chartStatCountByMonth as $item) {
+    $m = date('F', mktime(0, 0, 0, $item['m'], 10));
+    $chartStatCountByMonthData .= '{m: "' . $m . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
+}
+
 $this->headScript()->appendScript("
 $(function() {
 //Flot Pie Chart
 
 
-    //Status
-    var dataStatus = [" . $pieStatusData . "];
-    var plotObj = $.plot($(\"#flot-pie-status\"), dataStatus, {
-        colors: [\"#f5f5f5\", \"#edc240\",\"#5bc0de\",\"#5cb85c\", \"green\",\"#d9534f\"],
-        series: {
-            pie: {
-                show: true
-            }
-        },
-        grid: {
-            hoverable: true
-        },
-        tooltip: true,
-        tooltipOpts: {
-            //content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
-            content: function(label, xval, yval) {
-                var content = \"%p.0%, %s (\" + yval + \")\";
-                return content;
-            },
-            shifts: {
-                x: 20,
-                y: 0
-            },
-            defaultTheme: false
-        }
-    });
-    
     //StatusY
     var dataStatusY = [" . $pieStatusYData . "];
     var plotObj = $.plot($(\"#flot-pie-status-y\"), dataStatusY, {
@@ -305,6 +297,21 @@ $(function() {
         labels: ['Campionature'],
         hideHover: 'auto',
         resize: true
+    });
+    
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var data3 = [" . $chartStatCountByMonthData . "];
+    Morris.Bar({
+        element: 'morris-bar-chart2',
+        data: data3,
+        xkey: 'm',
+        ykeys: ['a'],
+        labels: ['Campionature'],
+        hideHover: 'auto',
+        resize: true
+        
+
+
     });
 
 }); 

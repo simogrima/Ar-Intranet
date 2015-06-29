@@ -290,6 +290,17 @@ return array(
     //My module options
     'sample_opt' => [
         'attachmentPath' => '/data/attachments/',
+        'emailToNewSample' => [
+            'grimani@ariete.net',
+            'simogrima@gmail.com',
+            //'gianni.maggini@ariete.net',
+            //'riccardo.biagioli@ariete.net'
+        ],
+        'emailToProcessedSample' => [
+            'simogrima@gmail.com',
+            //'riccardo.peschi@ariete.net',
+            //'santo.riccio@ariete.net',
+        ],        
     ],
     //Navigation menu/breadcrumb
     'navigation' => array(

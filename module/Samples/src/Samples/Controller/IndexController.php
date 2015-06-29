@@ -15,6 +15,7 @@ use Application\Controller\EntityUsingController;
 use Samples\Entity\Sample;
 use Zend\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\View\Model\ViewModel;
 //Doctrine
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -78,24 +79,27 @@ class IndexController extends EntityUsingController
 
         $config = $this->getEntityManager()->getConfiguration();
         $config->addCustomStringFunction('YEAR', 'DoctrineExtensions\Query\Mysql\Year');
+        $config->addCustomStringFunction('MONTH', 'DoctrineExtensions\Query\Mysql\Month');
 
-        $queryPieStatus = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name, t.id id FROM Samples\Entity\Sample s JOIN s.status t GROUP BY s.status');
         $queryPieStatusY = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, t.name, t.id id FROM Samples\Entity\Sample s JOIN s.status t WHERE YEAR(s.createdDate) = ' . date('Y') . ' GROUP BY s.status');
         //$queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus) . ')');
         //$queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
         //$queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
         $queryStatCountByYear = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
-
+        
+        $year = $this->params()->fromQuery('year',date('Y'));
+        $queryStatCountByMonth = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, MONTH(s.createdDate) m FROM Samples\Entity\Sample s WHERE YEAR(s.createdDate) = ' . $year . ' GROUP BY m');
 
         return array(
             'sampleCount' => $this->sampleMapper->count(),
             //'processedCount' => $queryProcessedCount->getResult()[0]['nr'],
             //'pendingCount' => $queryPendingCount->getResult()[0]['nr'],
             //'cancelCount' => $queryCancelCount->getResult()[0]['nr'],
-            'chartPieStatus' => $this->fixPieValue($statusList, $queryPieStatus->getResult()),
             'chartPieStatusY' => $this->fixPieValue($statusList, $queryPieStatusY->getResult()),
             'chartStatCountByYear' => $queryStatCountByYear->getResult(),
+            'chartStatCountByMonth' => $queryStatCountByMonth->getResult(),
             'samples' => $paginator,
+            'year' => $year,
         );
     }
 
@@ -229,6 +233,10 @@ class IndexController extends EntityUsingController
 
                 $this->sampleMapper->insert($sample);
 
+                //Notifica via email
+                $this->sampleMapper->sendNewSampleEmail($sample, $this);
+
+
                 return $this->redirect()->toRoute('samples/attachments/add', array(
                             'controller' => 'attachment',
                             'action' => 'add',
@@ -290,6 +298,14 @@ class IndexController extends EntityUsingController
                 if (isset($changeset['status'])) {
                     //Aggiungo un record per cambio stato
                     $this->addHistory($data);
+
+                    //Notifica via email
+                    if ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_CANCELED) {
+                        $this->sampleMapper->sendCanceledSampleEmail($sample, $this);
+                    } elseif ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PROCESSED) {
+                        $this->sampleMapper->sendProcessedSampleEmail($sample, $this);
+                    }    
+                    //Fine Notifica via email                    
                 }
                 //***** Fine History *****/    
 
@@ -366,8 +382,6 @@ class IndexController extends EntityUsingController
         if (!$sample) {
             throw new \Exception('Campionatura non trovata!');
         }
-
-        $this->generateScheduledDeliveryDate($sample);
 
         return array(
             'sample' => $sample,
@@ -480,9 +494,8 @@ class IndexController extends EntityUsingController
 
             $dataPrevista = date('Y-m-d', strtotime("+$add day", strtotime($dataPrevista)));
             $i = $this->tmp($dataPrevista, $qta);
-            var_dump($i);
+            //var_dump($i);
         }//end while
-        
         //var_dump($dataPrevista);
         return $dataPrevista;
     }
@@ -753,6 +766,11 @@ class IndexController extends EntityUsingController
 
         //var_dump($attachment);
         $this->getServiceLocator()->get('Samples\Mapper\AttachmentsMapper')->insert($attachment);
+    }
+
+    protected function sendCanceledEmail()
+    {
+        
     }
 
 }

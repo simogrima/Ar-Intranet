@@ -97,5 +97,49 @@ class ModuleOptions extends AbstractOptions
     function setAttachmentPath($path)
     {
         $this->attachmentPath = $path;
+    }   
+    
+    /**
+     * Getter indirizzi x notifica (email) nuovo campione
+     * 
+     * @return array
+     */
+    function getEmailToNewSample()
+    {
+        return $this->emailToNewSample;
+    }
+    
+    /**
+     * Setter indirizzi x notifica (email) nuovo campione
+     * 
+     * @param array $emails
+     * @return \Samples\Options\ModuleOptions
+     */
+    function setEmailToNewSample(array $emails)
+    {
+        $this->emailToNewSample = $emails;
+        return $this;
     }    
+    
+    /**
+     * Getter indirizzi x notifica (email) campione evaso
+     * 
+     * @return array
+     */
+    function getEmailToProcessedSample()
+    {
+        return $this->emailToProcessedSample;
+    }
+    
+    /**
+     * Setter indirizzi x notifica (email) campione evaso
+     * 
+     * @param array $emails
+     * @return \Samples\Options\ModuleOptions
+     */
+    function setEmailToProcessedSample(array $emails)
+    {
+        $this->emailToProcessedSample = $emails;
+        return $this;
+    }        
 }

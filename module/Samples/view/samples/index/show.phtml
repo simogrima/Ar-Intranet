@@ -58,7 +58,11 @@ switch ($status) {
                     </div>
                     <div class="col-xs-9 text-right">
                         <div class="huge">
-                            <a href="/samples/list/search_by/%7B%22search%22:%22<?php echo $sample->getApplicant()->getDisplayName(); ?>%22%7D">
+                            <a href="
+                            <?php echo $this->url(
+                                'samples/list', 
+                                ['search_by' => json_encode(['search' => $sample->getApplicant()->getDisplayName()])]); ?>                                                              
+                               ">
                                 <?php echo $sample->getApplicant()->getDisplayName(); ?>
                             </a>    
                         </div>

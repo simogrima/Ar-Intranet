@@ -23,30 +23,6 @@ class IndexController extends AbstractActionController
     {     
         //test log
         //$this->getServiceLocator()->get('Zend\Log')->info('Informational message'); 
-        
-        
-        
-        
-$view = new ViewModel(array(
-                'fullname' => 'Vincenzo Provenza',
-            ));
-$view->setTerminal(true);
-$view->setTemplate('Application/view/emails/hello_world');
-$this->mailerZF2()->send(array(
-    'to' => 'grimani@ariete.net',
-    'subject' => 'This is subject'
-), $view);        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
 
         return array(
             'computerCount' => $this->getServiceLocator()->get('Computer\Mapper\ComputerMapper')->count(),
