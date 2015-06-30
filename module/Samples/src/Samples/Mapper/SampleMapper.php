@@ -50,6 +50,46 @@ class SampleMapper extends BaseDoctrine
         return $qb->getQuery();
     }
 
+    public function getFieldsSearchQuery($data, $orderBy, $order)
+    {
+
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(array('s'))
+                ->from($this->options->getSampleEntityClass(), 's')
+                ->innerJoin('s.applicant', 'u')
+                ->innerJoin('s.status', 't')
+                ->orderBy($orderBy, $order);
+
+        if (!empty($data)) {
+            $whereString = '';
+            $and = '';            
+            foreach ($data as $key => $value) {
+                switch ($key) {
+                    case 'status':
+                        $whereString .= $and . "t.id = ?1";
+                        $qb->setParameter(1,  trim($value));
+                        break;
+                    case 'applicant':
+                        $whereString .= $and . "u.id = ?2";
+                        $qb->setParameter(2, trim($value));
+                        break;
+                    case 'id':
+                        $whereString .= $and . "s.id = ?3";
+                        $qb->setParameter(3,  trim($value));
+                        break;                    
+                    default:
+                        $whereString .= $and . "s.$key LIKE :$key";
+                        $qb->setParameter($key, '%' . trim($value) . '%');
+                        break;
+                }
+                $and = ' AND ';                
+            }
+            $qb->where($whereString);
+        }
+        return $qb->getQuery();
+    }
+
     public function getActive($orderBy, $order)
     {
         $qb = $this->em->createQueryBuilder();

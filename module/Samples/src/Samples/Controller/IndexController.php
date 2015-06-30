@@ -23,7 +23,7 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 use DoctrineExtensions\Query\Mysql\Year;
 //Form
 use Samples\Form\SampleForm;
-use Application\Form\SearchForm;
+use Samples\Form\SearchForm;
 //ZfcRbac
 use ZfcRbac\Exception\UnauthorizedException;
 //per migrazione dati
@@ -132,16 +132,13 @@ class IndexController extends EntityUsingController
 
     public function listAction()
     {
-        $searchform = new SearchForm();
+        $searchform = new SearchForm($this->getEntityManager());
         $searchform->get('submit')->setValue('Search');
         $search_by = $this->params()->fromRoute('search_by') ? $this->params()->fromRoute('search_by') : '';
         $searchString = '';
         $formdata = [];
         if (!empty($search_by)) {
             $formdata = (array) json_decode($search_by);
-            if (isset($formdata['search'])) {
-                $searchString = trim($formdata['search']);
-            }
         }
 
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
@@ -149,7 +146,7 @@ class IndexController extends EntityUsingController
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
 
         $paginator = new Paginator\Paginator(
-                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getSearchQuery($searchString, 's.' . $order_by, $order)))
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getFieldsSearchQuery($formdata, 's.' . $order_by, $order)))
         );
 
         $paginator->setItemCountPerPage(30);
@@ -165,6 +162,7 @@ class IndexController extends EntityUsingController
             'samples' => $paginator,
             'form' => $searchform,
             'pageAction' => 'samples/list',
+            'showResetBtn' => (!empty($formdata)),
         );
     }
 

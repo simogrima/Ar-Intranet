@@ -61,7 +61,7 @@ switch ($status) {
                             <a href="
                             <?php echo $this->url(
                                 'samples/list', 
-                                ['search_by' => json_encode(['search' => $sample->getApplicant()->getDisplayName()])]); ?>                                                              
+                                ['search_by' => json_encode(['applicant' => $sample->getApplicant()->getId()])]); ?>                                                              
                                ">
                                 <?php echo $sample->getApplicant()->getDisplayName(); ?>
                             </a>    

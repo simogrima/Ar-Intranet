@@ -1374,7 +1374,17 @@ class Sample
     public function isShipped()
     {
         return ($this->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_SHIPPED);
-    }        
+    }  
+    
+    /**
+     * Metodo logico che mi dice se la campionatura è in stato evasa.
+     * 
+     * @return boolean
+     */
+    public function isProcessed()
+    {
+        return ($this->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
+    }     
 
     /**
      * @ORM\PrePersist
