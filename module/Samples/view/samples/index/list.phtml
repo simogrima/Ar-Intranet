@@ -100,7 +100,8 @@ if ($order_by == 'id') {
                 </th>    
                 <th>Richiedente</th>
                 <th>Stato</th>
-                <th class="text-center"><i class="fa fa-calendar fa-fw"></i></th>
+                <th class="text-center">Data stato corrente</th>
+                <th class="text-center">Data richiesta</th>
                 <th class="text-center">Qta</th>
                 <th class="text-center">Data consegna richiesta</th>
                 <th class="text-center">Data consegna prevista</th>
@@ -144,7 +145,17 @@ if ($order_by == 'id') {
                            ">
     <?php echo $sample->getStatus()->getName(); ?>
                         </a>    
-                    </td>     
+                    </td>  
+                    <td class="cell text-center">
+                        <?php
+                        if (!empty($sample->getCurrentStatusDate())) {
+                            echo $this->dateFormat(
+                                $sample->getCurrentStatusDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        }
+                        ?>                        
+                    </td>                     
                     <td class="cell text-center">
                         <?php
                         echo $this->dateFormat(

@@ -277,11 +277,25 @@ class Sample
     protected $editDate;
     
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="email1", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $email1;        
+    
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="scheduled_delivery_date", type="datetime", nullable=true)
      */
     protected $scheduledDeliveryDate;    
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="current_status_date", type="datetime", nullable=true)
+     */
+    protected $currentStatusDate;       
     
     /**
      * @var \Application\Entity\Country
@@ -1041,6 +1055,32 @@ class Sample
     }    
     
     /**
+     * Get email1
+     * 
+     * @return string
+     */        
+    public function getEmail1($human = FALSE)
+    {
+        if ($human) {
+            return ($this->email1 == 1) ? 'Yes' : 'No';
+        }        
+        return $this->email1;
+    }
+
+    /**
+     * Set email1
+     * 
+     * @param string $email1
+     * @return \Samples\Entity\Sample
+     */      
+    public function setEmail1($email1)
+    {
+        $this->email1 = $email1;
+        
+        return $this;
+    }        
+    
+    /**
      * Get painting
      * 
      * @return string
@@ -1296,6 +1336,29 @@ class Sample
 
         return $this;
     }     
+    
+    /**
+     * Get currentStatusDate
+     * 
+     * @return \DateTime 
+     */
+    public function getCurrentStatusDate()
+    {
+        return $this->currentStatusDate;
+    }    
+
+    /**
+     * Set currentStatusDate
+     * 
+     * @param \DateTime $currentStatusDate
+     * @return \Samples\Entity\Sample
+     */
+    public function setCurrentStatusDate(\DateTime $currentStatusDate)
+    {
+        $this->currentStatusDate = $currentStatusDate;
+
+        return $this;
+    }      
 
     /**
      * Get createDate

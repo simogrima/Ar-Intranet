@@ -86,8 +86,8 @@ class IndexController extends EntityUsingController
         //$queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
         //$queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
         $queryStatCountByYear = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
-        
-        $year = $this->params()->fromQuery('year',date('Y'));
+
+        $year = $this->params()->fromQuery('year', date('Y'));
         $queryStatCountByMonth = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, MONTH(s.createdDate) m FROM Samples\Entity\Sample s WHERE YEAR(s.createdDate) = ' . $year . ' GROUP BY m');
 
         return array(
@@ -189,6 +189,70 @@ class IndexController extends EntityUsingController
         );
     }
 
+    public function shipAction()
+    {
+        if ($this->request->isPost()) {
+            $ids = $this->params()->fromPost('selected', NULL);
+            if (!isset($ids)) {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Nessuna campionatura selezionata!');
+                return $this->redirect()->toRoute('samples/ship');
+            } else {
+                $objectManager = $this->getEntityManager();
+                $qb = $objectManager->createQueryBuilder();
+                $qb->select('s')
+                        ->from($this->options->getSampleEntityClass(), 's')
+                        ->where($qb->expr()->in('s.id', $ids));
+                $samples = $qb->getQuery()->getResult();
+
+                $statusRepo = $objectManager->getRepository('Samples\Entity\Status');
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_SHIPPED);
+                $editDate = new \Datetime();
+                $editBy = $this->zfcUserAuthentication()->getIdentity();
+
+                foreach ($samples as $sample) {
+                    if ($sample->isProcessed()) {
+                        //History
+                        $data = array(
+                            'sample' => $sample,
+                            'editBy' => $editBy,
+                            'sampleStatus' => $status,
+                            'editDate' => $editDate,
+                        );
+                        $this->addHistory($data);
+
+                        //sample
+                        $sample->setEditDate(new \Datetime());
+                        $sample->setCurrentStatusDate(new \Datetime());
+                        $sample->setStatus($status);
+
+                        $this->sampleMapper->update($sample);
+                    }
+                }
+                $this->flashMessenger()->setNamespace('success')->addMessage('Le campionature sono passate nello stato spedito');
+                return $this->redirect()->toRoute('samples/ship');
+            }
+        }
+        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
+        $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
+        $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
+
+        $paginator = new Paginator\Paginator(
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getToShip('s.' . $order_by, $order)))
+        );
+
+        $paginator->setItemCountPerPage(30);
+        $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
+
+        return array(
+            'order_by' => $order_by,
+            'order' => $order,
+            'page' => $page,
+            'totalRecord' => $paginator->getTotalItemCount(),
+            'samples' => $paginator,
+            'pageAction' => 'samples/ship',
+        );
+    }
+
     public function createAction()
     {
         $objectManager = $this->getEntityManager();
@@ -211,6 +275,7 @@ class IndexController extends EntityUsingController
             if ($form->isValid()) {
                 $sample->setPainting('0');
                 $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
+                $sample->setCurrentStatusDate(new \Datetime());
                 $sample->setScheduledDeliveryDate(new \DateTime($this->generateScheduledDeliveryDate($sample)));
 
 
@@ -279,6 +344,8 @@ class IndexController extends EntityUsingController
             $form->setData($postedData);
             if ($form->isValid()) {
                 $sample->setEditDate(new \Datetime()); //setto data ultima modifica   
+                $sample->setCurrentStatusDate(new \Datetime());
+
                 //********* History *******/
                 //Controllo le modifiche
                 $uow = $objectManager->getUnitOfWork();
@@ -302,7 +369,7 @@ class IndexController extends EntityUsingController
                         $this->sampleMapper->sendCanceledSampleEmail($sample, $this);
                     } elseif ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PROCESSED) {
                         $this->sampleMapper->sendProcessedSampleEmail($sample, $this);
-                    }    
+                    }
                     //Fine Notifica via email                    
                 }
                 //***** Fine History *****/    
@@ -509,7 +576,7 @@ class IndexController extends EntityUsingController
 
     public function migrationAction()
     {
-        //Amumento il limite tempo dello script a 30 min e memoria
+        //Amumento il limite tempo dello script a 300 min e memoria
         set_time_limit(18000);
         ini_set('memory_limit', '-1');
 
@@ -721,7 +788,6 @@ class IndexController extends EntityUsingController
             }
 
             //25
-            var_dump($value['annullata']);
             if ($value['annullata']) {
                 $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_CANCELED);
                 $data = array(
@@ -731,6 +797,15 @@ class IndexController extends EntityUsingController
                     'editDate' => $createdDate,
                 );
                 $this->addHistory($data);
+            }
+
+            //Data stato corrente
+            if (!empty($value['dataspediz'])) {
+                $sample->setCurrentStatusDate(new \DateTime($value['dataspediz']));
+            } elseif (!empty($value['dataevasione'])) {
+                $sample->setCurrentStatusDate(new \DateTime($value['dataevasione']));
+            } else {
+                $sample->setCurrentStatusDate(new \DateTime($value['data']));
             }
 
             //Fine History

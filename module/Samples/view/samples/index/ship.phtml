@@ -12,14 +12,30 @@ if ($order_by == 'id') {
 ?>
 <div class="row">
     <div class="col-md-12">                
-        Trovate <strong><?php echo $totalRecord; ?></strong> campionature aperte
+        
     </div>
 </div>   
+<div class="panel panel-default">
+    <div class="panel-body">        
+        <div class="row">
+            <div class="col-md-6">                
+                Trovate <strong><?php echo $totalRecord; ?></strong> campionature da spedire
+            </div>
+            <div class="col-md-6 right" style="text-align: right">
+                <a href="<?php echo $this->url('samples/ship') ?>" class="btn btn-success" id="shipMultiple">
+                    <i class="fa fa-plane"></i> <?php echo $this->translate('Spedizione multipla') ?>
+                </a>           
+            </div>
+        </div>
+    </div>
+</div>
 
+<form id="shipForm" method="post">
 <div class="table-responsive">
     <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
+                <th></th>
                 <th>
                     <a href="<?php echo $this->url('samples/update', array_filter(array('order_by' => 'id', 'order' => $url_order))); ?>">
                         Id
@@ -39,7 +55,7 @@ if ($order_by == 'id') {
                     <?php if ($order_by == 'customer'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
                 </th>    
                 <th>Richiedente</th>
-                <th>Stato</th>             
+                <th>Stato</th>
                 <th class="text-center">Qta</th>
                 <th class="text-center">Data consegna richiesta</th>
                 <th class="text-center">Data consegna prevista</th>
@@ -54,6 +70,9 @@ if ($order_by == 'id') {
             $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());   
             ?>
                 <tr class="<?= $class; ?>">
+                    <td class="cell text-center">
+                        <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
+                    </td>
                     <td class="cell cell-id">
                         <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
                             <?php echo $sample->getId(); ?>
@@ -101,16 +120,6 @@ if ($order_by == 'id') {
                         <?php endif; ?>
                     </td>
                     <td class="cell cell-ctrls text-center">
-                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
-                            <span class="glyphicon glyphicon-eye-open"></span> Show
-                        </a>                         
-                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
-                            <span class="glyphicon glyphicon-edit"></span> Edit
-                        </a> 
-                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la campionatura?') ?>')" class="btn btn-danger btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span> Del
-                        </a>
                         <?php if ($sample->isProcessed()): ?>
                         <a class='btn btn-success btn-xs' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
                             <i class="fa fa-plane"></i> Spedisci
@@ -123,6 +132,7 @@ if ($order_by == 'id') {
         </tbody>
     </table>
 </div>
+</form>
 
 <?php
 echo $this->paginationControl(
@@ -132,4 +142,21 @@ echo $this->paginationControl(
     'pageAction' => $pageAction,
         )
 );
-?>
+
+
+
+$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
+
+$this->inlineScript()->captureStart();
+echo <<<JS
+$(document).ready(function() {
+
+    //Print invoice
+    $('#shipMultiple').click(function(event){
+        $('#shipForm').trigger('submit');
+        event.preventDefault();
+    }); 
+
+});
+JS;
+$this->inlineScript()->captureEnd();

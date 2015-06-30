@@ -52,8 +52,6 @@ class SampleMapper extends BaseDoctrine
 
     public function getFieldsSearchQuery($data, $orderBy, $order)
     {
-
-
         $qb = $this->em->createQueryBuilder();
         $qb->select(array('s'))
                 ->from($this->options->getSampleEntityClass(), 's')
@@ -107,6 +105,22 @@ class SampleMapper extends BaseDoctrine
                 ->orderBy($orderBy, $order);
         return $qb->getQuery();
     }
+    
+    public function getToShip($orderBy, $order)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(array('s'))
+                ->from($this->options->getSampleEntityClass(), 's')
+                ->innerJoin('s.applicant', 'u')
+                ->innerJoin('s.status', 't')
+                ->where(
+                        $qb->expr()->orX(
+                                $qb->expr()->eq('t.id', '?1')
+                ))
+                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PROCESSED)
+                ->orderBy($orderBy, $order);
+        return $qb->getQuery();
+    }    
 
     //Rimuovo, fisicamente, anche aventuali files allegati
     public function remove($entity)
