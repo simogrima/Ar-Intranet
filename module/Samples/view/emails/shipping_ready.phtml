@@ -1,0 +1,28 @@
+Ciao,<br/>
+sono state preparate le seguenti campionature che sono pronte per la spedizione:
+<table style="margin-top: 20px; border: 1px solid #e9e9e9" cellpadding="5">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Modello</th>
+            <th>Cliente</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($samples as $sample): ?>
+        <tr>
+            <td><?= $sample->getId(); ?></td>
+            <td><?= $sample->getModel(); ?></td>
+            <td><?= $sample->getCustomer(); ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<h3>Info Spedizione:</h3>
+<strong>Peso:</strong> <?= $data['peso'] . '<br/>'; ?>
+<strong>Misure:</strong> <?= $data['misure'] . '<br/>'; ?>
+<strong>Colli:</strong> <?= $data['colli'] . '<br/>'; ?>
+<?php if (isset($data['note'])): ?>
+<strong>Note:</strong> <?= nl2br($data['note']); ?>
+<?php endif; ?>
+

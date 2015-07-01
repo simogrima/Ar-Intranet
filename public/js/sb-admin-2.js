@@ -42,5 +42,15 @@ $(function() {
         }
     });
     
+    $('.emodal-confirm').click(function (e) {
+        var url = $(this).attr('href');
+        eModal.confirm('Sei sicuro di voler eseguire questa azione?', 'Conferma azione', function (bool) {
+            return bool
+                ? location.href = url
+                : false;
+        });
+        e.preventDefault();
+    });
+    
 });
 

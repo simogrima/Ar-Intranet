@@ -1,9 +1,9 @@
 <h3>Campionatura:</h3>
-<strong>Id:</strong> #<?= $id . '<br/>'; ?>
-<strong>Richiedente:</strong> <?= $applicant . '<br/>'; ?>
-<strong>Modello:</strong> <?= $model . '<br/>'; ?>
-<strong>Cliente:</strong> <?= $customer . '<br/>'; ?>
-<strong>Note:</strong> <?= $note . '<br/>'; ?>
+<strong>Id:</strong> <?= $sample->getId() . '<br/>'; ?>
+<strong>Richiedente:</strong> <?= $sample->getApplicant()->getDisplayName() . '<br/>'; ?>
+<strong>Modello:</strong> <?= $sample->getModel() . '<br/>'; ?>
+<strong>Cliente:</strong> <?= $sample->getCustomer() . '<br/>'; ?>
+<strong>Note:</strong> <?= nl2br($sample->getNote()) . '<br/>'; ?>
 
 <p>
     Vai alla <a href="<?= $url ?>">campionatura</a>

@@ -108,14 +108,9 @@ if ($order_by == 'id') {
                             <span class="glyphicon glyphicon-edit"></span> Edit
                         </a> 
                         <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
-                           onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la campionatura?') ?>')" class="btn btn-danger btn-xs">
+                            class="btn btn-danger btn-xs emodal-confirm">
                             <span class="glyphicon glyphicon-remove"></span> Del
                         </a>
-                        <?php if ($sample->isProcessed()): ?>
-                        <a class='btn btn-success btn-xs' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
-                            <i class="fa fa-plane"></i> Spedisci
-                        </a>                         
-                        <?php endif; ?>
                     </td>
 
                 </tr>

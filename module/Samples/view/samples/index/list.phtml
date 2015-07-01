@@ -188,15 +188,10 @@ if ($order_by == 'id') {
                     <td class="cell text-center">
     <?php echo count($sample->getAttachments()); ?>
                     </td>                      
-                    <td class="cell cell-ctrls">
+                    <td class="cell cell-ctrls text-center">
                         <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
                             <span class="glyphicon glyphicon-eye-open"></span> Show
-                        </a>    
-                        <?php if ($sample->isProcessed()): ?>
-                        <a class='btn btn-success btn-xs' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
-                            <i class="fa fa-plane"></i> Spedisci
                         </a>                         
-                        <?php endif; ?>                        
                     </td>
 
                 </tr>

@@ -312,12 +312,17 @@ return array(
             'simogrima@gmail.com',
             //'gianni.maggini@ariete.net',
             //'riccardo.biagioli@ariete.net'
+            //'simone.barbanti@ariete.net'
         ],
         'emailToProcessedSample' => [
             'simogrima@gmail.com',
             //'riccardo.peschi@ariete.net',
             //'santo.riccio@ariete.net',
-        ],        
+        ],    
+        'emailToShippingReady' => [
+            'simogrima@gmail.com',
+            //'giuseppe.turturiello@ariete.net',
+        ],                
     ],
     //Navigation menu/breadcrumb
     'navigation' => array(
@@ -344,7 +349,7 @@ return array(
                         'route' => 'samples/update',
                     ),  
                     'ship' => array(
-                        'label' => 'Spedisci',
+                        'label' => 'Spedizioni',
                         'route' => 'samples/ship',
                     ),                     
                     'edit' => array(

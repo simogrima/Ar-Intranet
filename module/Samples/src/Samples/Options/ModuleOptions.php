@@ -142,4 +142,27 @@ class ModuleOptions extends AbstractOptions
         $this->emailToProcessedSample = $emails;
         return $this;
     }        
+    
+    /**
+     * Getter indirizzi x notifica (email) spedizione pronta
+     * 
+     * @return array
+     */
+    function getEmailToShippingReady()
+    {
+        return $this->emailToShippingReady;
+    }
+    
+    /**
+     * Setter indirizzi x notifica (email) spedizione pronta
+     * 
+     * @param array $emails
+     * @return \Samples\Options\ModuleOptions
+     */
+    function setEmailToShippingReady(array $emails)
+    {
+        $this->emailToShippingReady = $emails;
+        return $this;
+    }       
+    
 }

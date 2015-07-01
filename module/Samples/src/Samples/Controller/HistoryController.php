@@ -151,11 +151,11 @@ class HistoryController extends EntityUsingController
                 $sampeMapper->update($sample);
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('Campionatura spedita!');
-                return $this->redirect()->toRoute('samples/show', array('sampleId' => $sample->getId()));
+                return $this->redirect()->toRoute('samples/ship');
             }
         }
 
-        return array('form' => $form, 'sample' => $sample);
+        return array('form' => $form, 'sample' => $sample, 'isAjax' => $this->request->isXmlHttpRequest());
     }
 
 }

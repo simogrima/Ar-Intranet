@@ -117,8 +117,15 @@ class SampleMapper extends BaseDoctrine
                         $qb->expr()->orX(
                                 $qb->expr()->eq('t.id', '?1')
                 ))
-                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PROCESSED)
-                ->orderBy($orderBy, $order);
+                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
+        
+                if ($orderBy == 's.disabled') {
+                    $qb->addOrderBy('s.email1', 'ASC')
+                       ->addOrderBy('s.id', 'DESC');
+                } else {
+                    $qb->orderBy($orderBy, $order);
+                }    
+
         return $qb->getQuery();
     }    
 
@@ -143,7 +150,7 @@ class SampleMapper extends BaseDoctrine
     {
         $urlViewHelper = $controller->getServiceLocator()->get('ViewHelperManager')->get('url');
         $view = new ViewModel(array(
-            'id' => $entity->getId(),
+            'sample' => $entity,
             'url' => $urlViewHelper('samples/show', array('sampleId' => $entity->getId()), array('force_canonical' => true)),
         ));
         $view->setTerminal(true);
@@ -170,8 +177,7 @@ class SampleMapper extends BaseDoctrine
 
         $urlViewHelper = $controller->getServiceLocator()->get('ViewHelperManager')->get('url');
         $view = new ViewModel(array(
-            'id' => $entity->getId(),
-            'model' => $entity->getModel(),
+            'sample' => $entity,
             'url' => $urlViewHelper('samples/show', array('sampleId' => $entity->getId()), array('force_canonical' => true)),
         ));
         $view->setTerminal(true);
@@ -194,11 +200,7 @@ class SampleMapper extends BaseDoctrine
     {
         $urlViewHelper = $controller->getServiceLocator()->get('ViewHelperManager')->get('url');
         $view = new ViewModel(array(
-            'id' => $entity->getId(),
-            'applicant' => $entity->getApplicant()->getDisplayname(),
-            'model' => $entity->getModel(),
-            'customer' => $entity->getCustomer(),
-            'note' => nl2br($entity->getNote()),
+            'sample' => $entity,
             'url' => $urlViewHelper('samples/show', array('sampleId' => $entity->getId()), array('force_canonical' => true)),
         ));
         $view->setTerminal(true);
@@ -210,5 +212,35 @@ class SampleMapper extends BaseDoctrine
             'subject' => 'Nuova campionatura richiesta'
                 ), $view);
     }
+    
+    /**
+     * Invia email che notifica che la spedizione è stata preparata.
+     * 
+     * @param array $samples le campionature
+     * @param array $data colli, pesi, misure, note
+     * @param \Application\Controller\AbstractActionController $controller
+     */
+    public function sendShippingReadyEmail($samples, $data, $controller)
+    {
+        //Stabilisco detinatari (default + richiedente/i)
+        $emailTo = $this->options->getEmailToShippingReady();
+        foreach ($samples as $sample) {
+           $emailTo[] = $sample->getApplicant()->getEmail();
+        }
+        $emailTo = array_unique($emailTo);
+   
+        $view = new ViewModel(array(
+            'samples' => $samples,
+            'data' => $data,
+        ));
+        $view->setTerminal(true);
+        $view->setTemplate('Samples/view/emails/shipping_ready');
+        $controller->mailerZF2()->send(array(
+            'to' => 'grimani@ariete.net',
+            //'cc' => 'email2@domain.com',
+            //'bcc' => 'email3@domain.com',    
+            'subject' => 'Campionature pronte'
+                ), $view);
+    }    
 
 }

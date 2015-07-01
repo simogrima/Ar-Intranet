@@ -191,48 +191,64 @@ class IndexController extends EntityUsingController
 
     public function shipAction()
     {
-        if ($this->request->isPost()) {
-            $ids = $this->params()->fromPost('selected', NULL);
+        //Mostro Form Comunicazione
+        if ($this->params()->fromQuery('comunicate', NULL)) {
+            $ids = $this->params()->fromQuery('selected', NULL);
             if (!isset($ids)) {
                 $this->flashMessenger()->setNamespace('error')->addMessage('Nessuna campionatura selezionata!');
                 return $this->redirect()->toRoute('samples/ship');
             } else {
-                $objectManager = $this->getEntityManager();
-                $qb = $objectManager->createQueryBuilder();
+                $qb = $this->getEntityManager()->createQueryBuilder();
                 $qb->select('s')
                         ->from($this->options->getSampleEntityClass(), 's')
                         ->where($qb->expr()->in('s.id', $ids));
+                return array(
+                    'samples' => $qb->getQuery()->getResult(),
+                    'ids' => implode(',', $ids),
+                    'showComunicateForm' => 1,
+                );
+            }
+        }
+        //Fine Mostro Form Comunicazione
+
+        //Rimuovo flag email1 (sposto su)
+        if ($this->params()->fromQuery('up', NULL)) {
+            $id = $this->params()->fromQuery('sampleId', 0);
+            $sample = $this->getEntityManager()->getRepository($this->options->getSampleEntityClass())->find($id);
+
+            if ($sample) {
+                //$sample->setEmail1(0);
+                //$this->sampleMapper->update($sample);
+                $this->flashMessenger()->addSuccessMessage('Operazione conclusa con successo');
+            } else {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Campionatura non trovata!');
+            }
+            return $this->redirect()->toRoute('samples/ship');
+        }
+        //Fine Rimuovo flag email1 (sposto su)       
+
+        //Sono in submit form 
+        if ($this->request->isPost()) {
+            //Vuo,dire che provengo da form per invio email
+            if ($this->params()->fromPost('peso', NULL)) {
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb->select('s')
+                        ->from($this->options->getSampleEntityClass(), 's')
+                        ->where($qb->expr()->in('s.id', explode(',', $this->params()->fromPost('ids', []))));
                 $samples = $qb->getQuery()->getResult();
-
-                $statusRepo = $objectManager->getRepository('Samples\Entity\Status');
-                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_SHIPPED);
-                $editDate = new \Datetime();
-                $editBy = $this->zfcUserAuthentication()->getIdentity();
-
                 foreach ($samples as $sample) {
-                    if ($sample->isProcessed()) {
-                        //History
-                        $data = array(
-                            'sample' => $sample,
-                            'editBy' => $editBy,
-                            'sampleStatus' => $status,
-                            'editDate' => $editDate,
-                        );
-                        $this->addHistory($data);
-
-                        //sample
-                        $sample->setEditDate(new \Datetime());
-                        $sample->setCurrentStatusDate(new \Datetime());
-                        $sample->setStatus($status);
-
-                        $this->sampleMapper->update($sample);
-                    }
+                    $sample->setEmail1(1);
+                    $this->sampleMapper->update($sample);
                 }
-                $this->flashMessenger()->setNamespace('success')->addMessage('Le campionature sono passate nello stato spedito');
+                $this->sampleMapper->sendShippingReadyEmail($samples, $this->params()->fromPost(), $this);
+                $this->flashMessenger()->setNamespace('success')->addMessage('La comunicazione è stata inviata. Ora le campionature possono essere spedite.');
                 return $this->redirect()->toRoute('samples/ship');
             }
         }
-        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
+        //Fine sono in submit form
+
+        //Default lista campionature da gestire x spedizione
+        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'disabled';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
 
@@ -274,10 +290,10 @@ class IndexController extends EntityUsingController
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $sample->setPainting('0');
+                $sample->setEmail1('0');
                 $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
                 $sample->setCurrentStatusDate(new \Datetime());
                 $sample->setScheduledDeliveryDate(new \DateTime($this->generateScheduledDeliveryDate($sample)));
-
 
                 //***** History
                 $data = array(

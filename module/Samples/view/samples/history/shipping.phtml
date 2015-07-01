@@ -1,5 +1,7 @@
+<?php if (!$isAjax): ?>
 <?php echo $this->titleAndBread('Campionatura spedita'); ?>
 <?php $this->myFlashMessenger(); ?>    
+<?php endif; ?>
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
@@ -25,7 +27,6 @@ echo $this->form()->openTag($form);
                 </h4> 
                 <?= $this->ztbFormElement($form->get('sampleStatus')); ?>
                 <?= $this->ztbFormElement($form->get('editDate')); ?>
-                
             </div>    
         </div>
     </div>    
@@ -34,7 +35,10 @@ echo $this->form()->openTag($form);
     <div class = "col-md-6">
         <?= $this->ztbFormElement($form->get('editBy')); ?>
         <?= $this->ztbFormElement($form->get('sample')); ?>
-        <?= $this->ztbFormElement($form->get('submit')); ?>
+        <button class="btn btn-success">Spedisci</button>
+        <?php if (!$isAjax): ?>
+        <a class="btn btn-default" href="javascript: window.history.back();">Annulla</a>
+        <?php endif; ?>
     </div>
 </div>    
 <?php
