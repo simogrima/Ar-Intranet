@@ -41,7 +41,7 @@
                 <i class="fa fa-pencil"></i> Ultimi inserimenti
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body">
+            <div class="panel-body table-responsive">
                 <table class="table table-bordered table-hover" id="example1">
                     <thead>
                         <tr>
@@ -239,8 +239,13 @@ $this->headLink()->prependStylesheet('//cdnjs.cloudflare.com/ajax/libs/morris.js
 
 
 $pieStatusYData = '';
-foreach ($chartPieStatusY as $item) {
-    $pieStatusYData .= '{label: "' . $item['name'] . '",data: ' . $item['nr'] . '}, ' . PHP_EOL;
+$hide1 = 0;
+if (count($chartPieStatusY) > 0) {
+    foreach ($chartPieStatusY as $item) {
+        $pieStatusYData .= '{label: "' . $item['name'] . '",data: ' . $item['nr'] . '}, ' . PHP_EOL;
+    }
+} else {
+    $hide1 = 1;
 }
 
 $chartStatCountByYearData = '';
@@ -248,11 +253,19 @@ foreach ($chartStatCountByYear as $item) {
     $chartStatCountByYearData .= '{y: "' . $item['y'] . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
 }
 
+
 $chartStatCountByMonthData = '';
-foreach ($chartStatCountByMonth as $item) {
-    $m = date('F', mktime(0, 0, 0, $item['m'], 10));
-    $chartStatCountByMonthData .= '{m: "' . $m . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
+$hide3 = 0;
+if (count($chartStatCountByMonth) > 0) {
+    foreach ($chartStatCountByMonth as $item) {
+        $m = date('F', mktime(0, 0, 0, $item['m'], 10));
+        $chartStatCountByMonthData .= '{m: "' . $m . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
+    }    
+} else {
+    $hide3 = 1;    
 }
+
+
 
 $this->headScript()->appendScript("
 $(function() {
@@ -260,31 +273,33 @@ $(function() {
 
 
     //StatusY
-    var dataStatusY = [" . $pieStatusYData . "];
-    var plotObj = $.plot($(\"#flot-pie-status-y\"), dataStatusY, {
-        colors: [\"#f5f5f5\", \"#edc240\",\"#5bc0de\",\"#5cb85c\", \"green\",\"#d9534f\"],
-        series: {
-            pie: {
-                show: true
-            }
-        },
-        grid: {
-            hoverable: true
-        },
-        tooltip: true,
-        tooltipOpts: {
-            //content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
-            content: function(label, xval, yval) {
-                var content = \"%p.0%, %s (\" + yval + \")\";
-                return content;
-            },            
-            shifts: {
-                x: 20,
-                y: 0
+    if (0 == " . $hide1 . ") { 
+        var dataStatusY = [" . $pieStatusYData . "];
+        var plotObj = $.plot($(\"#flot-pie-status-y\"), dataStatusY, {
+            colors: [\"#f5f5f5\", \"#edc240\",\"#5bc0de\",\"#5cb85c\", \"green\",\"#d9534f\"],
+            series: {
+                pie: {
+                    show: true
+                }
             },
-            defaultTheme: false
-        }
-    });
+            grid: {
+                hoverable: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                //content: \"%p.0%, %s\", // show percentages, rounding to 2 decimal places
+                content: function(label, xval, yval) {
+                    var content = \"%p.0%, %s (\" + yval + \")\";
+                    return content;
+                },            
+                shifts: {
+                    x: 20,
+                    y: 0
+                },
+                defaultTheme: false
+            }
+        });
+    }
 
 
 
@@ -299,20 +314,19 @@ $(function() {
         resize: true
     });
     
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var data3 = [" . $chartStatCountByMonthData . "];
-    Morris.Bar({
-        element: 'morris-bar-chart2',
-        data: data3,
-        xkey: 'm',
-        ykeys: ['a'],
-        labels: ['Campionature'],
-        hideHover: 'auto',
-        resize: true
-        
-
-
-    });
+    if (0 == " . $hide3 . ") {    
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var data3 = [" . $chartStatCountByMonthData . "];
+        Morris.Bar({
+            element: 'morris-bar-chart2',
+            data: data3,
+            xkey: 'm',
+            ykeys: ['a'],
+            labels: ['Campionature'],
+            hideHover: 'auto',
+            resize: true
+        });
+    }
 
 }); 
 
