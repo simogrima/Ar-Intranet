@@ -146,7 +146,7 @@ class SampleMapper extends BaseDoctrine
      * @param Samples\Entity\Sample $entity
      * @param namespace Application\Controller\AbstractActionController $controller
      */
-    public function sendCanceledSampleEmail($entity, $controller)
+    public function sendCanceledSampleEmail($entity, $controller, $replyTo)
     {
         $urlViewHelper = $controller->getServiceLocator()->get('ViewHelperManager')->get('url');
         $view = new ViewModel(array(
@@ -157,6 +157,8 @@ class SampleMapper extends BaseDoctrine
         $view->setTemplate('Samples/view/emails/sample_canceled');
         $controller->mailerZF2()->send(array(
             'to' => $entity->getApplicant()->getEmail(),
+            'replyTo' => $replyTo->getEmail(),
+            'replyNameTo' => $replyTo->getDisplayName(),                
             //'cc' => 'email2@domain.com',
             //'bcc' => 'email3@domain.com',    
             'subject' => 'Campionatura annullata',
@@ -169,7 +171,7 @@ class SampleMapper extends BaseDoctrine
      * @param \Samples\Entity\Sample $entity
      * @param \Application\Controller\AbstractActionController $controller
      */
-    public function sendProcessedSampleEmail($entity, $controller)
+    public function sendProcessedSampleEmail($entity, $controller, $replyTo)
     {
         //Stabilisco detinatari (default + richiedente)
         $emailTo = $this->options->getEmailToProcessedSample();
@@ -184,6 +186,8 @@ class SampleMapper extends BaseDoctrine
         $view->setTemplate('Samples/view/emails/sample_processed');
         $controller->mailerZF2()->send(array(
             'to' => $emailTo,
+            'replyTo' => $replyTo->getEmail(),
+            'replyNameTo' => $replyTo->getDisplayName(),              
             //'cc' => 'email2@domain.com',
             //'bcc' => 'email3@domain.com',    
             'subject' => 'Campionatura evasa',
@@ -196,7 +200,7 @@ class SampleMapper extends BaseDoctrine
      * @param \Samples\Entity\Sample $entity
      * @param \Application\Controller\AbstractActionController $controller
      */
-    public function sendNewSampleEmail($entity, $controller)
+    public function sendNewSampleEmail($entity, $controller, $replyTo)
     {
         $urlViewHelper = $controller->getServiceLocator()->get('ViewHelperManager')->get('url');
         $view = new ViewModel(array(
@@ -209,6 +213,8 @@ class SampleMapper extends BaseDoctrine
             'to' => $this->options->getEmailToNewSample(),
             //'cc' => 'email2@domain.com',
             //'bcc' => 'email3@domain.com',    
+            'replyTo' => $replyTo->getEmail(),
+            'replyNameTo' => $replyTo->getDisplayName(),              
             'subject' => 'Nuova campionatura richiesta'
                 ), $view);
     }
@@ -220,7 +226,7 @@ class SampleMapper extends BaseDoctrine
      * @param array $data colli, pesi, misure, note
      * @param \Application\Controller\AbstractActionController $controller
      */
-    public function sendShippingReadyEmail($samples, $data, $controller)
+    public function sendShippingReadyEmail($samples, $data, $controller, $replyTo)
     {
         //Stabilisco detinatari (default + richiedente/i)
         $emailTo = $this->options->getEmailToShippingReady();
@@ -237,6 +243,8 @@ class SampleMapper extends BaseDoctrine
         $view->setTemplate('Samples/view/emails/shipping_ready');
         $controller->mailerZF2()->send(array(
             'to' => 'grimani@ariete.net',
+            'replyTo' => $replyTo->getEmail(),
+            'replyNameTo' => $replyTo->getDisplayName(),            
             //'cc' => 'email2@domain.com',
             //'bcc' => 'email3@domain.com',    
             'subject' => 'Campionature pronte'

@@ -171,6 +171,11 @@ class IndexController extends EntityUsingController
 
     public function updateAction()
     {
+        //Solo autorizzai (permissione: samples.edit)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
+        }
+        
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
@@ -194,6 +199,11 @@ class IndexController extends EntityUsingController
 
     public function shipAction()
     {
+        //Solo autorizzai (permissione: samples.ship)
+        if (!$this->getAuthorizationService()->isGranted('samples.ship')) {
+            throw new UnauthorizedException();
+        }
+        
         //Mostro Form Comunicazione
         if ($this->params()->fromQuery('comunicate', NULL)) {
             $ids = $this->params()->fromQuery('selected', NULL);
@@ -243,7 +253,7 @@ class IndexController extends EntityUsingController
                     $sample->setEmail1(1);
                     $this->sampleMapper->update($sample);
                 }
-                $this->sampleMapper->sendShippingReadyEmail($samples, $this->params()->fromPost(), $this);
+                $this->sampleMapper->sendShippingReadyEmail($samples, $this->params()->fromPost(), $this, $this->zfcUserAuthentication()->getIdentity());
                 $this->flashMessenger()->setNamespace('success')->addMessage('La comunicazione è stata inviata. Ora le campionature possono essere spedite.');
                 return $this->redirect()->toRoute('samples/ship');
             }
@@ -259,7 +269,7 @@ class IndexController extends EntityUsingController
                 new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getToShip('s.' . $order_by, $order)))
         );
 
-        $paginator->setItemCountPerPage(30);
+        $paginator->setItemCountPerPage(100);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
 
         return array(
@@ -316,7 +326,7 @@ class IndexController extends EntityUsingController
                 $this->sampleMapper->insert($sample);
 
                 //Notifica via email
-                $this->sampleMapper->sendNewSampleEmail($sample, $this);
+                $this->sampleMapper->sendNewSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
 
 
                 return $this->redirect()->toRoute('samples/attachments/add', array(
@@ -335,6 +345,11 @@ class IndexController extends EntityUsingController
 
     public function editAction()
     {
+        //Solo autorizzai (permissione: samples.edit)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
+        }
+        
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getEntityManager();
 
@@ -385,9 +400,9 @@ class IndexController extends EntityUsingController
 
                     //Notifica via email
                     if ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_CANCELED) {
-                        $this->sampleMapper->sendCanceledSampleEmail($sample, $this);
+                        $this->sampleMapper->sendCanceledSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
                     } elseif ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PROCESSED) {
-                        $this->sampleMapper->sendProcessedSampleEmail($sample, $this);
+                        $this->sampleMapper->sendProcessedSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
                     }
                     //Fine Notifica via email                    
                 }
@@ -412,9 +427,9 @@ class IndexController extends EntityUsingController
 
     public function removeAction()
     {
-        //Solo superuser
-        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
-            //throw new UnauthorizedException();
+        //Solo autorizzai (permissione: samples.remove)
+        if (!$this->getAuthorizationService()->isGranted('samples.remove')) {
+            throw new UnauthorizedException();
         }
 
         $objectManager = $this->getEntityManager();
@@ -595,7 +610,12 @@ class IndexController extends EntityUsingController
 
     public function migrationAction()
     {
-        $start = $this->params()->fromQuery('start', 2004);
+        
+        //bloccato
+        return $this->getResponse();
+        
+        //senza parametro parte subito da 0 (prima riga)
+        $start = $this->params()->fromQuery('start', 0);
         $incrementa = 200;
         $urlViewHelper = $this->getServiceLocator()->get('ViewHelperManager')->get('url');
         $newStart = $start + $incrementa;

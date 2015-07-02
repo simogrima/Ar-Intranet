@@ -118,5 +118,58 @@ class IndexController extends AbstractActionController
             $objectManager->flush(); 
         }        
     }        
+    
+    /**
+     * Setta su tutti gli utenti la psw di default
+     * url: /application/index/set-default-psw
+     */
+    public function setDefaultPswAction()
+    {
+        //bloccato
+        return $this->getResponse();
+        
+        set_time_limit(1800);
+        ini_set('memory_limit', '-1');
+        
+        $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+        $userService = $this->getServiceLocator()->get('zfcuser_user_service');
+        
+        //Ottengo il ruolo "guest" per accedere a login
+        $roleGuest = $objectManager->getRepository('MyZfcRbac\Entity\FlatRole')->find(1);
+        //Ottengo il ruolo "user" per accedere all'intranet dopo logon
+        $roleUser = $objectManager->getRepository('MyZfcRbac\Entity\FlatRole')->find(3);
+        
+        
+        $users = $this->getServiceLocator()->get('zfcuser_user_mapper')->findAll();
+        foreach ($users as $user) {
+            if ($user->getEmail() != 'grimani@ariete.net') {
+                echo $user->getEmail();
+                 
+                
+                //Aggiorno psw
+                $psw = '123456';
+                $data = ['password' => $psw, 'passwordVerify' => $psw];        
+                //$user = $userService->register($data);  
+                echo ' [upd psw] ';
+                
+                
+                
+                 //Assegno ruoli guest ed user (se non li ha)
+                if (!$user->hasRole($roleGuest->getName())) {
+                    $user->addRole($roleGuest); 
+                    echo ' [aggiunto ruolo guest] ';
+                }
+                if (!$user->hasRole($roleUser->getName())) {
+                    $user->addRole($roleUser);
+                    echo ' [aggiunto ruolo user] ';
+                }                  
+            
+                $this->getServiceLocator()->get('zfcuser_user_mapper')->update($user)          ;
+                echo '<br/>';
+            }
+        }
+        
+        return $this->getResponse();
+    }        
 
 }

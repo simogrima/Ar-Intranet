@@ -185,9 +185,9 @@ class AttachmentsController extends EntityUsingController
 
     public function removeAction()
     {
-        //Solo superuser
-        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
-            //throw new UnauthorizedException();
+        //Solo autorizzai (permissione: samples.edit)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
         }
 
         $objectManager = $this->getEntityManager();

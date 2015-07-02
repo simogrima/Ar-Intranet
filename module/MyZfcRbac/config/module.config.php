@@ -218,6 +218,7 @@ return array(
                 'zfcuser/logout'   => ['guest'],
                 'zfcuser/register' => ['guest'],
                 '*admin*'          => ['admin'],
+                'computer*'        => ['admin', 'computers'],
                 '*'                => ['user'],
             ],
         ],

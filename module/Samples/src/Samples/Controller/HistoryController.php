@@ -46,9 +46,9 @@ class HistoryController extends EntityUsingController
 
     public function editAction()
     {
-        //Solo superuser
-        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
-            //throw new UnauthorizedException();
+        //Solo autorizzai (permissione: samples.edit)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
         }
 
         // Get your ObjectManager from the ServiceManager
@@ -84,9 +84,9 @@ class HistoryController extends EntityUsingController
 
     public function removeAction()
     {
-        //Solo superuser
-        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
-            //throw new UnauthorizedException();
+        //Solo autorizzai (permissione: samples.edit)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
         }
 
         $historyId = $this->getEvent()->getRouteMatch()->getParam('historyId');
@@ -108,9 +108,9 @@ class HistoryController extends EntityUsingController
 
     public function shippingAction()
     {
-        //Solo superuser
-        if (!$this->getAuthorizationService()->isGranted('computer.superuser')) {
-            //throw new UnauthorizedException();
+        //Solo autorizzai (permissione: samples.ship)
+        if (!$this->getAuthorizationService()->isGranted('samples.ship')) {
+            throw new UnauthorizedException();
         }
 
         $sampleId = $this->getEvent()->getRouteMatch()->getParam('sampleId');
