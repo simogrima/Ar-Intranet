@@ -94,20 +94,6 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
             )
         ));
 
-        //requestedDeliveryDate
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Date',
-            'name' => 'requestedDeliveryDate',
-            'options' => array(
-                'label' => 'Data consegna richiesta'
-            ),
-            'attributes' => array(
-                'min' => date('Y-m-d', time()),
-                // 'max' => '2020-01-01',
-                'step' => '1', // days; default step interval is 1 day
-                'class' => 'form-control',
-            )
-        ));
 
         //paymentTerm
         $this->add(array(
@@ -364,6 +350,41 @@ class SampleFieldset extends Fieldset implements InputFilterProviderInterface
                     )                    
                 )
         );
+        
+        
+        
+        //requestedDeliveryDate (boostrap datepicker)
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'requestedDeliveryDate',
+            'options' => array(
+                'label' => 'Data consegna richiesta',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));      
+        
+        //requestedDeliveryDate (html 5 API)
+        /*
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Date',
+            'name' => 'requestedDeliveryDate',
+            'options' => array(
+                'label' => 'Data consegna richiesta'
+            ),
+            'attributes' => array(
+                'min' => date('Y-m-d', time()),
+                // 'max' => '2020-01-01',
+                'step' => '1', // days; default step interval is 1 day
+                'class' => 'form-control',
+            )
+        ));        
+         * 
+         */
+        
+        
     }
 
     public function getInputFilterSpecification()

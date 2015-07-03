@@ -2,10 +2,16 @@
 <?php $this->myFlashMessenger(); ?>    
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all');
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all')
+        //datepicker
+        ->appendStylesheet($this->basePath() . '/js/plugins/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css', 'all');
 $this->headScript()
-        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js');
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js')
+        //datepicker
+        ->prependFile($this->basePath() . '/js/plugins/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/moment-js/moment-with-locales.js');
 ?>
+
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
@@ -43,7 +49,22 @@ echo $this->form()->openTag($form);
                         <?= $this->ztbFormElement($sample->get('qtaExpected')); ?>
                     </div>
                     <div class = "col-md-4">
-                        <?= $this->ztbFormElement($sample->get('requestedDeliveryDate')); ?>
+       
+                        <div class="control-group">
+                            <label for="datetimepicker2">Data consegna richiesta</label>
+                            <div class='input-group date'  id="datetimepicker2">
+                                <?= $this->formElement($sample->get('requestedDeliveryDate')); ?>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+
+                       
+                        
+                        
+                        <?php //echo $this->ztbFormElement($sample->get('requestedDeliveryDate')); ?>
                     </div>    
                 </div>
                 <div class = "row">
@@ -131,23 +152,22 @@ echo $this->form()->openTag($form);
 echo $this->form()->closeTag();
 ?>
 
-
-
-
-
-
-
-
-
-
 <?php
 if (!$isPost) {
     $check = "$('#standardProduct').prop('checked', true);";
 } else {
-    $check = '';    
+    $check = '';
 }
 $this->headScript()->appendScript("
 $(function() {
+
+    $('#datetimepicker2').datetimepicker({
+        format: 'YYYY-MM-DD',
+        showTodayButton: true,
+        minDate: '" . date('Y-m-d') . "',
+        locale: 'en'
+    });
+
     //$('#standardProduct').prop('checked', true);
     //defaultValue();
     $check
@@ -173,5 +193,3 @@ $(function() {
 }); 
 
 ");
-
-

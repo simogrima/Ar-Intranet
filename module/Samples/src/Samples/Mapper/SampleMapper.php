@@ -242,7 +242,7 @@ class SampleMapper extends BaseDoctrine
         $view->setTerminal(true);
         $view->setTemplate('Samples/view/emails/shipping_ready');
         $controller->mailerZF2()->send(array(
-            'to' => 'grimani@ariete.net',
+            'to' => $emailTo,
             'replyTo' => $replyTo->getEmail(),
             'replyNameTo' => $replyTo->getDisplayName(),            
             //'cc' => 'email2@domain.com',

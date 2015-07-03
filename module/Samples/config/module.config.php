@@ -308,19 +308,19 @@ return array(
     'sample_opt' => [
         'attachmentPath' => '/data/attachments/',
         'emailToNewSample' => [
-            'grimani@ariete.net',
-            'simogrima@gmail.com',
-            //'gianni.maggini@ariete.net',
-            //'riccardo.biagioli@ariete.net'
-            //'simone.barbanti@ariete.net'
+            //'grimani@ariete.net',
+            //'simogrima@gmail.com',
+            'gianni.maggini@ariete.net',
+            'riccardo.biagioli@ariete.net',
+            'simone.barbanti@ariete.net',
         ],
         'emailToProcessedSample' => [
-            'simogrima@gmail.com',
-            //'riccardo.peschi@ariete.net',
+            //'simogrima@gmail.com',
+            'riccardo.peschi@ariete.net',
             //'santo.riccio@ariete.net',
         ],    
         'emailToShippingReady' => [
-            'simogrima@gmail.com',
+            //'simogrima@gmail.com',
             //'giuseppe.turturiello@ariete.net',
         ],                
     ],

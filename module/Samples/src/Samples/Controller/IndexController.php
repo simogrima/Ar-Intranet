@@ -301,12 +301,16 @@ class IndexController extends EntityUsingController
 
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
+
             if ($form->isValid()) {
                 $sample->setPainting('0');
                 $sample->setEmail1('0');
                 $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
                 $sample->setCurrentStatusDate(new \Datetime());
                 $sample->setScheduledDeliveryDate(new \DateTime($this->generateScheduledDeliveryDate($sample)));
+                
+                //$myDateTime = DateTime::createFromFormat('d/m/Y', $this->params()->fromQuery('requestedDeliveryDate', date('d/m/Y')));
+                //$sample->setRequestedDeliveryDate($myDateTime->format('d-m-Y'));
 
                 //***** History
                 $data = array(
