@@ -92,7 +92,17 @@ return array(
                                 'action' => 'migration',
                             ),
                         ),
-                    ),                    
+                    ),         
+                    'zz' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/zz',
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Index',
+                                'action' => 'zz',
+                            ),
+                        ),
+                    ),                      
                     'search' => array(
                         'type' => 'Literal',
                         'options' => array(

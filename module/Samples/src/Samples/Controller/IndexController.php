@@ -114,9 +114,9 @@ class IndexController extends EntityUsingController
      */
     protected function fixPieValue($statusList, $data)
     {
-        if (empty($data))            
+        if (empty($data))
             return $data;
-        
+
         $result = [];
         foreach ($statusList as $status) {
             $find = 0;
@@ -175,7 +175,7 @@ class IndexController extends EntityUsingController
         if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
             throw new UnauthorizedException();
         }
-        
+
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
@@ -203,7 +203,7 @@ class IndexController extends EntityUsingController
         if (!$this->getAuthorizationService()->isGranted('samples.ship')) {
             throw new UnauthorizedException();
         }
-        
+
         //Mostro Form Comunicazione
         if ($this->params()->fromQuery('comunicate', NULL)) {
             $ids = $this->params()->fromQuery('selected', NULL);
@@ -223,7 +223,6 @@ class IndexController extends EntityUsingController
             }
         }
         //Fine Mostro Form Comunicazione
-
         //Rimuovo flag email1 (sposto su)
         if ($this->params()->fromQuery('up', NULL)) {
             $id = $this->params()->fromQuery('sampleId', 0);
@@ -239,7 +238,6 @@ class IndexController extends EntityUsingController
             return $this->redirect()->toRoute('samples/ship');
         }
         //Fine Rimuovo flag email1 (sposto su)       
-
         //Sono in submit form 
         if ($this->request->isPost()) {
             //Vuo,dire che provengo da form per invio email
@@ -259,7 +257,6 @@ class IndexController extends EntityUsingController
             }
         }
         //Fine sono in submit form
-
         //Default lista campionature da gestire x spedizione
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'disabled';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
@@ -308,10 +305,9 @@ class IndexController extends EntityUsingController
                 $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
                 $sample->setCurrentStatusDate(new \Datetime());
                 $sample->setScheduledDeliveryDate(new \DateTime($this->generateScheduledDeliveryDate($sample)));
-                
+
                 //$myDateTime = DateTime::createFromFormat('d/m/Y', $this->params()->fromQuery('requestedDeliveryDate', date('d/m/Y')));
                 //$sample->setRequestedDeliveryDate($myDateTime->format('d-m-Y'));
-
                 //***** History
                 $data = array(
                     'sample' => $sample,
@@ -353,7 +349,7 @@ class IndexController extends EntityUsingController
         if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
             throw new UnauthorizedException();
         }
-        
+
         // Get your ObjectManager from the ServiceManager
         $objectManager = $this->getEntityManager();
 
@@ -612,21 +608,8 @@ class IndexController extends EntityUsingController
         return (isset($campPrev)) ? ((int) $campPrev) + $qta : $qta;
     }
 
-    public function migrationAction()
+    public function zzAction()
     {
-        
-        //bloccato
-        return $this->getResponse();
-        
-        //senza parametro parte subito da 0 (prima riga)
-        $start = $this->params()->fromQuery('start', 0);
-        $incrementa = 200;
-        $urlViewHelper = $this->getServiceLocator()->get('ViewHelperManager')->get('url');
-        $newStart = $start + $incrementa;
-        echo '<p><a href="' . $urlViewHelper('samples/migration', [], ['query' => ['start' => $newStart]]) . '">Lancia Migrazione (parti da ' . $newStart . ')</a></p>';
-
-        
-        
         //Amumento il limite tempo dello script a 300 min e memoria
         set_time_limit(18000);
         ini_set('memory_limit', '-1');
@@ -636,8 +619,83 @@ class IndexController extends EntityUsingController
             'driver' => 'Mysqli',
             'database' => 'intranet',
             'username' => 'root',
-            //'password' => 'grimax',
-            'password' => 'ariete2014',
+            'password' => 'grimax',
+                //'password' => 'ariete2014',
+        );
+        $dbAdapter = new Adapter($dbAdapterConfig);
+
+        $sql = new Sql($dbAdapter);
+        $select = $sql->select();
+        $select->from('campionature');
+
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $objectManager = $this->getEntityManager();
+        $class = $this->options->getSampleEntityClass();
+
+        $countryRepo = $objectManager->getRepository('Application\Entity\Country');
+        //$user = $userMapper->findByEmail('grimani@ariete.net');
+        //var_dump($user);
+        //object
+        
+/*
+        $rows = $countryRepo->findAll();
+        
+        foreach ($rows as $row) {
+            echo "UPDATE campionature SET paese = '{$row->getCountryId()}' WHERE paese LIKE '%{$row->getName()}%';<br/>";
+        }
+        
+        return $this->getResponse();
+ * 
+ */
+
+
+        $statusRepo = $objectManager->getRepository('Samples\Entity\Status');
+
+
+        $tmp = [];
+        foreach ($result as $value) {
+            $v = $value['paese'];
+            $country = $countryRepo->find((int)$v);
+            if (!isset($country)) {
+                $tmp[$v] = isset($tmp[$v]) ? $tmp[$v] + 1 : 1;
+            }
+            
+        }
+        var_dump($tmp);
+
+
+        return $this->getResponse();
+    }
+
+    public function migrationAction()
+    {
+
+        //bloccato
+        //return $this->getResponse();
+
+        //senza parametro parte subito da 0 (prima riga)
+        $start = $this->params()->fromQuery('start', 10000);
+        $incrementa = 100;
+        $urlViewHelper = $this->getServiceLocator()->get('ViewHelperManager')->get('url');
+        $newStart = $start + $incrementa;
+        echo '<p><a href="' . $urlViewHelper('samples/migration', [], ['query' => ['start' => $newStart]]) . '">Lancia Migrazione (parti da ' . $newStart . ')</a></p>';
+
+
+
+        //Amumento il limite tempo dello script a 300 min e memoria
+        set_time_limit(18000);
+        ini_set('memory_limit', '-1');
+
+        //Leggo tabella di migrazione
+        $dbAdapterConfig = array(
+            'driver' => 'Mysqli',
+            'database' => 'intranet',
+            'username' => 'root',
+            'password' => 'grimax',
+            //'password' => 'ariete2014',
         );
         $dbAdapter = new Adapter($dbAdapterConfig);
 
@@ -661,7 +719,7 @@ class IndexController extends EntityUsingController
         $notFound = [];
         $allegatiRichiesta = [];
         $allegatiEvasione = [];
-        
+
         //Scorciatoie
         $statusArray = [];
         $usersArray = [];
@@ -738,26 +796,24 @@ class IndexController extends EntityUsingController
                 $usersArray[$key] = $userMapper->findByEmail($key);
             }
             $applicant = $usersArray[$key];
-                      
+
             if (!isset($applicant)) {
                 $applicant = $defaultApplicant;
             }
             $sample->setApplicant($applicant);
             // Fine Richiedente
-            
             //Country
             $key = $value['paese'];
             if (!isset($countryArray[$key])) {
-                $countryArray[$key] = $countryRepo->find((int) $key);;
+                $countryArray[$key] = $countryRepo->find((int) $key);
             }
             $country = $countryArray[$key];
-            
+
             if (!isset($country)) {
                 $country = $defaultCountry;
             }
             $sample->setCountry($country);
             // Fine Country   
-                
             //Allegati
             for ($i = 1; $i <= 12; $i++) {
                 $tmp = $value['allegatorichiesta' . $i];
@@ -784,19 +840,17 @@ class IndexController extends EntityUsingController
                 }
             }
             //Fine Allegati
-
             //Editor
             $key = $value['compilatoda'];
             if (!isset($usersArray[$key])) {
                 $usersArray[$key] = $userMapper->findByEmail($key);
             }
             $editor = $usersArray[$key];
-            
+
             if (!isset($editor)) {
                 $editor = $defaultEditor;
             }
             // Editor     
-                   
             //History
             //1)
             $key = \Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION;
@@ -818,7 +872,7 @@ class IndexController extends EntityUsingController
                 if (!isset($statusArray[$key])) {
                     $statusArray[$key] = $statusRepo->find($key);
                 }
-                $status = $statusArray[$key];                
+                $status = $statusArray[$key];
                 $data = array(
                     'sample' => $sample,
                     'editBy' => $editor,
@@ -834,7 +888,7 @@ class IndexController extends EntityUsingController
                 if (!isset($statusArray[$key])) {
                     $statusArray[$key] = $statusRepo->find($key);
                 }
-                $status = $statusArray[$key];                    
+                $status = $statusArray[$key];
                 $data = array(
                     'sample' => $sample,
                     'editBy' => $editor,
@@ -850,7 +904,7 @@ class IndexController extends EntityUsingController
                 if (!isset($statusArray[$key])) {
                     $statusArray[$key] = $statusRepo->find($key);
                 }
-                $status = $statusArray[$key];                    
+                $status = $statusArray[$key];
                 if (!empty($value['dataevasione'])) {
                     $processingDate = new \DateTime($value['dataevasione']);
                 } else {
@@ -871,7 +925,7 @@ class IndexController extends EntityUsingController
                 if (!isset($statusArray[$key])) {
                     $statusArray[$key] = $statusRepo->find($key);
                 }
-                $status = $statusArray[$key];                    
+                $status = $statusArray[$key];
                 $data = array(
                     'sample' => $sample,
                     'editBy' => $defaultShipper,
@@ -887,7 +941,7 @@ class IndexController extends EntityUsingController
                 if (!isset($statusArray[$key])) {
                     $statusArray[$key] = $statusRepo->find($key);
                 }
-                $status = $statusArray[$key];                    
+                $status = $statusArray[$key];
                 $data = array(
                     'sample' => $sample,
                     'editBy' => $editor,

@@ -200,7 +200,7 @@ class Attachments
     {
         $pos = strrpos($this->getFileName(), '.');
         $extension = substr($this->getFileName(), $pos+1);
-        switch ($extension) {
+        switch (strtolower($extension)) {
             case 'jpg':
             case 'jpeg':
             case 'gif':    
