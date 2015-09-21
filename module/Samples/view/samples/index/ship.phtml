@@ -87,36 +87,13 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- Lista campionature -->
-<?php
-$url_order = 'ASC';
-if ($order_by == 'id') {
-    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
-} elseif ($order_by == 'customer') {
-    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
-} elseif ($order_by == 'model') {
-    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+<style>
+ /* https://github.com/twbs/bootstrap/issues/9939 */
+.btn-group {
+  display: flex;
 }
-?>
+</style>
 <div class="row">
     <div class="col-md-12">                
 
@@ -138,35 +115,18 @@ if ($order_by == 'id') {
 </div>
 
 <form id="shipForm" method="get">
-    <div class="table-responsive">
+    <div class="">
         <table class="table table-bordered table-hover" id="example1">
             <thead>
                 <tr>
                     <th></th>
-                    <th>
-                        <a href="<?php echo $this->url('samples/ship', array_filter(array('order_by' => 'id', 'order' => $url_order))); ?>">
-                            Id
-                        </a> 
-                        <?php if ($order_by == 'id'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
-                    </th>
-                    <th>
-                        <a href="<?php echo $this->url('samples/ship', array_filter(array('order_by' => 'model', 'order' => $url_order))); ?>">
-                            Modello
-                        </a> 
-                        <?php if ($order_by == 'model'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
-                    </th>
-                    <th>
-                        <a href="<?php echo $this->url('samples/ship', array_filter(array('order_by' => 'customer', 'order' => $url_order))); ?>">
-                            Cliente
-                        </a> 
-                        <?php if ($order_by == 'customer'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
-                    </th>    
+                    <th>Id</th>
+                    <th>Modello</th>
+                    <th>Cliente</th>    
                     <th>Richiedente</th>
-                    <th>Stato</th>
                     <th class="text-center">Qta</th>
                     <th class="text-center">Data consegna richiesta</th>
                     <th class="text-center">Data consegna prevista</th>
-                    <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
                     <th class="text-center"><i class="fa fa-envelope fa-fw"></i></th>
                     <th>Action</th>
                 </tr>
@@ -195,10 +155,7 @@ if ($order_by == 'id') {
                         </td>       
                         <td class="cell">
                             <?php echo $sample->getApplicant()->getDisplayName(); ?>
-                        </td>    
-                        <td class="cell">
-                            <?php echo $sample->getStatus()->getName(); ?>
-                        </td>     
+                        </td>      
                         <td class="cell text-center">
                             <?php echo $sample->getQta(); ?>
                         </td>                     
@@ -219,9 +176,6 @@ if ($order_by == 'id') {
                                         "it_IT");
                                 ?>       
                             <?php endif; ?>
-                        </td>  
-                        <td class="cell text-center">
-                            <?php echo count($sample->getAttachments()); ?>
                         </td>                      
                         <td class="cell text-center">
                             <?php if ($sample->getEmail1()): ?>
@@ -229,18 +183,20 @@ if ($order_by == 'id') {
                             <?php endif; ?>
                         </td>
                         <td class="cell cell-ctrls">
+                            <div class="btn-group">
                             <?php if ($sample->getEmail1()): ?>
                                 <a class='btn btn-success btn-xs ajax-ship' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
                                     <i class="fa fa-plane"></i> Spedisci
                                 </a>     
                                 <a class='btn btn-default btn-xs emodal-confirm' href="<?php echo $this->url('samples/ship', [], ['query' => ['sampleId' => $sample->getId(), 'up' => 1]]); ?>">
-                                    <i class="fa fa-arrow-up"></i> Sposta sopra
+                                    <i class="fa fa-arrow-down"></i> Sposta sotto
                                 </a>                               
                             <?php else: ?>
                                 <a class='btn btn-primary btn-xs' href="<?php echo $this->url('samples/ship', [], ['query' => ['selected' => [$sample->getId()], 'comunicate' => 1]]); ?>">
                                     <i class="fa fa-envelope"></i> Comunica
                                 </a>                         
                             <?php endif; ?>
+                            </div>
                         </td>
 
                     </tr>
@@ -252,16 +208,16 @@ if ($order_by == 'id') {
 </form>
 
 <?php
-echo $this->paginationControl(
-        $this->samples, 'Sliding', 'paginator-slide', array(
-    'order_by' => $order_by,
-    'order' => $order,
-    'pageAction' => $pageAction,
-        )
-);
-
-
+//timeline
 $this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
+
+//bootstrap table
+$this->headLink()
+        ->prependStylesheet($this->basePath() . '/css/sb-admin-2.css', 'all') //questo lo ricqarico xchè deve stare dopo
+        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-responsive/css/dataTables.responsive.css', 'all')
+        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css', 'all');
+$this->headScript()->prependFile($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/datatables/media/js/jquery.dataTables.min.js');
 
 $this->inlineScript()->captureStart();
 echo <<<JS
@@ -287,8 +243,24 @@ $(document).ready(function() {
             ]
         }, 'Spedisci campionatura');
     }
+
+    $('#example1').DataTable({
+        order: [[ 8,1, "desc" ]],
+        iDisplayLength: 100,
+        bPaginate: false,
+        responsive: false,
+        aoColumnDefs: [
+            { 'bSortable': false, 'aTargets': [ 0,6,7,9 ] }
+        ] 
+    });
+
+
 });
 JS;
 $this->inlineScript()->captureEnd();
 ?>
 <!-- Fine Lista campionature -->
+
+
+
+
