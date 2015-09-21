@@ -157,6 +157,17 @@ return array(
                             ),
                         ),
                     ),
+                    'print' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/print/:sampleId',
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Index',
+                                'action' => 'print',
+                                'sampleId' => 0
+                            ),
+                        ),
+                    ),                    
                     //attachment
                     'attachments' => array(
                         'type' => 'Literal',
@@ -332,7 +343,14 @@ return array(
         'emailToShippingReady' => [
             //'simogrima@gmail.com',
             //'giuseppe.turturiello@ariete.net',
-        ],                
+        ],     
+        'emailToProductRequired' => [
+            'carlo.rosa.ariete.net',
+            'erica.chelli@ariete.net',
+            'riccardo.peschi@ariete.net',
+            'matteo.bacchelli@ariete.net',
+            'santo.riccio@ariete.net'
+        ],        
     ],
     //Navigation menu/breadcrumb
     'navigation' => array(

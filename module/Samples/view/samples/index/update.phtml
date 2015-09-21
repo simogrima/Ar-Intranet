@@ -1,130 +1,263 @@
 <?php echo $this->titleAndBread('Campionature'); ?>
 <?php $this->myFlashMessenger(); ?>    
+
+<!-- Form Comunicazione Prodotto Richiesto -->
+<?php if (isset($showComunicateForm)): ?>
 <?php
-$url_order = 'ASC';
-if ($order_by == 'id') {
-    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
-} elseif ($order_by == 'customer') {
-    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
-} elseif ($order_by == 'model') {
-    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
-}
+$msg = "Per campionature sono a richiedere autorizzazione per prelevare da magazzino i seguenti prodotti:\n\r";
 ?>
-<div class="row">
-    <div class="col-md-12">                
-        Trovate <strong><?php echo $totalRecord; ?></strong> campionature aperte
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-envelope"></i> Comunicazione preparazione campionature
+                </div>
+                <form role="form" method="post" action="<?= $this->url('samples/update'); ?>">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h3>Campionature selezionate</h3>
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cambia Stato</th>
+                                            <th>Id</th>
+                                            <th>Modello</th>
+                                            <th clas="text-center">Qta</th>
+                                            <th>Cliente</th>    
+                                            <th>Richiedente</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($this->samples as $sample): ?>
+                                        <?php $msg .= "{$sample->getQta()}pz-{$sample->getModel()}-CAMP.N&deg;{$sample->getId()}\n"; ?>
+                                            <tr>
+                                                <td class="cell text-center">
+                                                    <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" checked="" />
+                                                </td>                                                 
+                                                <td class="cell cell-id">
+                                                    <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                                                        <?php echo $sample->getId(); ?>
+                                                    </a>    
+                                                </td>
+                                                <td class="cell cell-serial">
+                                                    <?php echo $sample->getModel(); ?>
+                                                </td>      
+                                                <td class="cell text-center">
+                                                    <?php echo $sample->getQta(); ?>
+                                                </td>                                                   
+                                                <td class="cell">
+                                                    <?php echo $sample->getCustomer(); ?>
+                                                </td>       
+                                                <td class="cell">
+                                                    <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                                                </td>    
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>                        
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Messaggio</label>
+                                    <textarea class="form-control" rows="3" name="note"><?php echo $msg; ?></textarea>
+                                </div>
+                                <input type="hidden" name="ids" value="<?= $ids; ?>" />
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-envelope"></i> Comunica</button>
+                                <a class="btn btn-default" href="javascript: history.back()">Annulla</a>                  
+                            </div>
+                        </div>
+                        <!-- /.row (nested) -->
+                    </div>
+                    <!-- /.panel-body -->
+                </form>
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
     </div>
-</div>   
+    <!-- /.row -->
+    <?php return; ?>
+<?php endif; ?>
+<!-- Fine Form Comunicazione Prodotto Richiesto -->
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover" id="example1">
-        <thead>
-            <tr>
-                <th>
-                    <a href="<?php echo $this->url('samples/update', array_filter(array('order_by' => 'id', 'order' => $url_order))); ?>">
-                        Id
-                    </a> 
-                    <?php if ($order_by == 'id'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
-                </th>
-                <th>
-                    <a href="<?php echo $this->url('samples/update', array_filter(array('order_by' => 'model', 'order' => $url_order))); ?>">
-                        Modello
-                    </a> 
-                    <?php if ($order_by == 'model'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
-                </th>
-                <th>
-                    <a href="<?php echo $this->url('samples/update', array_filter(array('order_by' => 'customer', 'order' => $url_order))); ?>">
-                        Cliente
-                    </a> 
-                    <?php if ($order_by == 'customer'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
-                </th>    
-                <th>Richiedente</th>
-                <th>Stato</th>             
-                <th class="text-center">Qta</th>
-                <th class="text-center">Data consegna richiesta</th>
-                <th class="text-center">Data consegna prevista</th>
-                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
-                <th class="text-center"><i class="fa fa-paint-brush fa-fw"></i></th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($this->samples as $sample): ?>
-            <?php
-            $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());   
-            ?>
-                <tr class="<?= $class; ?>">
-                    <td class="cell cell-id">
-                        <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
-                            <?php echo $sample->getId(); ?>
-                        </a>    
-                    </td>
-                    <td class="cell cell-serial">
-                        <?php echo $sample->getModel(); ?>
-                    </td>         
-                    <td class="cell">
-                        <?php echo $sample->getCustomer(); ?>
-                    </td>       
-                    <td class="cell">
-                        <?php echo $sample->getApplicant()->getDisplayName(); ?>
-                    </td>    
-                    <td class="cell">
-                        <?php echo $sample->getStatus()->getName(); ?>
-                    </td>     
-                    <td class="cell text-center">
-                        <?php echo  $sample->getQta(); ?>
-                    </td>                     
-                    <td class="cell text-center">
-                        <?php
-                        echo $this->dateFormat(
-                                $sample->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
-                                IntlDateFormatter::NONE, // time
-                                "it_IT");
-                        ?>                        
-                    </td>      
-                    <td class="cell text-center">
-                        <?php if (!empty($sample->getScheduledDeliveryDate())): ?>
-                        <?php
-                        echo $this->dateFormat(
-                                $sample->getScheduledDeliveryDate(), IntlDateFormatter::LONG, // date
-                                IntlDateFormatter::NONE, // time
-                                "it_IT");
-                        ?>       
-                        <?php endif; ?>
-                    </td>  
-                    <td class="cell text-center">
-                        <?php echo  count($sample->getAttachments()); ?>
-                    </td>                      
-                    <td class="cell text-center">
-                        <?php if ($sample->getPainting()): ?>
-                        <i class="fa fa-check fa-fw"></i>
-                        <?php endif; ?>
-                    </td>
-                    <td class="cell cell-ctrls text-center">
-                        <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
-                            <span class="glyphicon glyphicon-eye-open"></span> Show
-                        </a>                         
-                        <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
-                            <span class="glyphicon glyphicon-edit"></span> Edit
-                        </a> 
-                        <a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
-                            class="btn btn-danger btn-xs emodal-confirm">
-                            <span class="glyphicon glyphicon-remove"></span> Del
-                        </a>
-                    </td>
 
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Lista campionature -->
+<style>
+    .btn-group {
+  display: flex;
+}
+</style>
+<div class="panel panel-default">
+    <div class="panel-body">        
+        <div class="row">
+            <div class="col-md-6">                
+                Trovate <strong><?php echo $totalRecord; ?></strong> campionature aperte
+            </div>
+            <div class="col-md-6 right" style="text-align: right">
+                <a href="<?php echo $this->url('samples/update') ?>" class="btn btn-primary" id="productRequiredBtn">
+                    <i class="fa fa-envelope"></i> Richiedi Prodotto
+                </a>           
+            </div>
+        </div>
+    </div>
 </div>
 
+<form id="productRequiredForm" method="get">
+    <div class="">
+        <table class="table table-bordered table-hover" id="example1">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th>Modello</th>
+                    <th>Cliente</th>    
+                    <th>Richiedente</th>
+                    <th>Stato</th>             
+                    <th class="text-center">Qta</th>
+                    <th class="text-center">Data consegna richiesta</th>
+                    <th class="text-center">Data consegna prevista</th>
+                    <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>
+                    <th class="text-center"><i class="fa fa-paint-brush fa-fw"></i></th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->samples as $sample): ?>
+                    <?php
+                    $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());
+                    ?>
+                    <tr class="<?= $class; ?>">
+                        <td class="cell text-center">
+                            <?php if($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION): ?>
+                                <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
+                            <?php endif; ?>
+                        </td>                    
+                        <td class="cell cell-id">
+                            <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">                
+                                <?php echo $sample->getId(); ?>                         
+                            </a>    
+                        </td>
+                        <td class="cell cell-serial">
+                            <?php echo $sample->getModel(); ?>
+                        </td>         
+                        <td class="cell">
+                            <?php echo $sample->getCustomer(); ?>
+                        </td>       
+                        <td class="cell">
+                            <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                        </td>    
+                        <td class="cell">
+                            <?php echo $sample->getStatus()->getName(); ?>
+                        </td>     
+                        <td class="cell text-center">
+                            <?php echo $sample->getQta(); ?>
+                        </td>                     
+                        <td class="cell text-center">
+                            <?php
+                            echo $this->dateFormat(
+                                    $sample->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
+                                    IntlDateFormatter::NONE, // time
+                                    "it_IT");
+                            ?>                        
+                        </td>      
+                        <td class="cell text-center">
+                            <?php if (!empty($sample->getScheduledDeliveryDate())): ?>
+                                <?php
+                                echo $this->dateFormat(
+                                        $sample->getScheduledDeliveryDate(), IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        "it_IT");
+                                ?>       
+                            <?php endif; ?>
+                        </td>  
+                        <td class="cell text-center">
+                            <?php echo count($sample->getAttachments()); ?>
+                        </td>                      
+                        <td class="cell text-center">
+                            <?php if ($sample->getPainting()): ?>
+                                <i class="fa fa-check fa-fw"></i>
+                            <?php endif; ?>
+                        </td>
+                        <td class="cell cell-ctrls text-center">
+                            <div class="btn-group">
+                            <!--
+                            <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                                <span class="glyphicon glyphicon-eye-open"></span> Show
+                            </a>             
+                            -->
+                            <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
+                                <span class="glyphicon glyphicon-edit"></span> Edit
+                            </a><a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
+                               class="btn btn-danger btn-xs emodal-confirm">
+                                <span class="glyphicon glyphicon-remove"></span> Del
+                            </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" name="comunicate" value="1" />
+</form>
+
 <?php
-echo $this->paginationControl(
-        $this->samples, 'Sliding', 'paginator-slide', array(
-    'order_by' => $order_by,
-    'order' => $order,
-    'pageAction' => $pageAction,
-        )
-);
-?>
+/*
+  echo $this->paginationControl(
+  $this->samples, 'Sliding', 'paginator-slide', array(
+  'order_by' => $order_by,
+  'order' => $order,
+  'pageAction' => $pageAction,
+  )
+  );
+ * 
+ */
+
+
+$this->headLink()
+        ->prependStylesheet($this->basePath() . '/css/sb-admin-2.css', 'all') //questo lo ricqarico xchè deve stare dopo
+        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-responsive/css/dataTables.responsive.css', 'all')
+        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css', 'all');
+$this->headScript()->prependFile($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/datatables/media/js/jquery.dataTables.min.js');
+
+
+
+$this->headScript()->appendScript("
+$(function() {
+    $('#productRequiredBtn').click(function(event){
+        $('#productRequiredForm').trigger('submit');
+        event.preventDefault();
+    }); 
+
+    $('#example1').DataTable({
+        order: [[ 1, \"desc\" ]],
+        iDisplayLength: 100,
+        bPaginate: false,
+        responsive: false,
+        aoColumnDefs: [
+            { 'bSortable': false, 'aTargets': [ 0,7,8,11 ] }
+        ] 
+    });
+
+}); 
+
+");

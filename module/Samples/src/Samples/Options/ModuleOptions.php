@@ -164,5 +164,28 @@ class ModuleOptions extends AbstractOptions
         $this->emailToShippingReady = $emails;
         return $this;
     }       
+ 
     
+    /**
+     * Getter indirizzi x notifica (email) prodotto richiesto
+     * 
+     * @return array
+     */
+    function getEmailToProductRequired()
+    {
+        return $this->emailToProductRequired;
+    }
+    
+    /**
+     * Setter indirizzi x notifica (email) prodotto richiesto
+     * 
+     * @param array $emails
+     * @return \Samples\Options\ModuleOptions
+     */
+    function setEmailToProductRequired(array $emails)
+    {
+        $this->emailToProductRequired = $emails;
+        return $this;
+    }       
+        
 }

@@ -1291,7 +1291,13 @@ class Sample
         return $this->history;
     }   
     
-    /**
+    public function getProcessedDate()
+    {
+        $history =  $this->getHistory(\Samples\Entity\Status::STATUS_TYPE_PROCESSED);
+        return (isset($history)) ? $history[0]->getEditDate() : FALSE;
+    }        
+
+        /**
      * Set status
      *
      * @param \Computer\Entity\Status

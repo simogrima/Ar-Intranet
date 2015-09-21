@@ -250,5 +250,32 @@ class SampleMapper extends BaseDoctrine
             'subject' => 'Campionature pronte'
                 ), $view);
     }    
+    
+    /**
+     * Invia email che notifica di prodotto richiesto (x richiesta multipla da apposita form).
+     * 
+     * @param array $data messaggio
+     * @param \Application\Controller\AbstractActionController $controller
+     */
+    public function sendProductRequiredEmail($data, $controller, $replyTo)
+    {
+        //Stabilisco detinatari (default)
+        $emailTo = $this->options->getEmailToProductRequired();
+        $emailTo = array_unique($emailTo);
+   
+        $view = new ViewModel(array(
+            'data' => $data,
+        ));
+        $view->setTerminal(true);
+        $view->setTemplate('Samples/view/emails/product_required');
+        $controller->mailerZF2()->send(array(
+            'to' => $emailTo,
+            'replyTo' => $replyTo->getEmail(),
+            'replyNameTo' => $replyTo->getDisplayName(),            
+            //'cc' => 'email2@domain.com',
+            //'bcc' => 'email3@domain.com',    
+            'subject' => 'Campionature - richiesta prodotti'
+                ), $view);
+    }        
 
 }

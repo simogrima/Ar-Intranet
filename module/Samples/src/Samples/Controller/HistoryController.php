@@ -148,6 +148,7 @@ class HistoryController extends EntityUsingController
                 //setto anche campionatura
                 $sampeMapper = $objectManager = $this->getServiceLocator()->get('Samples\Mapper\SampleMapper');
                 $sample->setStatus($history->getSampleStatus());
+                $sample->setCurrentStatusDate(new \Datetime());
                 $sampeMapper->update($sample);
 
                 $this->flashMessenger()->setNamespace('success')->addMessage('Campionatura spedita!');

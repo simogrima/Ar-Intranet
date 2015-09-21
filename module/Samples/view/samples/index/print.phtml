@@ -1,0 +1,87 @@
+<?php echo $this->titleAndBread('Campionatura ' . $sample->getId()) ?>
+<?php $this->myFlashMessenger(); ?>   
+<style>
+        .page-title, .breadcrumb
+    {
+        display: none !important;
+    }
+@media print
+{    
+    #button
+    {
+        display: none !important;
+    }
+}    
+</style>
+<script type="text/javascript">
+<!--
+window.print();
+//-->
+</script>
+<div class="row">
+    <div class="col-md-12">
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1>CAMPIONATURA N° <?= $sample->getId()?></h1>
+        <h3>
+            Richiesta il: 
+                        <?php
+                        echo $this->dateFormat(
+                                $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        ?>               
+        </h3>
+        <h3>
+            Evasa il:
+                        <?php
+                        if (!empty($sample->getProcessedDate())) {
+                            echo $this->dateFormat(
+                                $sample->getCurrentStatusDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        }
+                        ?>                   
+        </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <table class="table table-bordered text-left" style="margin-top: 20px">
+            <tr>
+                <td><strong>Cliente:</strong> <?= $sample->getCustomer(); ?></td>
+                <td><strong>Paese:</strong> <?= $sample->getCountry()->getName(); ?></td>
+            </tr>
+            <tr>
+                <td><strong>Modello:</strong> <?= $sample->getModel(); ?></td>
+                <td><strong>Quantità:</strong> <?= $sample->getQta(); ?></td>
+            </tr>     
+            <tr>
+                <td colspan="2"><strong>Note:</strong><br/> <?= $sample->getNote(); ?></td>
+            </tr>    
+            <tr>
+                <td colspan="2"><strong>Richiedente:</strong><br/> <?= $sample->getApplicant()->getDisplayName(); ?></td>
+            </tr>                
+        </table>
+
+
+    </div>
+</div>
+
+
+<div class="row" id="button">
+    <div class="col-md-12 text-center" style="margin-top: 50px">
+        <p>
+
+            <a class='btn btn-default btn-lg' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
+                    <i class="fa fa-edit"></i> Modifica
+            </a>                                      
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('samples/update') ?>"><i class="fa fa-mail-reply"></i> Aggiorna Dati</a>
+        </p>
+    </div>
+</div>

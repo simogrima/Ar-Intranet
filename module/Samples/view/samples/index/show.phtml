@@ -398,12 +398,12 @@ switch ($status) {
             <?php foreach ($value as $attachment): ?>                        
                                         <tr>
                                             <td class="col-md-2">
-                                                <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
                                                     <img class="img-responsive" style="max-height: 70px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
                                                 </a>
                                             </td>
                                             <td class="col-md-6">
-                                                <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
                 <?php echo $attachment->getFileName(); ?>
                                                 </a>
                                             </td>

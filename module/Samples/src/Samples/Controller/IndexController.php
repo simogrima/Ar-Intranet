@@ -176,6 +176,70 @@ class IndexController extends EntityUsingController
             throw new UnauthorizedException();
         }
 
+        //Mostro Form Comunicazione
+        if ($this->params()->fromQuery('comunicate', NULL)) {
+            $ids = $this->params()->fromQuery('selected', NULL);
+            if (!isset($ids)) {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Nessuna campionatura selezionata!');
+                return $this->redirect()->toRoute('samples/update');
+            } else {
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb->select('s')
+                        ->from($this->options->getSampleEntityClass(), 's')
+                        ->where($qb->expr()->in('s.id', $ids));
+                return array(
+                    'samples' => $qb->getQuery()->getResult(),
+                    'ids' => implode(',', $ids),
+                    'showComunicateForm' => 1,
+                );
+            }
+        }
+        //Fine Mostro Form Comunicazione
+        //Sono in submit form 
+        if ($this->request->isPost()) {
+            //Vuo,dire che provengo da form per invio email
+            //if ($this->params()->fromPost('peso', NULL)) {
+            $ids = $this->params()->fromPost('selected', NULL);
+
+            $cambioStato = 0;
+            if (isset($ids)) {
+
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb->select('s')
+                        ->from($this->options->getSampleEntityClass(), 's')
+                        ->where($qb->expr()->in('s.id', $ids));
+                $samples = $qb->getQuery()->getResult();
+                //ottengo ed aggiorno al nuovo stato
+                $statusRepo = $this->getEntityManager()->getRepository('Samples\Entity\Status');
+                $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_PRODUCT_REQUIRED);
+
+                foreach ($samples as $sample) {
+                    $cambioStato++;
+                    $sample->setStatus($status);
+                    $this->sampleMapper->update($sample);
+
+                    //********* History *******/
+                    $data = array(
+                        'sample' => $sample,
+                        'editBy' => $this->getServiceLocator()->get('zfcuser_user_mapper')
+                                ->findById($this->zfcUserAuthentication()
+                                        ->getIdentity()->getId()),
+                        'sampleStatus' => $status,
+                        'editDate' => new \DateTime('NOW'),
+                    );
+
+                    //Aggiungo un record per cambio stato
+                    $this->addHistory($data);
+                    //***** Fine History *****/                          
+                }
+            }
+            $this->sampleMapper->sendProductRequiredEmail($this->params()->fromPost(), $this, $this->zfcUserAuthentication()->getIdentity());
+            $this->flashMessenger()->setNamespace('success')->addMessage("La comunicazione è stata inviata. $cambioStato campionature hanno cambiato stato.");
+            return $this->redirect()->toRoute('samples/update');
+            //}
+        }
+        //Fine sono in submit form
+        //Default lista campionature x aggiorna dati    
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
@@ -184,7 +248,7 @@ class IndexController extends EntityUsingController
                 new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getActive('s.' . $order_by, $order)))
         );
 
-        $paginator->setItemCountPerPage(30);
+        $paginator->setItemCountPerPage(1000);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
 
         return array(
@@ -241,20 +305,20 @@ class IndexController extends EntityUsingController
         //Sono in submit form 
         if ($this->request->isPost()) {
             //Vuo,dire che provengo da form per invio email
-            if ($this->params()->fromPost('peso', NULL)) {
-                $qb = $this->getEntityManager()->createQueryBuilder();
-                $qb->select('s')
-                        ->from($this->options->getSampleEntityClass(), 's')
-                        ->where($qb->expr()->in('s.id', explode(',', $this->params()->fromPost('ids', []))));
-                $samples = $qb->getQuery()->getResult();
-                foreach ($samples as $sample) {
-                    $sample->setEmail1(1);
-                    $this->sampleMapper->update($sample);
-                }
-                $this->sampleMapper->sendShippingReadyEmail($samples, $this->params()->fromPost(), $this, $this->zfcUserAuthentication()->getIdentity());
-                $this->flashMessenger()->setNamespace('success')->addMessage('La comunicazione è stata inviata. Ora le campionature possono essere spedite.');
-                return $this->redirect()->toRoute('samples/ship');
+            //if ($this->params()->fromPost('peso', NULL)) {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb->select('s')
+                    ->from($this->options->getSampleEntityClass(), 's')
+                    ->where($qb->expr()->in('s.id', explode(',', $this->params()->fromPost('ids', []))));
+            $samples = $qb->getQuery()->getResult();
+            foreach ($samples as $sample) {
+                $sample->setEmail1(1);
+                $this->sampleMapper->update($sample);
             }
+            $this->sampleMapper->sendShippingReadyEmail($samples, $this->params()->fromPost(), $this, $this->zfcUserAuthentication()->getIdentity());
+            $this->flashMessenger()->setNamespace('success')->addMessage('La comunicazione è stata inviata. Ora le campionature possono essere spedite.');
+            return $this->redirect()->toRoute('samples/ship');
+            //}
         }
         //Fine sono in submit form
         //Default lista campionature da gestire x spedizione
@@ -266,7 +330,7 @@ class IndexController extends EntityUsingController
                 new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getToShip('s.' . $order_by, $order)))
         );
 
-        $paginator->setItemCountPerPage(100);
+        $paginator->setItemCountPerPage(1000);
         $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
 
         return array(
@@ -402,6 +466,7 @@ class IndexController extends EntityUsingController
                     if ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_CANCELED) {
                         $this->sampleMapper->sendCanceledSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
                     } elseif ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PROCESSED) {
+                        $processed = true;
                         $this->sampleMapper->sendProcessedSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
                     }
                     //Fine Notifica via email                    
@@ -411,8 +476,11 @@ class IndexController extends EntityUsingController
 
                 $this->sampleMapper->update($sample);
 
+                if (isset($processed)) {
+                    return $this->redirect()->toRoute('samples/print', array('sampleId' => $sample->getId()));
+                }
                 $this->flashMessenger()->setNamespace('success')->addMessage('Campionatura modificata con successo');
-                return $this->redirect()->toRoute('samples/show', array('sampleId' => $sample->getId()));
+                return $this->redirect()->toRoute('samples/edit', array('sampleId' => $sample->getId()));
             } else {
                 var_dump($form->getMessages());
             }
@@ -485,6 +553,27 @@ class IndexController extends EntityUsingController
         return array(
             'sample' => $sample,
             'historyType' => $historyType,
+            'attachmentPath' => $this->options->getAttachmentPath(),
+        );
+    }
+
+    //Serve a Maggini per stampare ed incollare sulla scatola
+    public function printAction()
+    {
+        //Solo autorizzai (permissione: samples.edit)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
+        }
+
+        $sampleId = $this->getEvent()->getRouteMatch()->getParam('sampleId');
+        $sample = $this->getEntityManager()->getRepository($this->options->getSampleEntityClass())->find($sampleId);
+
+        if (!$sample) {
+            throw new \Exception('Campionatura non trovata!');
+        }
+
+        return array(
+            'sample' => $sample,
             'attachmentPath' => $this->options->getAttachmentPath(),
         );
     }
@@ -608,7 +697,7 @@ class IndexController extends EntityUsingController
         return (isset($campPrev)) ? ((int) $campPrev) + $qta : $qta;
     }
 
-    public function zzAction()
+    public function zzDaCancellareAncheRottaAction()
     {
         //Amumento il limite tempo dello script a 300 min e memoria
         set_time_limit(18000);
@@ -639,17 +728,17 @@ class IndexController extends EntityUsingController
         //$user = $userMapper->findByEmail('grimani@ariete.net');
         //var_dump($user);
         //object
-        
-/*
-        $rows = $countryRepo->findAll();
-        
-        foreach ($rows as $row) {
-            echo "UPDATE campionature SET paese = '{$row->getCountryId()}' WHERE paese LIKE '%{$row->getName()}%';<br/>";
-        }
-        
-        return $this->getResponse();
- * 
- */
+
+        /*
+          $rows = $countryRepo->findAll();
+
+          foreach ($rows as $row) {
+          echo "UPDATE campionature SET paese = '{$row->getCountryId()}' WHERE paese LIKE '%{$row->getName()}%';<br/>";
+          }
+
+          return $this->getResponse();
+         * 
+         */
 
 
         $statusRepo = $objectManager->getRepository('Samples\Entity\Status');
@@ -658,11 +747,10 @@ class IndexController extends EntityUsingController
         $tmp = [];
         foreach ($result as $value) {
             $v = $value['paese'];
-            $country = $countryRepo->find((int)$v);
+            $country = $countryRepo->find((int) $v);
             if (!isset($country)) {
                 $tmp[$v] = isset($tmp[$v]) ? $tmp[$v] + 1 : 1;
             }
-            
         }
         var_dump($tmp);
 
@@ -674,11 +762,11 @@ class IndexController extends EntityUsingController
     {
 
         //bloccato
-        //return $this->getResponse();
+        return $this->getResponse();
 
         //senza parametro parte subito da 0 (prima riga)
-        $start = $this->params()->fromQuery('start', 10000);
-        $incrementa = 100;
+        $start = $this->params()->fromQuery('start', 0);
+        $incrementa = 200;
         $urlViewHelper = $this->getServiceLocator()->get('ViewHelperManager')->get('url');
         $newStart = $start + $incrementa;
         echo '<p><a href="' . $urlViewHelper('samples/migration', [], ['query' => ['start' => $newStart]]) . '">Lancia Migrazione (parti da ' . $newStart . ')</a></p>';
@@ -694,8 +782,8 @@ class IndexController extends EntityUsingController
             'driver' => 'Mysqli',
             'database' => 'intranet',
             'username' => 'root',
-            'password' => 'grimax',
-            //'password' => 'ariete2014',
+            //'password' => 'grimax',
+            'password' => 'ariete2014',
         );
         $dbAdapter = new Adapter($dbAdapterConfig);
 

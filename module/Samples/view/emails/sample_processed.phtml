@@ -2,9 +2,12 @@ Ciao,<br/>
 ti informiamo che è stata evasa la seguente campionatura:<br/>
 <strong>Id:</strong> <?= $sample->getId() . '<br/>'; ?>
 <strong>Modello:</strong> <?= $sample->getModel() . '<br/>'; ?>
+<strong>Quantity:</strong> <?= $sample->getQta() . '<br/>'; ?>
 <p>
     La campionatura è disponibile presso il magazzino.
-</p>    
+</p>  
+
+<?php return ;?>
 <p>
     Vai alla <a href="<?= $url ?>">campionatura</a>
 </p>

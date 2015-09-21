@@ -109,7 +109,7 @@ echo $this->form()->openTag($form);
                         <blockquote>
                             <?php echo nl2br($sample->getNoteProvided()); ?>
                         </blockquote>
-                        
+
                     </div>                    
                 </div>                
             </div>    
@@ -279,12 +279,12 @@ echo $this->form()->openTag($form);
                                     <?php foreach ($value as $attachment): ?>                        
                                         <tr>
                                             <td class="col-md-2">
-                                                <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
                                                     <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
                                                 </a>
                                             </td>
                                             <td class="col-md-6">
-                                                <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
                                                     <?php echo $attachment->getFileName(); ?>
                                                 </a>
                                             </td>
@@ -323,97 +323,6 @@ echo $this->form()->openTag($form);
 </div> 
 <!-- Fine Allegati -->
 
-<!-- History -->
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-clock-o fa-fw"></i> History
-                <div class="pull-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Actions
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="<?php echo $this->url('computer/clearhistory', array('computerId' => $sample->getId())); ?>"
-                                   onclick="return confirm('<?php echo $this->translate('Really delete all computer history?') ?>')">
-                                       <?php echo $this->translate('Clear history') ?>
-                                </a> 
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <ul class="timeline">
-                    <?php
-                    $count = 0;
-                    $history = $sample->getHistory();
-                    foreach ($history as $row):
-                        $count++;
-                        $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
-                        ?>
-                        <li class="<?php echo $timelineClass; ?>">
-                            <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title"><?php echo $row->getSampleStatus()->getName(); ?></h4>
-                                    <p>
-                                        <small class="text-muted"><i class="fa fa-clock-o"></i> <?php
-                                            echo $this->dateFormat(
-                                                    $row->getEditDate(), IntlDateFormatter::LONG, // date
-                                                    IntlDateFormatter::NONE, // time
-                                                    "it_IT");
-                                            ?>
-                                        </small>
-                                    </p>
-                                    <p>
-                                        <small class="text-muted">
-                                            <i class="fa fa-user"></i>
-                                            <?php echo $row->getEditBy()->getDisplayName(); ?>
-                                        </small>
-                                    </p>                                    
-                                </div>
-                                <div class="timeline-body">
-                                    <p>
-                                    </p>
-                                    <hr>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                                            <i class="fa fa-gear"></i>  <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li>
-                                                <a href="<?php echo $this->url('samples/history/edit', array('historyId' => $row->getId())); ?>">
-                                                    <?php echo $this->translate('Edit') ?>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="<?php echo $this->url('samples/history/remove', array('historyId' => $row->getId())); ?>"
-                                                   onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare lo storico?') ?>')">
-                                                       <?php echo $this->translate('Delete') ?>
-                                                </a>                                            
-                                            </li>
-                                        </ul>
-                                    </div>                                
-                                </div>
-                            </div>
-                        </li>                    
-                    <?php endforeach; ?>                    
-
-
-                </ul>
-            </div>
-            <!-- /.panel-body -->
-        </div>  
-    </div>        
-</div>   
-<!-- Fine History -->
-
 <hr>
 <div class="row">
     <div class="col-md-12 text-right">
@@ -424,16 +333,21 @@ echo $this->form()->openTag($form);
                 <i class="fa fa-trash"></i> Elimina
             </a>  
             <?php if ($sample->isProcessed()): ?>
-            <a class='btn btn-success btn-lg' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
-                <i class="fa fa-plane"></i> Spedisci
-            </a>                         
-            <?php endif; ?>            
-            <a class="btn btn-default btn-lg" href="<?php echo $this->url('samples/update')?>"><i class="fa fa-mail-reply"></i> Annulla</a>
+                <a class='btn btn-success btn-lg' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
+                    <i class="fa fa-plane"></i> Spedisci
+                </a>                         
+            <?php endif; ?>     
+            <?php if ($sample->isProcessed() || $sample->isShipped()): ?>
+                <a class='btn btn-default btn-lg' href="<?php echo $this->url('samples/print', array('sampleId' => $sample->getId())); ?>">
+                    <i class="fa fa-print"></i> Stampa
+                </a>                         
+            <?php endif; ?>              
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('samples/update') ?>"><i class="fa fa-mail-reply"></i> Annulla</a>
         </p>
     </div>
 </div>
 <?php
-$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
+//$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
 
 $this->inlineScript()->captureStart();
 echo <<<JS

@@ -18,11 +18,21 @@ sono state preparate le seguenti campionature che sono pronte per la spedizione:
         <?php endforeach; ?>
     </tbody>
 </table>
-<h3>Info Spedizione:</h3>
+<p>
+<?php if (!empty($data['peso'])): ?>
 <strong>Peso:</strong> <?= $data['peso'] . '<br/>'; ?>
+<?php endif; ?>
+
+<?php if (!empty($data['misure'])): ?>
 <strong>Misure:</strong> <?= $data['misure'] . '<br/>'; ?>
+<?php endif; ?>
+
+<?php if (!empty($data['colli'])): ?>
 <strong>Colli:</strong> <?= $data['colli'] . '<br/>'; ?>
+<?php endif; ?>
+</p>
+
 <?php if (isset($data['note'])): ?>
-<strong>Note:</strong> <?= nl2br($data['note']); ?>
+<p><strong>Note:</strong><br/> <?= nl2br($data['note']); ?></p>
 <?php endif; ?>
 
