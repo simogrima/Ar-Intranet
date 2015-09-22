@@ -118,6 +118,7 @@ if ($order_by == 'id') {
                         <?php echo $computer->getProcessor()->getName(); ?>
                     </td>                                       
                     <td class="cell cell-ctrls text-center">
+                        <div class=" btn-group">
                         <a class='btn btn-default btn-xs' href="<?php echo $this->url('computer/show', array('computerId' => $computer->getId())); ?>">
                             <span class="glyphicon glyphicon-eye-open"></span> Show
                         </a>                         
@@ -128,6 +129,7 @@ if ($order_by == 'id') {
                            onclick="return confirm('<?php echo $this->translate('Really delete computer?') ?>')" class="btn btn-danger btn-xs">
                             <span class="glyphicon glyphicon-remove"></span> Del
                         </a>
+                        </div>
                     </td>
 
                 </tr>
