@@ -1,92 +1,6 @@
 <?php echo $this->titleAndBread('Campionature'); ?>
 <?php $this->myFlashMessenger(); ?>    
 
-<!-- Form Comunicazione Prodotto Richiesto -->
-<?php if (isset($showComunicateForm)): ?>
-<?php
-$msg = "Per campionature sono a richiedere autorizzazione per prelevare da magazzino i seguenti prodotti:\n\r";
-?>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <i class="fa fa-envelope"></i> Comunicazione preparazione campionature
-                </div>
-                <form role="form" method="post" action="<?= $this->url('samples/update'); ?>">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <h3>Campionature selezionate</h3>
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Cambia Stato</th>
-                                            <th>Id</th>
-                                            <th>Modello</th>
-                                            <th clas="text-center">Qta</th>
-                                            <th>Cliente</th>    
-                                            <th>Richiedente</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($this->samples as $sample): ?>
-                                        <?php $msg .= "{$sample->getQta()}pz-{$sample->getModel()}-CAMP.NR.{$sample->getId()}\n"; ?>
-                                            <tr>
-                                                <td class="cell text-center">
-                                                    <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" checked="" />
-                                                </td>                                                 
-                                                <td class="cell cell-id">
-                                                    <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
-                                                        <?php echo $sample->getId(); ?>
-                                                    </a>    
-                                                </td>
-                                                <td class="cell cell-serial">
-                                                    <?php echo $sample->getModel(); ?>
-                                                </td>      
-                                                <td class="cell text-center">
-                                                    <?php echo $sample->getQta(); ?>
-                                                </td>                                                   
-                                                <td class="cell">
-                                                    <?php echo $sample->getCustomer(); ?>
-                                                </td>       
-                                                <td class="cell">
-                                                    <?php echo $sample->getApplicant()->getDisplayName(); ?>
-                                                </td>    
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>                        
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label>Messaggio</label>
-                                    <textarea class="form-control" rows="3" name="note"><?php echo $msg; ?></textarea>
-                                </div>
-                                <input type="hidden" name="ids" value="<?= $ids; ?>" />
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-envelope"></i> Comunica</button>
-                                <a class="btn btn-default" href="javascript: history.back()">Annulla</a>                  
-                            </div>
-                        </div>
-                        <!-- /.row (nested) -->
-                    </div>
-                    <!-- /.panel-body -->
-                </form>
-            </div>
-            <!-- /.panel -->
-        </div>
-        <!-- /.col-lg-12 -->
-    </div>
-    <!-- /.row -->
-    <?php return; ?>
-<?php endif; ?>
-<!-- Fine Form Comunicazione Prodotto Richiesto -->
-
-
-
-
-
 <!-- Lista campionature -->
 <style>
  /* https://github.com/twbs/bootstrap/issues/9939 */
@@ -98,21 +12,18 @@ $msg = "Per campionature sono a richiedere autorizzazione per prelevare da magaz
     <div class="panel-body">        
         <div class="row">
             <div class="col-md-6">                
-                Trovate <strong><?php echo $totalRecord; ?></strong> campionature aperte
+                Trovate <strong><?php echo $totalRecord; ?></strong> campionature evase da inviare a magazzino.
             </div>
-            <div class="col-md-6 right " style="text-align: right">
-                <a href="<?php echo $this->url('samples/update') ?>" class="btn btn-primary" id="productRequiredBtn">
-                    <i class="fa fa-envelope"></i> Richiedi Prodotto
-                </a>         
-                <a href="<?php echo $this->url('samples/processing') ?>" class="btn btn-success">
-                    <i class="fa fa-envelope"></i> Invia a Magazzino
+            <div class="col-md-6 right " style="text-align: right">     
+                <a href="<?php echo $this->url('samples/processing') ?>" class="btn btn-primary" id="sendBtn">
+                    <i class="fa fa-envelope"></i> Invia
                 </a>                     
             </div>
         </div>
     </div>
 </div>
 
-<form id="productRequiredForm" method="get">
+<form id="sendForm" method="post">
     <div class="">
         <table class="table table-bordered table-hover" id="example1">
             <thead>
@@ -138,9 +49,7 @@ $msg = "Per campionature sono a richiedere autorizzazione per prelevare da magaz
                     ?>
                     <tr class="<?= $class; ?>">
                         <td class="cell text-center">
-                            <?php if($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION): ?>
-                                <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
-                            <?php endif; ?>
+                            <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
                         </td>                    
                         <td class="cell cell-id">
                             <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">                
@@ -209,7 +118,6 @@ $msg = "Per campionature sono a richiedere autorizzazione per prelevare da magaz
             </tbody>
         </table>
     </div>
-    <input type="hidden" name="comunicate" value="1" />
 </form>
 
 <?php
@@ -236,8 +144,8 @@ $this->headScript()->prependFile($this->basePath() . '/js/plugins/datatables-plu
 
 $this->headScript()->appendScript("
 $(function() {
-    $('#productRequiredBtn').click(function(event){
-        $('#productRequiredForm').trigger('submit');
+    $('#sendBtn').click(function(event){
+        $('#sendForm').trigger('submit');
         event.preventDefault();
     }); 
 

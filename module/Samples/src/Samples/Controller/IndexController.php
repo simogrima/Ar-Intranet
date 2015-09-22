@@ -260,6 +260,60 @@ class IndexController extends EntityUsingController
             'pageAction' => 'samples/update',
         );
     }
+    
+    public function processingAction()
+    {
+        //Solo autorizzai (permissione: samples.ship)
+        if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
+            throw new UnauthorizedException();
+        }        
+        
+        //Sono in submit form 
+        if ($this->request->isPost()) {
+            $ids = $this->params()->fromPost('selected', NULL);
+
+            if (!isset($ids)) {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Nessuna campionatura selezionata!');
+                return $this->redirect()->toRoute('samples/processing');
+            } else {
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb->select('s')
+                        ->from($this->options->getSampleEntityClass(), 's')
+                        ->where($qb->expr()->in('s.id', $ids));
+                $samples = $qb->getQuery()->getResult();
+
+                foreach ($samples as $sample) {
+                    $sample->setEmail2(1);
+                    $this->sampleMapper->update($sample);                     
+                }
+            }
+            $this->sampleMapper->sendProcessedSampleEmail($samples, $this, $this->zfcUserAuthentication()->getIdentity());
+            $this->flashMessenger()->setNamespace('success')->addMessage("La comunicazione è stata inviata.");
+            return $this->redirect()->toRoute('samples/processing');
+        }        
+        //Fine sono in submit form
+        
+        //Default lista campionature evase da comunicare a magazzino
+        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
+        $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
+        $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
+
+        $paginator = new Paginator\Paginator(
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getProcessed('s.' . $order_by, $order)))
+        );
+
+        $paginator->setItemCountPerPage(1000);
+        $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
+
+        return array(
+            'order_by' => $order_by,
+            'order' => $order,
+            'page' => $page,
+            'totalRecord' => $paginator->getTotalItemCount(),
+            'samples' => $paginator,
+            'pageAction' => 'samples/update',
+        );
+    }    
 
     public function shipAction()
     {
@@ -366,6 +420,7 @@ class IndexController extends EntityUsingController
             if ($form->isValid()) {
                 $sample->setPainting('0');
                 $sample->setEmail1('0');
+                $sample->setEmail2('0');
                 $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
                 $sample->setCurrentStatusDate(new \Datetime());
                 $sample->setScheduledDeliveryDate(new \DateTime($this->generateScheduledDeliveryDate($sample)));
@@ -467,7 +522,7 @@ class IndexController extends EntityUsingController
                         $this->sampleMapper->sendCanceledSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
                     } elseif ($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PROCESSED) {
                         $processed = true;
-                        $this->sampleMapper->sendProcessedSampleEmail($sample, $this, $this->zfcUserAuthentication()->getIdentity());
+                        //nessuna notifica (spostata in processingAction)
                     }
                     //Fine Notifica via email                    
                 }
@@ -870,6 +925,7 @@ class IndexController extends EntityUsingController
             $sample->setPressureProvided(utf8_encode($value['pressioneevasa']));
             $sample->setNoteProvided(utf8_encode($value['altroevaso']));
             $sample->setEmail1(0);
+            $sample->setEmail2(0);
 
             $sample->setCreatedDate($createdDate);
             $sample->setEditDate($createdDate);
@@ -1082,9 +1138,5 @@ class IndexController extends EntityUsingController
         $this->getServiceLocator()->get('Samples\Mapper\AttachmentsMapper')->insert($attachment);
     }
 
-    protected function sendCanceledEmail()
-    {
-        
-    }
 
 }

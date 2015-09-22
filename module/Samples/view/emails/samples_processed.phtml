@@ -1,0 +1,34 @@
+Ciao,<br/>
+ti informiamo che sono state evase le seguenti campionature:<br/>
+<table style="margin-top: 20px; border: 1px solid #e9e9e9" cellpadding="5">    
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Modello</th>
+            <th>Cliente</th>    
+            <th>Richiedente</th>
+            <th style="text-align: center">Qta</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->samples as $sample): ?>
+            <tr>
+                <td class="">
+                    <?php echo $sample->getId(); ?>
+                </td>
+                <td class="">
+                    <?php echo $sample->getModel(); ?>
+                </td>         
+                <td class="">
+                    <?php echo $sample->getCustomer(); ?>
+                </td>       
+                <td class="">
+                    <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                </td>      
+                <td  style="text-align: center">
+                    <?php echo $sample->getQta(); ?>
+                </td>                     
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

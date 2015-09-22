@@ -106,6 +106,33 @@ class SampleMapper extends BaseDoctrine
         return $qb->getQuery();
     }
     
+    /**
+     * Evase non ancora comuncate a magazzino.
+     * Stato = evase (STATUS_TYPE_PROCESSED)
+     * Email2 = 0
+     */
+    public function getProcessed($orderBy, $order)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(array('s'))
+                ->from($this->options->getSampleEntityClass(), 's')
+                ->innerJoin('s.applicant', 'u')
+                ->innerJoin('s.status', 't')
+                ->where(
+                        $qb->expr()->andX(
+                                $qb->expr()->eq('t.id', '?1'), $qb->expr()->eq('s.email2', '?2')
+                ))
+                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PROCESSED)
+                ->setParameter(2, 0)
+                ->orderBy($orderBy, $order);
+        return $qb->getQuery();
+    }    
+    
+    /**
+     * Campionature da spedire.
+     * Stato = evase (STATUS_TYPE_PROCESSED)
+     * Email2 = 1
+     */    
     public function getToShip($orderBy, $order)
     {
         $qb = $this->em->createQueryBuilder();
@@ -114,10 +141,11 @@ class SampleMapper extends BaseDoctrine
                 ->innerJoin('s.applicant', 'u')
                 ->innerJoin('s.status', 't')
                 ->where(
-                        $qb->expr()->orX(
-                                $qb->expr()->eq('t.id', '?1')
+                        $qb->expr()->andX(
+                                $qb->expr()->eq('t.id', '?1'), $qb->expr()->eq('s.email2', '?2')
                 ))
-                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
+                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PROCESSED)
+                ->setParameter(2, 1);
         
                 if ($orderBy == 's.disabled') {
                     $qb->addOrderBy('s.email1', 'ASC')
@@ -166,31 +194,29 @@ class SampleMapper extends BaseDoctrine
     }
 
     /**
-     * Invia email che notifica evasione campione
+     * Invia email che notifica evasione campioni
      * 
-     * @param \Samples\Entity\Sample $entity
+     * @param array $samples
      * @param \Application\Controller\AbstractActionController $controller
      */
-    public function sendProcessedSampleEmail($entity, $controller, $replyTo)
+    public function sendProcessedSampleEmail($samples, $controller, $replyTo)
     {
         //Stabilisco detinatari (default + richiedente)
         $emailTo = $this->options->getEmailToProcessedSample();
-        $emailTo[] = $entity->getApplicant()->getEmail();
+        //$emailTo[] = $entity->getApplicant()->getEmail();//tolgo richiedente
 
-        $urlViewHelper = $controller->getServiceLocator()->get('ViewHelperManager')->get('url');
         $view = new ViewModel(array(
-            'sample' => $entity,
-            'url' => $urlViewHelper('samples/show', array('sampleId' => $entity->getId()), array('force_canonical' => true)),
+            'samples' => $samples,
         ));
         $view->setTerminal(true);
-        $view->setTemplate('Samples/view/emails/sample_processed');
+        $view->setTemplate('Samples/view/emails/samples_processed');
         $controller->mailerZF2()->send(array(
             'to' => $emailTo,
             'replyTo' => $replyTo->getEmail(),
             'replyNameTo' => $replyTo->getDisplayName(),              
             //'cc' => 'email2@domain.com',
             //'bcc' => 'email3@domain.com',    
-            'subject' => 'Campionatura evasa',
+            'subject' => 'Campionature evase',
                 ), $view);
     }
 

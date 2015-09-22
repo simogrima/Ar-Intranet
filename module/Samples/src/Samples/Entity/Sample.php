@@ -281,7 +281,14 @@ class Sample
      *
      * @ORM\Column(name="email1", type="smallint", nullable=false, options={"default" = 0})
      */
-    protected $email1;        
+    protected $email1;      
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="email2", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $email2;
     
     /**
      * @var \DateTime
@@ -1078,7 +1085,33 @@ class Sample
         $this->email1 = $email1;
         
         return $this;
-    }        
+    }      
+    
+    /**
+     * Get email2
+     * 
+     * @return string
+     */        
+    public function getEmail2($human = FALSE)
+    {
+        if ($human) {
+            return ($this->email2 == 1) ? 'Yes' : 'No';
+        }        
+        return $this->email2;
+    }
+
+    /**
+     * Set email2
+     * 
+     * @param string $email2
+     * @return \Samples\Entity\Sample
+     */      
+    public function setEmail2($email1)
+    {
+        $this->email2 = $email1;
+        
+        return $this;
+    }      
     
     /**
      * Get painting
