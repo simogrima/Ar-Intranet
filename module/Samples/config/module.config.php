@@ -16,6 +16,7 @@ return array(
             'Samples\Controller\Index' => 'Samples\Factory\Controller\IndexControllerFactory',
             'Samples\Controller\Attachments' => 'Samples\Factory\Controller\AttachmentsControllerFactory',
             'Samples\Controller\History' => 'Samples\Factory\Controller\HistoryControllerFactory',
+            'Samples\Controller\Stats' => 'Samples\Factory\Controller\StatsControllerFactory',
         ),
     ),
     'router' => array(
@@ -109,7 +110,7 @@ return array(
                                 'action' => 'migration',
                             ),
                         ),
-                    ),                            
+                    ),                        
                     'search' => array(
                         'type' => 'Literal',
                         'options' => array(
@@ -245,6 +246,7 @@ return array(
                         ),
                     ), // end attachment     
                     
+                    //history
                     'history' => array(
                         'type' => 'Literal',
                         'priority' => 1000,
@@ -309,6 +311,33 @@ return array(
                             ),                            
                         ),
                     ), // end history      
+                    
+                    //stats
+                    'stats' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/stats',
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Stats',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'stat1' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/stat1/:year',
+                                    'defaults' => array(
+                                        'controller' => 'Samples\Controller\Stats',
+                                        'action' => 'stat1',
+                                        'historyId' => 0
+                                    ),
+                                ),
+                            ),                          
+                        ),
+                    ), // end stats                        
                     
                 ),
             ),
@@ -419,6 +448,19 @@ return array(
                             ),
                         ),
                     ),
+                    //stats
+                    'stats' => array(
+                        'label' => 'Statistiche',
+                        'route' => 'samples/stats',
+                        'onlybread' => false,
+                        'pages' => array(                        
+                            'processed' => array(
+                                'label' => 'Campioni evasi per mese',
+                                'route' => 'samples/stats/stat1',
+                                'onlybread' => true,
+                            ),
+                        ),
+                    ),                    
                 ),
             ),
         ),

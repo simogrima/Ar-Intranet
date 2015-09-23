@@ -1,0 +1,122 @@
+<?php echo $this->titleAndBread('Campioni Evasi Per Mese'); ?>
+<?php $this->myFlashMessenger(); ?>   
+<?php $range = range(2003, date('Y')) ?>
+
+<?php if (isset($showSelect)): ?>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <i class="fa fa-search"></i> Seleziona anno da analizzare
+
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+
+            <h4>
+            <?php foreach ($range as $y): ?>
+                <a href="<?php echo $this->url('samples/stats/stat1', array('year' => $y)); ?>">
+                    <?php echo $y; ?>
+                </a>, 
+            <?php endforeach; ?>
+
+            </h4>
+        </div>
+        <!-- /.panel-body -->
+    </div>
+
+    <?php return;
+endif; ?>
+
+<div class="row">    
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart"></i> <?= $year ?> - Campioni evasi per mese
+
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Anno
+                            <span class="caret"></span>
+                        </button>
+                            <?php $range = range(2003, date('Y')) ?>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <?php foreach ($range as $y): ?>
+                                <li><a href="<?php echo $this->url('samples/stats/stat1', array('year' => $y)); ?>"><?= $y; ?></a></li>
+<?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>                
+
+
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="flot-chart">
+                    <div class="flot-chart-content" id="morris-bar-chart2"></div>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+<!-- Morris Charts JavaScript --> 
+<?php
+$this->headScript()
+        ->prependFile('//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js')
+        ->prependFile('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js');
+
+$this->headLink()->prependStylesheet('//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css', 'all');
+
+
+
+
+$data = '';
+$hide = 0;
+if (count($totals) > 0) {
+    foreach ($totals as $key => $item) {
+        $key1 = (int) $item['m'];
+        $totals[$key]['processed'] = 0;
+        foreach ($processed as $item2) {
+            if ($key1 == (int) $item2['m']) {
+                $totals[$key]['processed'] = $item2['tot'];
+                break;
+            }
+        }
+    }
+
+    foreach ($totals as $item) {
+        $m = date('F', mktime(0, 0, 0, $item['m'], 10));
+        $data .= '{m: "' . $m . '",a: ' . $item['tot'] . ', b: ' . $item['processed'] . '}, ' . PHP_EOL;
+    }
+} else {
+    $hide = 1;
+}
+
+$this->headScript()->appendScript("
+$(function() {
+
+
+    if (0 == " . $hide . ") {    
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var data3 = [" . $data . "];
+        Morris.Bar({
+            element: 'morris-bar-chart2',
+            data: data3,
+            xkey: 'm',
+            ykeys: ['a', 'b'],
+            barColors: [
+                '#0B62A4',
+                '#5CB85C'
+            ],            
+            labels: ['Totali', 'Evase'],
+            hideHover: 'auto',
+            resize: true
+        });
+    }
+
+}); 
+
+");

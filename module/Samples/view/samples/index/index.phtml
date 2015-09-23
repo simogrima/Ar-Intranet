@@ -29,7 +29,28 @@
         </div>
     </div>
 
-
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-yellow">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-bar-chart fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">1</div>
+                        <div>Statistiche!</div>
+                    </div>
+                </div>
+            </div>
+            <a href="<?php echo $this->url('samples/stats'); ?>">
+                <div class="panel-footer">
+                    <span class="pull-left">Mostra tutte</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
 
 </div>
 
@@ -120,7 +141,7 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-pie-chart"></i> <?= $year?> tutte per mese
+                <i class="fa fa-bar-chart"></i> <?= $year ?> - Campionature/campioni per mese
 
                 <div class="pull-right">
                     <div class="btn-group">
@@ -131,7 +152,7 @@
                         <?php $range = range(2003, date('Y')) ?>
                         <ul class="dropdown-menu pull-right" role="menu">
                             <?php foreach ($range as $y): ?>
-                            <li><a href="<?= $this->url('samples', [], ['query' =>['year' => $y]]); ?>"><?= $y; ?></a></li>
+                                <li><a href="<?= $this->url('samples', [], ['query' => ['year' => $y]]); ?>"><?= $y; ?></a></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -153,7 +174,7 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-pie-chart"></i> <?= date('Y') ?> per stato
+                <i class="fa fa-pie-chart"></i> <?= date('Y') ?> - Campionature per stato
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -177,7 +198,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-bar-chart"></i> Campionature per anno
+                <i class="fa fa-bar-chart"></i> Campionature/campioni per anno
             </div>
             <!-- /.panel-heading -->
 
@@ -190,6 +211,8 @@
                                     <tr>
                                         <th>Anno</th>
                                         <th>Campionature</th>
+                                        <th>Campioni</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -201,6 +224,16 @@
                                                         $item['nr'], NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DEFAULT, "it_IT"
                                                 );
                                                 ?></td>
+                                            <td><?php
+                                                echo $this->numberFormat(
+                                                        $item['tot'], NumberFormatter::DEFAULT_STYLE, NumberFormatter::TYPE_DEFAULT, "it_IT"
+                                                );
+                                                ?></td>
+                                            <td class="cell cell-ctrls text-center">
+                                                <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/stats/stat1', array('year' => $item['y'])); ?>">
+                                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                                </a>                         
+                                            </td>                                            
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -250,7 +283,7 @@ if (count($chartPieStatusY) > 0) {
 
 $chartStatCountByYearData = '';
 foreach ($chartStatCountByYear as $item) {
-    $chartStatCountByYearData .= '{y: "' . $item['y'] . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
+    $chartStatCountByYearData .= '{y: "' . $item['y'] . '",a: ' . $item['nr'] . ', b: ' . $item['tot'] . '}, ' . PHP_EOL;
 }
 
 
@@ -259,10 +292,10 @@ $hide3 = 0;
 if (count($chartStatCountByMonth) > 0) {
     foreach ($chartStatCountByMonth as $item) {
         $m = date('F', mktime(0, 0, 0, $item['m'], 10));
-        $chartStatCountByMonthData .= '{m: "' . $m . '",a: ' . $item['nr'] . '}, ' . PHP_EOL;
-    }    
+        $chartStatCountByMonthData .= '{m: "' . $m . '",a: ' . $item['nr'] . ', b: ' . $item['tot'] . '}, ' . PHP_EOL;
+    }
 } else {
-    $hide3 = 1;    
+    $hide3 = 1;
 }
 
 
@@ -301,15 +334,13 @@ $(function() {
         });
     }
 
-
-
     var data2 = [" . $chartStatCountByYearData . "];
     Morris.Bar({
         element: 'morris-bar-chart',
         data: data2,
         xkey: 'y',
-        ykeys: ['a'],
-        labels: ['Campionature'],
+        ykeys: ['a', 'b'],
+        labels: ['Campionature', 'Campioni'],
         hideHover: 'auto',
         resize: true
     });
@@ -321,8 +352,8 @@ $(function() {
             element: 'morris-bar-chart2',
             data: data3,
             xkey: 'm',
-            ykeys: ['a'],
-            labels: ['Campionature'],
+            ykeys: ['a', 'b'],
+            labels: ['Campionature', 'Campioni'],
             hideHover: 'auto',
             resize: true
         });

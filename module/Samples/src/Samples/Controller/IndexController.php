@@ -85,10 +85,11 @@ class IndexController extends EntityUsingController
         //$queryProcessedCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status IN (' . implode(',', $processedStatus) . ')');
         //$queryPendingCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status < ' . \Samples\Entity\Status::STATUS_TYPE_PROCESSED);
         //$queryCancelCount = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr FROM Samples\Entity\Sample s WHERE s.status = ' . \Samples\Entity\Status::STATUS_TYPE_CANCELED);
-        $queryStatCountByYear = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
+        $queryStatCountByYear = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, SUM(s.qta) tot, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
 
         $year = $this->params()->fromQuery('year', date('Y'));
-        $queryStatCountByMonth = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, MONTH(s.createdDate) m FROM Samples\Entity\Sample s WHERE YEAR(s.createdDate) = ' . $year . ' GROUP BY m');
+        
+        $queryStatCountByMonth = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, SUM(s.qta) tot, MONTH(s.createdDate) m FROM Samples\Entity\Sample s WHERE YEAR(s.createdDate) = ' . $year . ' GROUP BY m');
 
         return array(
             'sampleCount' => $this->sampleMapper->count(),
