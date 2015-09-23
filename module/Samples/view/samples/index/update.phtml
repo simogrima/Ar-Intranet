@@ -178,7 +178,7 @@ $msg = "Per campionature sono a richiedere autorizzazione per prelevare da magaz
                             <?php echo count($sample->getAttachments()); ?>
                         </td>                      
                         <td class="cell text-center">
-                            <?php if ($sample->getPainting()): ?>
+                            <?php if ($sample->getPainting() || $sample->getToBeSerigraphy()): ?>
                                 <i class="fa fa-check fa-fw"></i>
                             <?php endif; ?>
                         </td>

@@ -420,6 +420,7 @@ class IndexController extends EntityUsingController
 
             if ($form->isValid()) {
                 $sample->setPainting('0');
+                $sample->setToBeSerigraphy('0');
                 $sample->setEmail1('0');
                 $sample->setEmail2('0');
                 $sample->setCreatedDate(new \Datetime()); //setto data creazione qua xche mi serve sotto  
@@ -905,6 +906,7 @@ class IndexController extends EntityUsingController
 
             $tmp = ($value['xlami']) ? 1 : 0;
             $sample->setPainting($tmp);
+            $sample->setToBeSerigraphy(0);
             $tmp = ($value['prodottostandard'] == 'si') ? 1 : 0;
             $sample->setStandardProduct($tmp);
             $tmp = ($value['campioneperapprovazione'] == 'si') ? 1 : 0;

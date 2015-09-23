@@ -73,6 +73,7 @@ class Sample
     protected $standardProduct;    
     
     /**
+     * da verniciare
      * @var integer
      *
      * @ORM\Column(name="approval_sample", type="smallint", nullable=false, options={"default" = 0})
@@ -85,6 +86,14 @@ class Sample
      * @ORM\Column(name="painting", type="smallint", nullable=false, options={"default" = 0})
      */
     protected $painting;       
+    
+    /**
+     * da serigrafare
+     * @var integer
+     *
+     * @ORM\Column(name="to_be_serigraphy", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $toBeSerigraphy;         
         
     /**
      * @var string|null
@@ -119,7 +128,7 @@ class Sample
      *
      * @ORM\Column(type="string", length=128)
      */
-    protected $colors; //frequenza
+    protected $colors; //colori
 
     /**
      * @var string|null
@@ -1127,6 +1136,32 @@ class Sample
     }
 
     /**
+     * Set toBeSerigraphy
+     * 
+     * @param string $toBeSerigraphy
+     * @return \Samples\Entity\Sample
+     */      
+    public function setToBeSerigraphy($toBeSerigraphy)
+    {
+        $this->toBeSerigraphy = $toBeSerigraphy;
+        
+        return $this;
+    }      
+    
+    /**
+     * Get toBeSerigraphy
+     * 
+     * @return string
+     */        
+    public function getToBeSerigraphy($human = FALSE)
+    {
+        if ($human) {
+            return ($this->toBeSerigraphy == 1) ? 'Yes' : 'No';
+        }        
+        return $this->toBeSerigraphy;
+    }
+
+    /**
      * Set painting
      * 
      * @param string $painting
@@ -1137,7 +1172,7 @@ class Sample
         $this->painting = $painting;
         
         return $this;
-    }      
+    }       
     
     /**
      * Set vpp

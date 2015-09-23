@@ -257,6 +257,21 @@ class Sample2Fieldset extends Fieldset implements InputFilterProviderInterface
             )               
         ));        
         
+        //toBeSerigraphy
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Checkbox',
+            'name' => 'toBeSerigraphy',
+            'options' => array(
+                'label' => 'Da serigrafare',
+                'use_hidden_element' => true,
+                'checked_value' => '1',
+                'unchecked_value' => '0'
+            ),         
+            'attributes' => array(
+                'id' => 'toBeSerigraphy',
+            )               
+        ));          
+        
         //noteProvided
         $this->add(array(
             'type' => 'Zend\Form\Element\Textarea',
