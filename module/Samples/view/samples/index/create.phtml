@@ -146,7 +146,7 @@ echo $this->form()->openTag($form);
 <div>
     <?= $this->ztbFormElement($sample->get('applicant')); ?>
     <?= $this->ztbFormElement($sample->get('status')); ?>
-    <?= $this->ztbFormElement($form->get('submit')); ?>
+    <?= $this->ztbFormElement($form->get('submit')->setAttribute('id', 'createBtn')); ?>
 </div>    
 <?php
 echo $this->form()->closeTag();
@@ -189,6 +189,16 @@ $(function() {
             $('#voltage, #serigraphy, #frequency, #plug, #cable, #colors, #accessories, #vpp, #booklet, #packaging').attr('readonly', false);
         }    
     }
+    
+
+$('#create-form').submit(function(){
+    $('#createBtn').button('loading');
+    setTimeout(function() {
+       $('#createBtn').button('reset');
+    }, 5000);
+  
+});
+
     
 }); 
 
