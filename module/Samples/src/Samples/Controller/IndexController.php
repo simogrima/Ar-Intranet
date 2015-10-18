@@ -169,6 +169,37 @@ class IndexController extends EntityUsingController
             'showResetBtn' => (!empty($formdata)),
         );
     }
+    
+    /**
+     * Lista campionature aperte dell'utente.
+     */
+    public function myOpenSamplesAction()
+    {
+        
+        $user = $this->zfcUserAuthentication()->getIdentity();
+ 
+        
+        $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
+        $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
+        $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
+
+        $paginator = new Paginator\Paginator(
+                new DoctrinePaginator(new ORMPaginator($this->sampleMapper->getActiveByUser($user->getId(), 's.' . $order_by, $order)))
+        );
+
+        $paginator->setItemCountPerPage(1000);
+        $paginator->setCurrentPageNumber($this->getEvent()->getRouteMatch()->getParam('page'));
+
+        return array(
+            'order_by' => $order_by,
+            'order' => $order,
+            'page' => $page,
+            'totalRecord' => $paginator->getTotalItemCount(),
+            'samples' => $paginator,
+            'user' => $user,
+            'pageAction' => 'samples/update',
+        );        
+    }        
 
     public function updateAction()
     {
@@ -261,7 +292,7 @@ class IndexController extends EntityUsingController
             'pageAction' => 'samples/update',
         );
     }
-    
+        
     public function processingAction()
     {
         //Solo autorizzai (permissione: samples.ship)

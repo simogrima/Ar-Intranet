@@ -87,6 +87,31 @@ class SampleMapper extends BaseDoctrine
         }
         return $qb->getQuery();
     }
+    
+    //Ottiene le campionature aperte di un utente                
+    public function getActiveByUser($userId, $orderBy, $order)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select(array('s'))
+                ->from($this->options->getSampleEntityClass(), 's')
+                ->innerJoin('s.applicant', 'u')
+                ->innerJoin('s.status', 't')
+                ->where(
+                        $qb->expr()->orX(
+                                $qb->expr()->eq('t.id', '?1'), $qb->expr()->eq('t.id', '?2'), $qb->expr()->eq('t.id', '?3')
+                ))
+                ->andWhere(
+                        $qb->expr()->andX(
+                                $qb->expr()->eq('u.id', '?4')
+                ))                
+                ->setParameter(1, \Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION)
+                ->setParameter(2, \Samples\Entity\Status::STATUS_TYPE_PRODUCT_REQUIRED)
+                ->setParameter(3, \Samples\Entity\Status::STATUS_TYPE_PRODUCT_ARRIVED)
+                ->setParameter(4, (int) $userId)
+            
+                ->orderBy($orderBy, $order);
+        return $qb->getQuery();
+    }    
 
     public function getActive($orderBy, $order)
     {

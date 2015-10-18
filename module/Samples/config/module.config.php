@@ -66,7 +66,24 @@ return array(
                                 'action' => 'update',
                             ),
                         ),
-                    ),     
+                    ),   
+                    'myopen' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => '/my-open-samples[/:action][/:id][/page/:page][/order_by/:order_by][/:order]',
+                            'constraints' => array(
+                                'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                                'page' => '[0-9]+',
+                                'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'order' => 'ASC|DESC',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Samples\Controller\Index',
+                                'action' => 'my-open-samples',
+                            ),
+                        ),
+                    ),                       
                     'ship' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -412,6 +429,11 @@ return array(
                         'label' => 'Aggiorna dati',
                         'route' => 'samples/update',
                     ),  
+                    'myopen' => array(
+                        'label' => 'Mie Campionature Aperte',
+                        'route' => 'samples/myopen',
+                        'onlybread' => true,
+                    ),                      
                     'processing' => array(
                         'label' => 'Invia a magazzino',
                         'route' => 'samples/processing',
