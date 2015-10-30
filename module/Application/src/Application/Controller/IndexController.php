@@ -27,6 +27,7 @@ class IndexController extends AbstractActionController
         return array(
             'computerCount' => $this->getServiceLocator()->get('Computer\Mapper\ComputerMapper')->count(),
             'samplesCount' => $this->getServiceLocator()->get('Samples\Mapper\SampleMapper')->count(),
+            'prototypingCount' => $this->getServiceLocator()->get('Prototyping\Mapper\PrototypingMapper')->count(),
         );
     }
 

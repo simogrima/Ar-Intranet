@@ -1,0 +1,203 @@
+<?php
+echo $this->titleAndBread('Elenco Prove');
+$this->myFlashMessenger();
+
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all');
+$this->headScript()
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js');
+?>
+<?php
+$url_order = 'ASC';
+if ($order_by == 'id') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+} elseif ($order_by == 'projectCode') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+} elseif ($order_by == 'productCode') {
+    $url_order = ($order == 'ASC' ) ? 'DESC' : 'ASC';
+}
+?>
+<div class="panel panel-default">
+    <div class="panel-body">        
+        <div class="row">
+            <div class="col-md-6">                
+                <strong>Trovate <?php echo $totalRecord; ?> prove</strong>
+            </div>
+            <div class="col-md-6 right" style="text-align: right">             
+                <a href="<?php echo $this->url('prototyping/create') ?>" class="btn btn-primary">
+                    <?php echo $this->translate('Richiedi nuova') ?>
+                </a>           
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    label {margin-right: 5px}
+    .bootstrap-select  {width: 200px!important}
+</style>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <i class="fa fa-search"></i> Ricerca
+    </div>
+    <div class="panel-body">        
+        <div class="row">
+
+            <div class="col-md-12">
+                <?php
+                $form = $this->form;
+                $form->setAttribute('action', $this->url('prototyping/search'));
+                $form->setAttribute('class', 'form-inline');
+                $form->prepare();
+
+                echo $this->form()->openTag($form);
+                ?>
+                <div class="form-group">
+                    <?php
+                    echo $this->formRow($form->get('projectCode')->setAttribute('style', 'margin-right: 10px'));
+                    echo $this->formRow($form->get('productCode')->setAttribute('style', 'margin-right: 10px'));
+                    echo $this->formRow($form->get('family')->setAttribute('style', 'margin-right: 10px'));
+                    echo $this->formRow($form->get('status')->setAttribute('style', 'margin-right: 10px'));
+                    ?>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Trova</button>
+                    <?php if ($showResetBtn): ?>
+                        <a class="btn btn-default" href="<?= $this->url('prototyping/list'); ?>"><i class="fa fa-eraser"></i> Reset</a>
+                    <?php endif; ?>
+                </div>
+                <?php
+                echo $this->form()->closeTag();
+                ?>                 
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" id="example1">
+        <thead>
+            <tr>
+                <th>
+                    <a href="<?php echo $this->url('prototyping/list', array_filter(array('order_by' => 'id', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Id
+                    </a> 
+                    <?php if ($order_by == 'id'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>
+                <th>
+                    <a href="<?php echo $this->url('prototyping/list', array_filter(array('order_by' => 'projectCode', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Codice Progetto
+                    </a> 
+                    <?php if ($order_by == 'projectCode'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>
+                <th>
+                    <a href="<?php echo $this->url('prototyping/list', array_filter(array('order_by' => 'productCode', 'order' => $url_order, 'search_by' => $search_by))); ?>">
+                        Codice Prodotto
+                    </a> 
+                    <?php if ($order_by == 'productCode'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
+                </th>    
+                <th>Cliente</th>
+                <th>Famiglia</th>
+                <th>Avanzamento</th>
+                <th>Stato</th>
+                <th class="text-center">Data Inizio</th>
+                <th class="text-center">Data Fine</th>
+                <th class="text-center"><i class="fa fa-paperclip fa-fw"></i></th>                
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->rows as $row): ?>
+                <?php
+                $class = \Prototyping\Entity\Status::getCssClass($row->getStatus()->getId());
+                ?>
+                <tr class="<?= $class; ?>">
+                    <td class="cell cell-id">
+                        <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $row->getId())); ?>">
+                            <?php echo $row->getId(); ?>
+                        </a>    
+                    </td>
+                    <td class="cell cell-serial">
+                        <?php echo $row->getProjectCode(); ?>
+                    </td>      
+                    <td class="cell cell-serial">
+                        <?php echo $row->getProductCode(); ?>
+                    </td>                         
+                    <td class="cell">
+                        <?php echo $row->getCustomer(); ?>
+                    </td>       
+                    <td class="cell">
+                        <a href="
+                        <?php
+                        echo $this->url(
+                                'prototyping/list', ['search_by' => json_encode(['family' => $row->getFamily()->getId()])]);
+                        ?>                           
+                           ">
+                               <?php echo $row->getFamily()->getName(); ?>
+                        </a>                          
+                    </td>   
+                    <td class="cell">
+                        <?php echo $row->getProgress(); ?>
+                    </td>                         
+                    <td class="cell">
+                        <a href="
+                        <?php
+                        echo $this->url(
+                                'prototyping/list', ['search_by' => json_encode(['status' => $row->getStatus()->getId()])]);
+                        ?>                           
+                           ">
+                               <?php echo $row->getStatus()->getName(); ?>
+                        </a>    
+                    </td>                      
+                    <td class="cell text-center">
+                        <?php
+                        echo $this->dateFormat(
+                                $row->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        ?>                        
+                    </td>        
+                    <td class="cell text-center">
+                        <?php
+                        echo (!empty($row->getEndDate())) ? $this->dateFormat(
+                                $row->getEndDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT") : '/';
+                        ?>                        
+                    </td>                      
+
+                    <td class="cell text-center">
+                        <?php echo count($row->getAttachments()); ?>
+                    </td>                      
+                    <td class="cell cell-ctrls text-center">
+                        <div class="btn-group">
+                            <a class='btn btn-default btn-xs' href="<?php echo $this->url('prototyping/show', array('prototypingId' => $row->getId())); ?>">
+                                <span class="glyphicon glyphicon-eye-open"></span> Show
+                            </a>        
+                            <?php if ($this->isEditor): ?>    
+                                <a class='btn btn-info btn-xs' href="<?php echo $this->url('prototyping/edit', array('prototypingId' => $row->getId())); ?>">
+                                    <span class="glyphicon glyphicon-edit"></span> Edit
+                                </a><a href="<?php echo $this->url('prototyping/remove', array('prototypingId' => $row->getId())); ?>"
+                                       class="btn btn-danger btn-xs emodal-confirm">
+                                    <span class="glyphicon glyphicon-remove"></span> Del
+                                </a>
+                            <?php endif; ?>    
+                        </div>                        
+
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<?php
+echo $this->paginationControl(
+        $this->rows, 'Sliding', 'paginator-slide', array(
+    'order_by' => $order_by,
+    'order' => $order,
+    'search_by' => $search_by,
+    'pageAction' => $pageAction,
+        )
+);

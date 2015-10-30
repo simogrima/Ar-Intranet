@@ -219,6 +219,7 @@ return array(
                 'zfcuser/register' => ['guest'],
                 '*admin*'          => ['admin'],
                 'computer*'        => ['admin', 'computers'],
+                'prototyping*'     => ['admin', 'prototyping.manager', 'prototyping.reader'],
                 '*'                => ['user'],
             ],
         ],

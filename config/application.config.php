@@ -20,7 +20,8 @@ $modules = array(
         'ZF2FileUploadExamples',
         'EmailZF2',
         'Samples',
-        'Computer'
+        'Prototyping',
+        'Computer',    
 );
 if ($env == 'development') {
     //$modules[] = 'ZendDeveloperTools';
