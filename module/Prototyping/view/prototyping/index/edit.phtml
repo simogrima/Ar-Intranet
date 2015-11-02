@@ -192,7 +192,12 @@ echo $this->form()->openTag($form);
                                     <?php foreach ($atts as $attachment): ?>                        
                                         <tr>
                                             <td class="col-md-2">
-                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                <a 
+                                                <?php if ($attachment->isImage()): ?>
+                                                    class="fancybox-thumb" rel="fancybox-thumb"
+                                                    <?php endif; ?>                                                       
+                                                    
+                                                    target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
                                                     <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
                                                 </a>
                                             </td>
@@ -253,11 +258,43 @@ echo $this->form()->openTag($form);
 <?php
 //$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
 
+
+//fancyBox
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/js/plugins/fancyBox/source/helpers/jquery.fancybox-thumbs.css', 'all')
+        ->appendStylesheet($this->basePath() . '/js/plugins/fancyBox/source/jquery.fancybox.css', 'all');
+$this->headScript()
+        ->prependFile($this->basePath() . '/js/plugins/fancyBox/source/helpers/jquery.fancybox-thumbs.js')
+        ->prependFile($this->basePath() . '/js/plugins/fancyBox/source/jquery.fancybox.js');
+
+
 $this->headScript()->appendScript("
 $(function() {
 
-
-
-}); 
-
+	$('.fancybox-thumb').fancybox({
+		prevEffect	: 'none',
+		nextEffect	: 'none',
+		helpers	: {
+			title	: {
+				type: 'outside'
+			},
+			thumbs	: {
+				width	: 50,
+				height	: 50
+			}
+		}
+	});
+        
+        //Modifico sorgente thumb (altrimente mi prende l'icona dell'estensione)
+        $('.fancybox-thumb').fancybox({
+            helpers : {
+                thumbs : {
+                    source: function( item ) {
+                        return item.href;
+                     }
+                }
+            }
+        });
+    
+    });
 ");

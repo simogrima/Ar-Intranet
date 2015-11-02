@@ -242,6 +242,21 @@ class Attachments
                 return 'generic.png';
                 break;
         }
+    }  
+    
+    /**
+     * Metodo puramente logico che in base all'estensione del file dice se è un'immagine 
+     * 
+     * @return boolean
+     */
+    public function isImage()
+    {
+        $pos = strrpos($this->getFileName(), '.');
+        $extension = strtolower(substr($this->getFileName(), $pos+1));
+        
+        $ok = ['jpg','jpeg','gif','png','bmp','tiff'];
+        
+        return (in_array($extension, $ok));
     }        
 
     /**

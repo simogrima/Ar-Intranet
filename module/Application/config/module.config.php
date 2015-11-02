@@ -99,6 +99,7 @@ return array(
         'invokables' => array(
             'titleAndBread' => 'Application\View\Helper\TitleAndBread',
             'myFlashMessenger' => 'Application\View\Helper\FlashMessenger',
+            'truncateTxt' => 'Application\View\Helper\TruncateTxt',
       ),
    ), 
     // Placeholder for console routes

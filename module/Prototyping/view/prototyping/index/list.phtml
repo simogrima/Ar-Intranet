@@ -97,7 +97,7 @@ if ($order_by == 'id') {
                     </a> 
                     <?php if ($order_by == 'productCode'): ?><i class="fa fa-chevron-<?php echo $url_order == 'ASC' ? 'down' : 'up' ?>"></i><?php endif; ?>
                 </th>    
-                <th>Cliente</th>
+                <th>Descrizione</th>
                 <th>Famiglia</th>
                 <th>Avanzamento</th>
                 <th>Stato</th>
@@ -125,7 +125,7 @@ if ($order_by == 'id') {
                         <?php echo $row->getProductCode(); ?>
                     </td>                         
                     <td class="cell">
-                        <?php echo $row->getCustomer(); ?>
+                        <?php echo $this->truncateTxt($row->getDescription(),40); ?>
                     </td>       
                     <td class="cell">
                         <a href="
