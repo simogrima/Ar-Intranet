@@ -54,7 +54,7 @@
                                     <li><a href="<?= $this->url('zfcadmin'); ?>"><i class="fa fa-lock fa-fw"></i> Admin</a></li>
                                 <?php endif; ?>                            
                                 <li>
-                                    <a href="<?php echo $this->url('zfcadmin/zfcuseradmin/edit', array('userId' => $this->zfcUserIdentity()->getId())); ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                                    <a href="<?php echo $this->url('zfcuser', array('userId' => $this->zfcUserIdentity()->getId())); ?>"><i class="fa fa-user fa-fw"></i> User Profile</a>
                                 </li>
                                 <li class="divider"></li>
                                 <li>
