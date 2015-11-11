@@ -85,7 +85,9 @@
 <?php endif; ?>
 <!-- Fine Form Comunicazione Campionatute pronte alla spedizione -->
 
-
+<?php
+$this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/awesome-bootstrap-checkbox.css', 'all');
+?>
 
 <!-- Lista campionature -->
 <div class="row">
@@ -131,9 +133,13 @@
                     $class = \Samples\Entity\Status::getCssClass($sample->getStatus()->getId());
                     ?>
                     <tr class="<?= $class; ?>">
-                        <td class="cell text-center">
+                        <td class="">
                             <?php if (!$sample->getEmail1()): ?>
-                                <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
+                                <div class="checkbox checkbox-primary">
+                                    <input  class="styled"  type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
+                                    <label></label>             
+                                </div>                            
+
                             <?php endif; ?>
                         </td>
                         <td class="cell cell-id">
@@ -178,18 +184,18 @@
                         </td>
                         <td class="cell cell-ctrls">
                             <div class="btn-group">
-                            <?php if ($sample->getEmail1()): ?>
-                                <a class='btn btn-success btn-xs ajax-ship' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
-                                    <i class="fa fa-plane"></i> Spedisci
-                                </a>     
-                                <a class='btn btn-default btn-xs emodal-confirm' href="<?php echo $this->url('samples/ship', [], ['query' => ['sampleId' => $sample->getId(), 'up' => 1]]); ?>">
-                                    <i class="fa fa-arrow-down"></i> Sposta sotto
-                                </a>                               
-                            <?php else: ?>
-                                <a class='btn btn-primary btn-xs' href="<?php echo $this->url('samples/ship', [], ['query' => ['selected' => [$sample->getId()], 'comunicate' => 1]]); ?>">
-                                    <i class="fa fa-envelope"></i> Comunica
-                                </a>                         
-                            <?php endif; ?>
+                                <?php if ($sample->getEmail1()): ?>
+                                    <a class='btn btn-success btn-xs ajax-ship' href="<?php echo $this->url('samples/history/shipping', array('sampleId' => $sample->getId())); ?>">
+                                        <i class="fa fa-plane"></i> Spedisci
+                                    </a>     
+                                    <a class='btn btn-default btn-xs emodal-confirm' href="<?php echo $this->url('samples/ship', [], ['query' => ['sampleId' => $sample->getId(), 'up' => 1]]); ?>">
+                                        <i class="fa fa-arrow-down"></i> Sposta sotto
+                                    </a>                               
+                                <?php else: ?>
+                                    <a class='btn btn-primary btn-xs' href="<?php echo $this->url('samples/ship', [], ['query' => ['selected' => [$sample->getId()], 'comunicate' => 1]]); ?>">
+                                        <i class="fa fa-envelope"></i> Comunica
+                                    </a>                         
+                                <?php endif; ?>
                             </div>
                         </td>
 
