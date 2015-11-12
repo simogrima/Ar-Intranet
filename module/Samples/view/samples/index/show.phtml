@@ -102,83 +102,100 @@ switch ($status) {
             </div>
             <div class="panel-body">
 
-
                 <div class="row">
                     <div class="col-md-6">
-                        <h2>Richiesta N°:
-                            <small><?php echo $sample->getId(); ?></small>
+                        <h2><small>Modello:</small> <span class="label label-primary"><?php echo $sample->getModel(); ?></span></h2>
+                    </div>
+                    <div class="col-md-6">
+                    </div>                    
+                </div>   
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>
+                            <small>Richiesta N°:</small>
+                            <?php echo $sample->getId(); ?>
                         </h2>                
-                        <h2>Cliente:
-                            <small><?php echo $sample->getCustomer(); ?></small>
+                        <h2>
+                            <small>Cliente:</small>
+                            <?php echo $sample->getCustomer(); ?>
                         </h2>
-                        <h2>Quantità:
-                            <small><?php echo $sample->getQta(); ?></small>
+                        <h2>
+                            <small>Quantità:</small>
+                            <?php echo $sample->getQta(); ?>
                         </h2>                        
-                        <h2>Termine di pagamento:
-                            <small><?php echo $sample->getPaymentTerm(); ?></small>
+                        <h2>
+                            <small>Termine di pagamento:</small>
+                            <?php echo $sample->getPaymentTerm(); ?>
                         </h2>   
-                        <h2>Prodotto standard:
-                            <small><?php echo $sample->getStandardProduct(true); ?></small>
+                        <h2>
+                            <small>Prodotto standard:</small>
+                            <?php echo $sample->getStandardProduct(true); ?>
                         </h2>                         
-                        <h2>Consegna richiesta il:
-                            <small><?php
+                        <h2>
+                            <small>Consegna richiesta il:</small>
+                            <?php
                                 echo $this->dateFormat(
                                         $sample->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
                                         IntlDateFormatter::NONE, // time
                                         "it_IT");
-                                ?></small>
+                                ?>
                         </h2>                                         
                     </div>
 
                     <div class="col-md-6">
-                        <h2>Del:
-                            <small><?php
+                        <h2><small>Del:</small>
+                            <?php
                                 echo $this->dateFormat(
                                         $sample->getCreatedDate(), IntlDateFormatter::LONG, // date
                                         IntlDateFormatter::NONE, // time
                                         "it_IT");
-                                ?></small>
+                                ?>
                         </h2>                
-                        <h2>Paese:
-                            <small><?php echo $sample->getCountry()->getName(); ?></small>
+                        <h2>
+                            <small>Paese:</small>
+                            <?php echo $sample->getCountry()->getName(); ?>
                         </h2>
-                        <h2>Quantità prevista pz/anno:
-                            <small><?php echo $sample->getQtaExpected(); ?></small>
+                        <h2>
+                            <small>Quantità prevista pz/anno:</small>
+                            <?php echo $sample->getQtaExpected(); ?>
                         </h2>        
-                        <h2>VPP riferimento:
-                            <small><?php echo $sample->getVpp(); ?></small>
+                        <h2>
+                            <small>VPP riferimento:</small>
+                            <?php echo $sample->getVpp(); ?>
                         </h2>    
-                        <h2>Campione per approvazione:
-                            <small><?php echo $sample->getApprovalSample(true); ?></small>
+                        <h2>
+                            <small>Campione per approvazione:</small>
+                            <?php echo $sample->getApprovalSample(true); ?>
                         </h2>     
-                        <h2>Consegna prevista il:
-                            <small><?php
+                        <h2>
+                            <small>Consegna prevista il:</small>
+                            <?php
                                 echo $this->dateFormat(
                                         $sample->getScheduledDeliveryDate(), IntlDateFormatter::LONG, // date
                                         IntlDateFormatter::NONE, // time
                                         "it_IT");
-                                ?></small>
+                                ?>
                         </h2>                         
                     </div>
                 </div>    
                 <div class="row">
                     <div class="col-md-6">
-                        <h2>Modello: <small><?php echo $sample->getModel(); ?></small></h2>
+                        <h2><small>Da verniciare:</small> <?php echo $sample->getPainting(true); ?></h2>
                     </div>
                     <div class="col-md-6">
-                        <h2>Da verniciare: <small><?php echo $sample->getPainting(true); ?></small></h2>
+                        
                     </div>                    
                 </div>                 
                 <hr> 
                 <div class="row">
                     <div class="col-md-6">
-                        <h2>Note Richiesta:</h2>
+                        <h2><small>Note Richiesta:</small></h2>
                         <blockquote>
                             <?php echo nl2br($sample->getNote()); ?>
                         </blockquote>
                     </div>
                     <div class="col-md-6">
-                        <h2>Note Evasione:</h2>
+                        <h2><small>Note Evasione:</small></h2>
                         <blockquote>
                             <?php echo nl2br($sample->getNoteProvided()); ?>
                         </blockquote> 
