@@ -11,7 +11,7 @@ use Samples\Entity\History,
 class HistoryForm extends Form
 {
 
-    public function __construct(ObjectManager $objectManager)
+    public function __construct(ObjectManager $objectManager, $filter = NULL)
     {
         parent::__construct('history-form');
 
@@ -35,6 +35,10 @@ class HistoryForm extends Form
             'type' => 'Zend\Form\Element\Hidden',
             'name' => 'sample'
         ));        
+        
+        if (!is_array($filter)) {
+           $filter = array();    
+        }
 
         //status
         $this->add(
@@ -52,7 +56,7 @@ class HistoryForm extends Form
                         'find_method' => array(
                             'name' => 'findBy',
                             'params' => array(
-                                'criteria' => array(),
+                                'criteria' => $filter,
                                 //'criteria' => array('name' => 'Attivo'),
                                 'orderBy' => array('id' => 'ASC'),
                             ),

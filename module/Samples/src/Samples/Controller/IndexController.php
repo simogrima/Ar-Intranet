@@ -88,7 +88,7 @@ class IndexController extends EntityUsingController
         $queryStatCountByYear = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, SUM(s.qta) tot, YEAR(s.createdDate) y FROM Samples\Entity\Sample s GROUP BY y');
 
         $year = $this->params()->fromQuery('year', date('Y'));
-        
+
         $queryStatCountByMonth = $this->getEntityManager()->createQuery('SELECT COUNT(s.id) nr, SUM(s.qta) tot, MONTH(s.createdDate) m FROM Samples\Entity\Sample s WHERE YEAR(s.createdDate) = ' . $year . ' GROUP BY m');
 
         return array(
@@ -169,16 +169,16 @@ class IndexController extends EntityUsingController
             'showResetBtn' => (!empty($formdata)),
         );
     }
-    
+
     /**
      * Lista campionature aperte dell'utente.
      */
     public function myOpenSamplesAction()
     {
-        
+
         $user = $this->zfcUserAuthentication()->getIdentity();
- 
-        
+
+
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
         $page = $this->params()->fromRoute('page') ? (int) $this->params()->fromRoute('page') : 1;
@@ -198,8 +198,8 @@ class IndexController extends EntityUsingController
             'samples' => $paginator,
             'user' => $user,
             'pageAction' => 'samples/update',
-        );        
-    }        
+        );
+    }
 
     public function updateAction()
     {
@@ -292,39 +292,120 @@ class IndexController extends EntityUsingController
             'pageAction' => 'samples/update',
         );
     }
-        
+
+    /**
+     * No POST mostra elenco campionature "Evase".
+     * Se POST posso avere 3 possibilità in base al flag "option-flag"
+     * 1 => alle campionature selezinate aggiungo flag "email2" e passano nella vista delle spedizioni
+     * 2 => mostro form conferma passaggio campionature in stato spedito
+     * 3 => passo le campionature selezionate nello stato spedito (vedi 2) e mando comunicazione al richiedente
+     * @throws UnauthorizedException
+     */
     public function processingAction()
     {
         //Solo autorizzai (permissione: samples.ship)
         if (!$this->getAuthorizationService()->isGranted('samples.edit')) {
             throw new UnauthorizedException();
-        }        
-        
+        }
+
         //Sono in submit form 
         if ($this->request->isPost()) {
             $ids = $this->params()->fromPost('selected', NULL);
+            $optionFlag = $this->params()->fromPost('option-flag', 1);
 
             if (!isset($ids)) {
                 $this->flashMessenger()->setNamespace('error')->addMessage('Nessuna campionatura selezionata!');
                 return $this->redirect()->toRoute('samples/processing');
             } else {
+
+
+                //(2) Mostro Form Comunicazione/Passa in Spedito [Invia ad Ariete]
+                if ($optionFlag == 2) {
+                    $qb = $this->getEntityManager()->createQueryBuilder();
+                    $qb->select('s')
+                            ->from($this->options->getSampleEntityClass(), 's')
+                            ->where($qb->expr()->in('s.id', $ids));
+                    
+                    $samples = $qb->getQuery()->getResult();
+                    foreach ($samples as $sample) {
+                        $applicant[$sample->getApplicant()->getId()] = 1; 
+                    }
+
+                    if (count($applicant) > 1) {
+                        $this->flashMessenger()->setNamespace('error')->addMessage('Puoi selezionare un richiedente alla volta! Ne hai selezionati ' . count($applicant));
+                        return $this->redirect()->toRoute('samples/processing');                        
+                    }
+                            
+                    
+                    return array(
+                        'samples' => $samples,
+                        'ids' => implode(',', $ids),
+                        'showComunicateForm' => 1,
+                    );
+                }
+                //Fine Mostro Form Comunicazione/Passa in Spesito  [Invia ad Ariete]               
+
+
+
+
                 $qb = $this->getEntityManager()->createQueryBuilder();
                 $qb->select('s')
                         ->from($this->options->getSampleEntityClass(), 's')
                         ->where($qb->expr()->in('s.id', $ids));
                 $samples = $qb->getQuery()->getResult();
 
-                foreach ($samples as $sample) {
-                    $sample->setEmail2(1);
-                    $this->sampleMapper->update($sample);                     
+                if ($optionFlag == 3) {
+                    //ottengo ed aggiorno al nuovo stato (SPEDITO)
+                    $statusRepo = $this->getEntityManager()->getRepository('Samples\Entity\Status');
+                    $status = $statusRepo->find(\Samples\Entity\Status::STATUS_TYPE_SHIPPED);
+                    $cambioStato = 0;
+                    $emailTo = [];
+
+                    foreach ($samples as $sample) {
+                        $emailTo[] = $sample->getApplicant()->getEmail();
+                        $cambioStato++;
+                        $sample->setStatus($status);
+                        $this->sampleMapper->update($sample);
+                        //********* History *******/
+                        $data = array(
+                            'sample' => $sample,
+                            'editBy' => $this->getServiceLocator()->get('zfcuser_user_mapper')
+                                    ->findById($this->zfcUserAuthentication()
+                                            ->getIdentity()->getId()),
+                            'sampleStatus' => $status,
+                            'editDate' => new \DateTime('NOW'),
+                        );
+
+                        //Aggiungo un record per cambio stato
+                        $this->addHistory($data);
+                        //***** Fine History *****/          
+                        
+                    }
+                    
+                    $this->sampleMapper->sendGenericEmail(
+                            $this->params()->fromPost(), 
+                            'soggetto', 
+                            $this, 
+                            $emailTo, 
+                            $this->zfcUserAuthentication()->getIdentity());
+                    $this->flashMessenger()->setNamespace('success')->addMessage(""
+                            . "La comunicazione è stata inviata al richiedente. "
+                            . "$cambioStato campionature sono passate in \"Spedito\".");                 
+                } else {
+                    foreach ($samples as $sample) {
+                        $sample->setEmail2(1);
+                        $this->sampleMapper->update($sample);
+                    }
+                    
+                    $this->sampleMapper->sendProcessedSampleEmail($samples, $this, $this->zfcUserAuthentication()->getIdentity());
+                    $this->flashMessenger()->setNamespace('success')->addMessage("La comunicazione è stata inviata.");
                 }
             }
-            $this->sampleMapper->sendProcessedSampleEmail($samples, $this, $this->zfcUserAuthentication()->getIdentity());
-            $this->flashMessenger()->setNamespace('success')->addMessage("La comunicazione è stata inviata.");
+            
+            
             return $this->redirect()->toRoute('samples/processing');
-        }        
+        }
         //Fine sono in submit form
-        
         //Default lista campionature evase da comunicare a magazzino
         $order_by = $this->params()->fromRoute('order_by') ? $this->params()->fromRoute('order_by') : 'id';
         $order = $this->params()->fromRoute('order') ? $this->params()->fromRoute('order') : 'DESC';
@@ -345,7 +426,7 @@ class IndexController extends EntityUsingController
             'samples' => $paginator,
             'pageAction' => 'samples/update',
         );
-    }    
+    }
 
     public function shipAction()
     {
@@ -1171,6 +1252,5 @@ class IndexController extends EntityUsingController
         //var_dump($attachment);
         $this->getServiceLocator()->get('Samples\Mapper\AttachmentsMapper')->insert($attachment);
     }
-
 
 }

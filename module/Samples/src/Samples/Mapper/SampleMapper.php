@@ -328,5 +328,31 @@ class SampleMapper extends BaseDoctrine
             'subject' => 'Campionature - richiesta prodotti'
                 ), $view);
     }        
+    
+    /**
+     * Invia email che notifica che il prodotto è stato inviato ad Ariete.
+     * (Cioè è disponibile presso uff campioni)
+     * 
+     * @param array $data messaggio
+     * @param \Application\Controller\AbstractActionController $controller
+     */    
+    public function sendGenericEmail($data, $subject, $controller, $emailTo, $replyTo)
+    {
+        $emailTo = array_unique($emailTo);
+   
+        $view = new ViewModel(array(
+            'data' => $data,
+        ));
+        $view->setTerminal(true);
+        $view->setTemplate('Samples/view/emails/generic');
+        $controller->mailerZF2()->send(array(
+            'to' => $emailTo,
+            'replyTo' => $replyTo->getEmail(),
+            'replyNameTo' => $replyTo->getDisplayName(),            
+            //'cc' => 'email2@domain.com',
+            //'bcc' => 'email3@domain.com',    
+            'subject' => $subject
+                ), $view);
+    }           
 
 }

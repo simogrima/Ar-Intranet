@@ -196,6 +196,10 @@ class History
                     $result['icon'] = 'fa-plane';
                     $result['class'] = 'success';
                     break;   
+                case Status::STATUS_TYPE_RETURN_TO_WAREHOUSE: //25
+                    $result['icon'] = 'fa-reply';
+                    $result['class'] = 'danger';
+                    break;                 
                 case Status::STATUS_TYPE_CANCELED: //25
                     $result['icon'] = 'fa-trash';
                     $result['class'] = 'danger';

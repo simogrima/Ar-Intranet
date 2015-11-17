@@ -1,6 +1,103 @@
 <?php echo $this->titleAndBread('Campionature'); ?>
 <?php $this->myFlashMessenger(); ?>    
 
+<!-- Form Invia ad Aiete -->
+<?php if (isset($showComunicateForm)): ?>
+<?php
+$msg = "Si comunica che le seguenti campionature evase sono disponibili presso ufficio campioni:\n\r";
+?>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-envelope"></i> Comunicazione campionature inviate ad Ariete
+                </div>
+                <form role="form" method="post" action="<?= $this->url('samples/processing'); ?>">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+<div class="alert alert-info" role="alert">
+    <h4><i class="fa fa-info-circle"></i> Info</h4>
+    Continuando con questa operazione otterrai i seguenti risultati:
+    <ul>
+        <li>
+            Le campionature selezionate passeranno nello stato 
+            <span class="label label-<?= Samples\Entity\Status::getCssClass(Samples\Entity\Status::STATUS_TYPE_SHIPPED)?>">spedito</span>
+        </li>
+        <li>Il richiedente riceverà la seguente comunicazione.</li>
+    </ul>
+</div>                                
+                                <h3>Campionature selezionate</h3>
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Id</th>
+                                            <th>Modello</th>
+                                            <th clas="text-center">Qta</th>
+                                            <th>Cliente</th>    
+                                            <th>Richiedente</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($this->samples as $sample): ?>
+                                        <?php $msg .= "{$sample->getQta()}pz-{$sample->getModel()}-CAMP.NR.{$sample->getId()}\n"; ?>
+                                            <tr>    
+                                                <td class="cell text-center">
+                                                    <input type="hidden" name="selected[]" value="<?php echo $sample->getId(); ?>" checked="" />
+                                                </td>                                                   
+                                                <td class="cell cell-id">
+                                                    <a href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                                                        <?php echo $sample->getId(); ?>
+                                                    </a>    
+                                                </td>
+                                                <td class="cell cell-serial">
+                                                    <?php echo $sample->getModel(); ?>
+                                                </td>      
+                                                <td class="cell text-center">
+                                                    <?php echo $sample->getQta(); ?>
+                                                </td>                                                   
+                                                <td class="cell">
+                                                    <?php echo $sample->getCustomer(); ?>
+                                                </td>       
+                                                <td class="cell">
+                                                    <?php echo $sample->getApplicant()->getDisplayName(); ?>
+                                                </td>    
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>                        
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Messaggio</label>
+                                    <textarea class="form-control" rows="3" name="note"><?php echo $msg; ?></textarea>
+                                </div>
+                                <input type="hidden" name="option-flag" value="3" />
+                                <input type="hidden" name="ids" value="<?= $ids; ?>" />
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-envelope"></i> Esegui operazione</button>
+                                <a class="btn btn-default" href="javascript: history.back()">Annulla</a>                  
+                            </div>
+                        </div>
+                        <!-- /.row (nested) -->
+                    </div>
+                    <!-- /.panel-body -->
+                </form>
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <?php return; ?>
+<?php endif; ?>
+<!-- Fine Form Invia ad Ariete -->
+
+
+
+
 <!-- Lista campionature -->
 <div class="panel panel-default">
     <div class="panel-body">        
@@ -9,8 +106,11 @@
                 Trovate <strong><?php echo $totalRecord; ?></strong> campionature evase da inviare a magazzino.
             </div>
             <div class="col-md-6 right " style="text-align: right">     
-                <a href="<?php echo $this->url('samples/processing') ?>" class="btn btn-primary" id="sendBtn">
-                    <i class="fa fa-envelope"></i> Invia
+                <a href="<?php echo $this->url('samples/processing') ?>" class="btn btn-success" id="sendBtn">
+                    Invia a Magazzino
+                </a>                    
+                <a href="<?php echo $this->url('samples/processing') ?>" class="btn btn-primary" id="sendArieteBtn">
+                    Invia ad Ariete
                 </a>                     
             </div>
         </div>
@@ -43,11 +143,10 @@
                     ?>
                     <tr class="<?= $class; ?>">
                         <td class="cell text-center">
-                                <div class="checkbox checkbox-primary">
-                                    <input  class="styled" type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
-                                    <label></label>             
-                                </div>                                 
-                            
+                            <div class="checkbox checkbox-primary">
+                                <input  class="styled" type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
+                                <label></label>             
+                            </div>                                 
                         </td>                    
                         <td class="cell cell-id">
                             <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">                
@@ -97,17 +196,17 @@
                         </td>
                         <td class="cell cell-ctrls text-center">
                             <div class="btn-group">
-                            <!--
-                            <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
-                                <span class="glyphicon glyphicon-eye-open"></span> Show
-                            </a>             
-                            -->
-                            <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
-                                <span class="glyphicon glyphicon-edit"></span> Edit
-                            </a><a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
-                               class="btn btn-danger btn-xs emodal-confirm">
-                                <span class="glyphicon glyphicon-remove"></span> Del
-                            </a>
+                                <!--
+                                <a class='btn btn-default btn-xs' href="<?php echo $this->url('samples/show', array('sampleId' => $sample->getId())); ?>">
+                                    <span class="glyphicon glyphicon-eye-open"></span> Show
+                                </a>             
+                                -->
+                                <a class='btn btn-info btn-xs' href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">
+                                    <span class="glyphicon glyphicon-edit"></span> Edit
+                                </a><a href="<?php echo $this->url('samples/remove', array('sampleId' => $sample->getId())); ?>"
+                                       class="btn btn-danger btn-xs emodal-confirm">
+                                    <span class="glyphicon glyphicon-remove"></span> Del
+                                </a>
                             </div>
                         </td>
 
@@ -116,6 +215,7 @@
             </tbody>
         </table>
     </div>
+    <input type="hidden" name="option-flag" value="1" id="option-flag">
 </form>
 
 <?php
@@ -145,7 +245,15 @@ $this->headScript()->prependFile($this->basePath() . '/js/plugins/datatables-plu
 
 $this->headScript()->appendScript("
 $(function() {
+    //invia a magazzino
     $('#sendBtn').click(function(event){
+        $('#sendForm').trigger('submit');
+        event.preventDefault();
+    }); 
+    
+    //invia ad Ariete
+    $('#sendArieteBtn').click(function(event){
+        $('#option-flag').val('2');
         $('#sendForm').trigger('submit');
         event.preventDefault();
     }); 

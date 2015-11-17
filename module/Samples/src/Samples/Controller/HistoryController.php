@@ -128,7 +128,7 @@ class HistoryController extends EntityUsingController
         $objectManager = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default');
 
         // Create the form and inject the ObjectManager
-        $form = new HistoryForm($objectManager);
+        $form = new HistoryForm($objectManager, array('id' => array(20,23)));
 
         // Create a new, empty entity and bind it to the form
         $class = $this->options->getHistoryEntityClass();

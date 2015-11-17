@@ -17,6 +17,7 @@ class Status
     const STATUS_TYPE_PRODUCT_ARRIVED = 10; //Prodotto richiesto
     const STATUS_TYPE_PROCESSED = 15; //Evasa
     const STATUS_TYPE_SHIPPED = 20; //Spedita
+    const STATUS_TYPE_RETURN_TO_WAREHOUSE = 23; //Reso a magazzino
     const STATUS_TYPE_CANCELED = 25; //Annullata
 
     /**
@@ -95,6 +96,7 @@ class Status
                 return 'success';
                 break;         
             case self::STATUS_TYPE_CANCELED:
+            case self::STATUS_TYPE_RETURN_TO_WAREHOUSE:
                 return 'danger';
                 break;            
             default: //1

@@ -37,7 +37,7 @@ echo $this->form()->openTag($form);
         <?= $this->ztbFormElement($form->get('sample')); ?>
         <button class="btn btn-success">Spedisci</button>
         <?php if (!$isAjax): ?>
-        <a class="btn btn-default" href="javascript: window.history.back();">Annulla</a>
+        <a class="btn btn-default" href="javascript: window.history.back();" id="zzz">Annulla</a>
         <?php endif; ?>
     </div>
 </div>    
@@ -47,6 +47,5 @@ echo $this->form()->closeTag();
 <?php
 $this->headScript()->appendScript("
 $(function() {
-
 }); 
 ");
