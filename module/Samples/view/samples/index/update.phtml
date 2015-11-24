@@ -133,10 +133,7 @@ $msg = "Per campionature sono a richiedere autorizzazione per prelevare da magaz
                     <tr class="<?= $class; ?>">
                         <td class="cell text-center">
                             <?php if($sample->getStatus()->getId() == \Samples\Entity\Status::STATUS_TYPE_PENDING_EVASION): ?>
-                                <div class="checkbox checkbox-primary">
-                                    <input  class="styled" type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
-                                    <label></label>             
-                                </div>                               
+                                <input  type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />                              
                             <?php endif; ?>
                         </td>                    
                         <td class="cell cell-id">
@@ -225,8 +222,7 @@ $msg = "Per campionature sono a richiedere autorizzazione per prelevare da magaz
 $this->headLink()
         ->prependStylesheet($this->basePath() . '/css/sb-admin-2.css', 'all') //questo lo ricqarico xchè deve stare dopo
         ->prependStylesheet($this->basePath() . '/js/plugins/datatables-responsive/css/dataTables.responsive.css', 'all')
-        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css', 'all')
-        ->appendStylesheet($this->basePath() . '/css/plugins/awesome-bootstrap-checkbox.css', 'all');
+        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css', 'all');
 $this->headScript()->prependFile($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js')
         ->prependFile($this->basePath() . '/js/plugins/datatables/media/js/jquery.dataTables.min.js');
 

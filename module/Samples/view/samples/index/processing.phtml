@@ -143,10 +143,7 @@ $msg = "Si comunica che le seguenti campionature evase sono disponibili presso u
                     ?>
                     <tr class="<?= $class; ?>">
                         <td class="cell text-center">
-                            <div class="checkbox checkbox-primary">
-                                <input  class="styled" type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
-                                <label></label>             
-                            </div>                                 
+                                <input type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />                              
                         </td>                    
                         <td class="cell cell-id">
                             <a href="<?php echo $this->url('samples/edit', array('sampleId' => $sample->getId())); ?>">                
@@ -234,8 +231,7 @@ $msg = "Si comunica che le seguenti campionature evase sono disponibili presso u
 $this->headLink()
         ->prependStylesheet($this->basePath() . '/css/sb-admin-2.css', 'all') //questo lo ricqarico xchè deve stare dopo
         ->prependStylesheet($this->basePath() . '/js/plugins/datatables-responsive/css/dataTables.responsive.css', 'all')
-        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css', 'all')
-        ->appendStylesheet($this->basePath() . '/css/plugins/awesome-bootstrap-checkbox.css', 'all');
+        ->prependStylesheet($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css', 'all');
 
 
 $this->headScript()->prependFile($this->basePath() . '/js/plugins/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js')

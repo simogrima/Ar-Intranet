@@ -135,11 +135,7 @@ $this->headLink()->appendStylesheet($this->basePath() . '/css/plugins/awesome-bo
                     <tr class="<?= $class; ?>">
                         <td class="">
                             <?php if (!$sample->getEmail1()): ?>
-                                <div class="checkbox checkbox-primary">
-                                    <input  class="styled"  type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
-                                    <label></label>             
-                                </div>                            
-
+                            <input   type="checkbox" name="selected[]" value="<?php echo $sample->getId(); ?>" />
                             <?php endif; ?>
                         </td>
                         <td class="cell cell-id">
