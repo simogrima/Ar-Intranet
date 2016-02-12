@@ -144,7 +144,11 @@ switch ($status) {
                                 IntlDateFormatter::SHORT, // time
                                 "it_IT");
                         ?></small>
-                </h2>                   
+                </h2>   
+                <hr class="devider devider-db-dotted">      
+                <h2>Note:
+                    <small><?php echo nl2br($computer->getNote()); ?></small>
+                </h2>                 
             </div>
             <!-- /.panel-body -->
         </div>        

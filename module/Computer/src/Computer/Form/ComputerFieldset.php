@@ -266,7 +266,19 @@ class ComputerFieldset extends Fieldset implements InputFilterProviderInterface
                         'data-style' =>'btn-info',
                     )
                 )
-        );        
+        );      
+        
+        //note
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Textarea',
+            'name' => 'note',
+            'options' => array(
+                'label' => 'Note',
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
+            )
+        ));         
     }
 
     public function getInputFilterSpecification()

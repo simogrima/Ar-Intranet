@@ -142,6 +142,13 @@ class Computer
     protected $recipient;    
     
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $note;       
+    
+    /**
      * Never forget to initialize all your collections !
      */
     public function __construct()
@@ -527,6 +534,29 @@ class Computer
     public function getRecipient()
     {
         return $this->recipient;
+    }    
+    
+    /**
+     * Get note
+     *
+     * @return string 
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }      
+    
+    /**
+     * Set note
+     *
+     * @param string $note
+     * @return \Samples\Entity\Sample
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    
+        return $this;
     }    
     
     /**
