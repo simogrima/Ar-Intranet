@@ -64,10 +64,10 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'painting', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'absorptionProvided', 'pressureProvided', 'sfasamentoProvided', 'edtProvided', 'vpp', 'note', 'noteProvided', 'createdDate', 'editDate', 'scheduledDeliveryDate', 'country', 'applicant', 'attachments', 'history', 'status');
+            return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'painting', 'toBeSerigraphy', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'absorptionProvided', 'pressureProvided', 'sfasamentoProvided', 'edtProvided', 'vpp', 'note', 'noteProvided', 'createdDate', 'editDate', 'email1', 'email2', 'scheduledDeliveryDate', 'currentStatusDate', 'country', 'applicant', 'attachments', 'history', 'status');
         }
 
-        return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'painting', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'absorptionProvided', 'pressureProvided', 'sfasamentoProvided', 'edtProvided', 'vpp', 'note', 'noteProvided', 'createdDate', 'editDate', 'scheduledDeliveryDate', 'country', 'applicant', 'attachments', 'history', 'status');
+        return array('__isInitialized__', 'id', 'customer', 'model', 'qta', 'qtaExpected', 'requestedDeliveryDate', 'paymentTerm', 'standardProduct', 'approvalSample', 'painting', 'toBeSerigraphy', 'voltage', 'plug', 'frequency', 'serigraphy', 'colors', 'cable', 'accessories', 'booklet', 'packaging', 'voltageProvided', 'plugProvided', 'frequencyProvided', 'serigraphyProvided', 'colorsProvided', 'cableProvided', 'accessoriesProvided', 'bookletProvided', 'packagingProvided', 'absorptionProvided', 'pressureProvided', 'sfasamentoProvided', 'edtProvided', 'vpp', 'note', 'noteProvided', 'createdDate', 'editDate', 'email1', 'email2', 'scheduledDeliveryDate', 'currentStatusDate', 'country', 'applicant', 'attachments', 'history', 'status');
     }
 
     /**
@@ -851,12 +851,78 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getEmail1($human = false)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmail1', array($human));
+
+        return parent::getEmail1($human);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEmail1($email1)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmail1', array($email1));
+
+        return parent::setEmail1($email1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEmail2($human = false)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmail2', array($human));
+
+        return parent::getEmail2($human);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEmail2($email1)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEmail2', array($email1));
+
+        return parent::setEmail2($email1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPainting($human = false)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPainting', array($human));
 
         return parent::getPainting($human);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setToBeSerigraphy($toBeSerigraphy)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setToBeSerigraphy', array($toBeSerigraphy));
+
+        return parent::setToBeSerigraphy($toBeSerigraphy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getToBeSerigraphy($human = false)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getToBeSerigraphy', array($human));
+
+        return parent::getToBeSerigraphy($human);
     }
 
     /**
@@ -1027,6 +1093,17 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getProcessedDate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProcessedDate', array());
+
+        return parent::getProcessedDate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setStatus(\Samples\Entity\Status $status = NULL)
     {
 
@@ -1066,6 +1143,28 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setScheduledDeliveryDate', array($scheduledDeliveryDate));
 
         return parent::setScheduledDeliveryDate($scheduledDeliveryDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentStatusDate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCurrentStatusDate', array());
+
+        return parent::getCurrentStatusDate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCurrentStatusDate(\DateTime $currentStatusDate)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCurrentStatusDate', array($currentStatusDate));
+
+        return parent::setCurrentStatusDate($currentStatusDate);
     }
 
     /**
@@ -1143,6 +1242,17 @@ class Sample extends \Samples\Entity\Sample implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isShipped', array());
 
         return parent::isShipped();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isProcessed()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isProcessed', array());
+
+        return parent::isProcessed();
     }
 
     /**
