@@ -1,8 +1,8 @@
 <?php
 
-namespace Prototyping\Form;
+namespace Proto\Form;
 
-use Prototyping\Entity\History,
+use Proto\Entity\History,
     Doctrine\Common\Persistence\ObjectManager,
     DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
     Zend\Form\Form,
@@ -16,7 +16,7 @@ class HistoryForm extends Form
         parent::__construct('history-form');
 
         //$this->setHydrator(new DoctrineHydrator($objectManager));
-        $this->setHydrator(new DoctrineHydrator($objectManager, 'Prototyping\Entity\History', true))->setObject(new History());
+        $this->setHydrator(new DoctrineHydrator($objectManager, 'Proto\Entity\History', true))->setObject(new History());
 
         //Id
         $this->add(array(
@@ -30,23 +30,23 @@ class HistoryForm extends Form
             'name' => 'editBy'
         ));
         
-        //Prototyping
+        //Proto
         $this->add(array(
             'type' => 'Zend\Form\Element\Hidden',
-            'name' => 'prototyping'
+            'name' => 'proto'
         ));        
 
         //status
         $this->add(
                 array(
                     'type' => 'DoctrineModule\Form\Element\ObjectSelect',
-                    'name' => 'prototypingStatus',
+                    'name' => 'protoStatus',
                     'emptyOption' => 'Select..',
                     'options' => array(
                         'empty_option' => 'Select..',
                         'label' => 'Stato',
                         'object_manager' => $objectManager,
-                        'target_class' => 'Prototyping\Entity\Status',
+                        'target_class' => 'Proto\Entity\Status',
                         'property' => 'name',
                         'is_method' => true,
                         'find_method' => array(
@@ -116,7 +116,7 @@ class HistoryForm extends Form
 
         $inputFilter->add(
                 array(
-                    'name' => 'prototyping',
+                    'name' => 'proto',
                     'required' => true,
                 )
         );

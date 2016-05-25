@@ -1,10 +1,15 @@
-<?php echo $this->titleAndBread('Richiedi Prova'); ?>
+<?php echo $this->titleAndBread('Richiedi Prototipo'); ?>
 <?php $this->myFlashMessenger(); ?>    
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all');
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all')
+        //datepicker
+        ->appendStylesheet($this->basePath() . '/js/plugins/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css', 'all');
 $this->headScript()
         ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js')
+        //datepicker
+        ->prependFile($this->basePath() . '/js/plugins/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')
+        ->prependFile($this->basePath() . '/js/plugins/moment-js/moment-with-locales.js');        
 ?>
 
 <?php
@@ -13,7 +18,7 @@ $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
 $form->setAttribute('id', 'create-form');
 $form->get('submit')->setValue('Richiedi');
-$prototyping = $form->get('prototyping'); //fieldset
+$proto = $form->get('proto'); //fieldset
 $form->prepare();
 
 echo $this->form()->openTag($form);
@@ -28,36 +33,94 @@ echo $this->form()->openTag($form);
             <div class="panel-body">
                 <div class = "row">
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('projectCode')); ?>
+                        <?= $this->ztbFormElement($proto->get('projectCode')); ?>
                     </div>
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('productCode')); ?>
+                        <?= $this->ztbFormElement($proto->get('family')); ?>
                     </div>    
                    
                 </div>
                 <div class = "row">
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('family')); ?>
+                        <?= $this->ztbFormElement($proto->get('type')); ?>
                     </div>    
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('progress')); ?>
+                        <div class="control-group">
+                            <label for="datetimepicker2">Data consegna richiesta*</label>
+                            <div class='input-group date'  id="datetimepicker2">
+                                <?= $this->formElement($proto->get('requestedDeliveryDate')); ?>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+ 
                     </div>                    
                 </div>                
                 <div class = "row">
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('createdDate')); ?>  
+                         
                     </div>
                     <div class = "col-md-6">
 
                     </div>   
                 </div>
                 
+                <div class = "row">
+                    <div class = "col-md-12">
+                        <?= $this->ztbFormElement($proto->get('note')); ?>
+                    </div>      
+                </div>                   
+ 
+            </div>    
+        </div>
+    </div>      
+</div>
+
 <div class = "row">
     <div class = "col-md-12">
-        <?= $this->ztbFormElement($prototyping->get('description')); ?>
-    </div>      
-</div>                   
- 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Parti
+            </div>
+            <div class="panel-body">
+                <div class = "row">
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($proto->get('partiPlastiche')); ?>
+                    </div>   
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($proto->get('partiLavMetallo')); ?>
+                    </div> 
+                    <div class = "col-md-4">
+                        <?= $this->ztbFormElement($proto->get('partiTrasparenti')); ?>
+                    </div>                      
+                </div>    
+                <div class = "row">
+                    <div class = "col-md-3">
+                        <?= $this->ztbFormElement($proto->get('partiVerniciate')); ?>
+                    </div>                     
+                    <div class = "col-md-3">
+                        <?= $this->ztbFormElement($proto->get('partiGomma')); ?>
+                    </div>   
+                    <div class = "col-md-3">
+                        <?= $this->ztbFormElement($proto->get('serigrafie')); ?>
+                    </div> 
+                    <div class = "col-md-3">
+                        <?= $this->ztbFormElement($proto->get('partiMatSpeciale')); ?>
+                    </div>                        
+                </div>   
+                <div class="row">
+                 
+                    <div class = "col-md-12">
+                        <?= $this->ztbFormElement($proto->get('notePartiMatSpeciale')); ?>
+                    </div>   
+                </div>                  
+                <div class = "row">
+                    <div class = "col-md-12">
+                        <?= $this->ztbFormElement($proto->get('destinazioneUso')); ?>
+                    </div>      
+                </div>           
+                
             </div>    
         </div>
     </div>      
@@ -72,20 +135,34 @@ echo $this->form()->openTag($form);
             <div class="panel-body">
                 <div class = "row">
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('voltage')); ?>
+                        <?= $this->ztbFormElement($proto->get('tensione')); ?>
                     </div>   
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('frequency')); ?>
+                        <?= $this->ztbFormElement($proto->get('frequenza')); ?>
                     </div> 
                 </div>    
                 <div class = "row">
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('absorption')); ?>
+                        <?= $this->ztbFormElement($proto->get('potenza')); ?>
                     </div>   
                     <div class = "col-md-6">
-                        <?= $this->ztbFormElement($prototyping->get('pressure')); ?>
+                        <?= $this->ztbFormElement($proto->get('spina')); ?>
                     </div> 
                 </div>   
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($proto->get('cavo')); ?>
+                    </div>   
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($proto->get('vpp')); ?>
+                    </div> 
+                </div>    
+                <div class = "row">
+                    <div class = "col-md-12">
+                        <?= $this->ztbFormElement($proto->get('varie')); ?>
+                    </div>      
+                </div>           
+                
             </div>    
         </div>
     </div>      
@@ -95,7 +172,8 @@ echo $this->form()->openTag($form);
     
 
 <div>
-
+    <?= $this->ztbFormElement($proto->get('applicant')); ?>
+    <?= $this->ztbFormElement($proto->get('status')); ?>
     <?= $this->ztbFormElement($form->get('submit')->setAttribute('id', 'createBtn')); ?>
 </div>    
 <?php
@@ -107,15 +185,24 @@ echo $this->form()->closeTag();
 $this->headScript()->appendScript("
 $(function() {
 
-$('#create-form').submit(function(){
-    $('#createBtn').button('loading');
-    setTimeout(function() {
-       $('#createBtn').button('reset');
-    }, 5000);
-  
-});
+    $('#datetimepicker2').datetimepicker({
+        format: 'YYYY-MM-DD',
+        showTodayButton: true,
+        minDate: '" . date('Y-m-d') . "',
+        locale: 'en'
+    });
 
-    
+    $('#create-form').submit(function(){
+        $('#createBtn').button('loading');
+        setTimeout(function() {
+           $('#createBtn').button('reset');
+        }, 5000);
+      });
+
 }); 
 
 ");
+
+
+
+

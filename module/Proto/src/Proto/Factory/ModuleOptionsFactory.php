@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Prototyping\Factory;
+namespace Proto\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Options\ModuleOptions;
+use Proto\Options\ModuleOptions;
 
 /**
  * Factory for the module options
@@ -18,6 +18,6 @@ class ModuleOptionsFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new ModuleOptions($serviceLocator->get('Config')['prototyping_opt']);
+        return new ModuleOptions($serviceLocator->get('Config')['proto_opt']);
     }
 }

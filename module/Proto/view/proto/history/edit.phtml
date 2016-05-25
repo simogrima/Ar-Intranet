@@ -19,11 +19,11 @@ echo $this->form()->openTag($form);
             <div class="panel-body">
                 <h4>
                     Prova: 
-                    <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $prototyping->getId())); ?>">
-                        <?php echo $prototyping->getId(); ?>
+                    <a href="<?php echo $this->url('proto/show', array('protoId' => $proto->getId())); ?>">
+                        <?php echo $proto->getId(); ?>
                     </a>                    
                 </h4> 
-                <?= $this->ztbFormElement($form->get('prototypingStatus')); ?>
+                <?= $this->ztbFormElement($form->get('protoStatus')); ?>
                 <?= $this->ztbFormElement($form->get('editDate')); ?>
                 
             </div>    
@@ -34,7 +34,7 @@ echo $this->form()->openTag($form);
     <div class = "col-md-6">
         <?= $this->ztbFormElement($form->get('id')); ?>
         <?= $this->ztbFormElement($form->get('editBy')); ?>
-        <?= $this->ztbFormElement($form->get('prototyping')); ?>
+        <?= $this->ztbFormElement($form->get('proto')); ?>
         <?= $this->ztbFormElement($form->get('submit')); ?>
     </div>
 </div>    

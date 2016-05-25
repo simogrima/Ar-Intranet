@@ -1,25 +1,44 @@
-<?php echo $this->titleAndBread('Prova ' . $prototyping->getId()) ?>
+<?php echo $this->titleAndBread('Richiesta ' . $proto->getId()) ?>
 <?php $this->myFlashMessenger(); ?>   
 <?php
-$status = $prototyping->getStatus()->getId();
+$status = $proto->getStatus()->getId();
 switch ($status) {
     case 10:
         $class = 'yellow';
         $icon = 'mail-forward';
-        break;  
+        break;
     case 15:
-        $class = 'green';
-        $icon = 'check';
-        break;               
+        $class = 'yellow';
+        $icon = 'hourglass-end';
+        break;
+    case 20:
+        $class = 'primary';
+        $icon = 'wrench';
+        break;
     case 25:
+        $class = 'primary';
+        $icon = 'paint-brush';
+        break;
+    case 30:
+        $class = 'primary';
+        $icon = 'cogs';
+        break;
+    case 35:
+        $class = 'success';
+        $icon = 'check';
+        break;
+    case 40:
         $class = 'red';
         $icon = 'trash';
         break;
-    default:
+    default: //5
         $class = 'default';
         $icon = 'clock-o';
         break;
 }
+
+$atts = $proto->getAttachments(); //Allegati
+$supplies = $proto->getSupplies(); //Forniture
 ?>
 
 <div class="row">
@@ -36,91 +55,34 @@ switch ($status) {
                         <i class="fa fa-<?php echo $icon; ?> fa-5x"></i>
                     </div>
                     <div class="col-xs-8 text-right">
-                        <div class="huge"><?php echo $prototyping->getStatus()->getName(); ?></div>
+                        <div class="huge"><?php echo $proto->getStatus()->getName(); ?></div>
                     </div>
                 </div>
             </div>
         </div>        
     </div>
     <div class="col-md-6">
-       
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-lightbulb-o fa-fw"></i>
-                Prova
-                <div class="pull-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Actions
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="<?php echo $this->url('prototyping/edit', array('prototypingId' => $prototyping->getId())); ?>">
-                                    <?php echo $this->translate('Edit') ?>
-                                </a>                                
-                            </li>
-                            <li>
-                                <a href="<?php echo $this->url('prototyping/remove', array('prototypingId' => $prototyping->getId())); ?>"
-                                   onclick="return confirm('<?php echo $this->translate('Vuoi realmente eliminare la prova') ?>')">
-                                       <?php echo $this->translate('Delete') ?>
-                                </a>                                
-                            </li>
-                        </ul>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-user fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <a href="
+                            <?php
+                            echo $this->url(
+                                    'proto/list', ['search_by' => json_encode(['applicant' => $proto->getApplicant()->getId()])]);
+                            ?>                                                              
+                               ">
+                                   <?php echo $proto->getApplicant()->getDisplayName(); ?>
+                            </a>    
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="panel-body">
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <h3><small>Richiesta N°:</small> <?php echo $prototyping->getId(); ?></h3>
-                        <h3><small>Codice Progetto:</small> <?php echo $prototyping->getProjectCode(); ?></h3>
-                        <h3><small>Codice Prodotto:</small> <?php echo $prototyping->getProductCode(); ?></h3>
-                        <h3><small>Cliente:</small> <?php echo $prototyping->getCustomer(); ?></h3>                                                              
-                    </div>
-
-                    <div class="col-md-6">
-                        <h3><small>Famiglia:</small> <?php echo $prototyping->getFamily()->getName(); ?></h3>
-                        <h3><small>Avanzamento:</small> <?php echo $prototyping->getProgress(); ?></h3>                        
-                        <h3><small>Data Inizio:</small>
-                            <?php
-                                echo $this->dateFormat(
-                                        $prototyping->getCreatedDate(), IntlDateFormatter::LONG, // date
-                                        IntlDateFormatter::NONE, // time
-                                        "it_IT");
-                                ?>
-                        </h3>                
-                        <h3><small>Data Fine:</small>
-                            <?php echo (!empty($prototyping->getEndDate())) ? 
-                                 $this->dateFormat(
-                                        $prototyping->getEndDate(), IntlDateFormatter::LONG, // date
-                                        IntlDateFormatter::NONE, // time
-                                        "it_IT") : '';
-                                ?>
-                        </h3>          
-                        
-                    </div>
-                </div>    
-                
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>
-                            <small>Descrizione:</small><br/>
-                        </h3> 
-                            <?php echo $prototyping->getDescription(); ?>                         
-                    </div>
-
-                </div>                   
-
-            </div>
-            <!-- /.panel-body -->
-        </div>        
+        </div>           
     </div>
 </div>
 
@@ -130,212 +92,395 @@ switch ($status) {
 
 
 
-
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-th-list fa-fw"></i>
-                Dati Tenici
-            </div>
-            <div class="panel-body">
-
-
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <tr>
-                            <td>
-                                <strong>Tensione</strong> 
-                            </td>
-                            <td>
-                                <?php echo $prototyping->getVoltage(); ?>
-                            </td>                          
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Frequenza</strong> 
-                            </td>
-                            <td>
-                                <?php echo $prototyping->getFrequency(); ?>
-                            </td>                           
-                        </tr>                          
-                        <tr>
-                            <td>
-                                <strong>Assorbimento</strong> 
-                            </td>
-                            <td>
-                                <?php echo $prototyping->getAbsorption(); ?>
-                            </td>                            
-                        </tr>  
-                        <tr>
-                            <td>
-                                <strong>Pressione</strong> 
-                            </td>
-                            <td>
-                                <?php echo $prototyping->getPressure(); ?>
-                            </td>                            
-                        </tr>        
-   
-    
-                                
-                    </table>
-                </div>
-
-            </div>
-            <!-- /.panel-body -->
-        </div>        
-    </div>    
-</div>    
-
-
-
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-paperclip fa-fw"></i>
-                Allegati
-            </div>
-            <div class="panel-body">
-
-                <?php
-                $atts = $prototyping->getAttachments();
-                if ((count($atts) < 1)):
-                    ?>
-                    <div class="huge text-center">
-                        Nessun allegato presente!
-                    </div>
-                <?php else: ?>                
-              
-                            <div class="table-responsive">
-                                <table class="table">
-
-            <?php foreach ($atts as $attachment): ?>                        
-                                        <tr>
-                                            <td class="col-md-2">
-                                                <a 
-                                                    <?php if ($attachment->isImage()): ?>
-                                                    class="fancybox-thumb" rel="fancybox-thumb"
-                                                    <?php endif; ?>
-                                                    target="_blank"
-                                                    
-                                                     href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
-                                                    <img class="img-responsive" style="max-height: 70px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
-                                                </a>
-                                            </td>
-                                            <td class="col-md-6">
-                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
-                <?php echo $attachment->getFileName(); ?>
-                                                </a>
-                                            </td>
-                                            <td class="col-md-4">
-                                                <?php
-                                                echo $this->dateFormat(
-                                                        $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
-                                                        IntlDateFormatter::NONE, // time
-                                                        "it_IT");
-                                                ?>
-                                            </td>                            
-                                        </tr>
-            <?php endforeach; ?>                         
-                                </table>
-                            </div>
-                                  
-                             
-<?php endif; ?>                
-
-            </div>
-            <!-- /.panel-body -->
-        </div>        
-    </div>    
-</div>    
-
-
-
-<!-- History -->
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-clock-o fa-fw"></i> History
-                <div class="pull-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Actions
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <?php
-                            $items = array(
-                                0 => 'Mostra Tutti',
-                                \Prototyping\Entity\Status::STATUS_TYPE_REQUIRED => 'Richiesta',
-                                \Prototyping\Entity\Status::STATUS_TYPE_IN_PROGRESS  => 'Incorso',
-                                \Prototyping\Entity\Status::STATUS_TYPE_CLOSED  => 'Conclusa',
-                                \Prototyping\Entity\Status::STATUS_TYPE_CANCELED => 'Annullata',
-                            );
-                            foreach ($items as $key => $value):
-                                $class = ($historyType == $key) ? 'active' : '';
-                                ?>
-                                <li class="<?php echo $class; ?>">
-                                    <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $prototyping->getId(), 'historyType' => $key)); ?>">
-    <?php echo $value; ?>
-                                    </a>
-                                </li>                            
-<?php endforeach; ?>                                                      
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <i class="fa fa-lightbulb-o fa-fw"></i> Richiesta: <?= $proto->getId() ?>
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <ul class="timeline">
-                    <?php
-                    $count = 0;
-                    $history = $prototyping->getHistory($historyType);
-                    foreach ($history as $row):
-                        $count++;
-                        $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
-                        ?>
-                        <li class="<?php echo $timelineClass; ?>">
-                            <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
-                            </div>
-                            <div class="timeline-panel">
-                                <div class="timeline-heading">
-                                    <h4 class="timeline-title"><?php echo $row->getPrototypingStatus()->getName(); ?></h4>
-                                    <p>
-                                        <small class="text-muted"><i class="fa fa-clock-o"></i> <?php
-                                            echo $this->dateFormat(
-                                                    $row->getEditDate(), IntlDateFormatter::LONG, // date
-                                                    IntlDateFormatter::SHORT, // time
-                                                    "it_IT");
-                                            ?>
-                                        </small>
-                                    </p>
-                                    <p>
-                                        <small class="text-muted">
-                                            <i class="fa fa-user"></i>
-                                            <?php echo $row->getEditBy()->getDisplayName(); ?>
-                                        </small>
-                                    </p>  
-                                </div>
-                                <div class="timeline-body">
-                                    <p></p>
-                                </div>
-                            </div>
-                        </li>                    
-<?php endforeach; ?>                    
-
-
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#home" data-toggle="tab">Home</a>
+                    </li>
+                    <li><a href="#parti" data-toggle="tab"><i class="fa fa-plus fa-fw"></i> Parti</a>
+                    </li>
+                    <li><a href="#dati-tecnici" data-toggle="tab"><i class="fa fa-th-list fa-fw"></i> Dati Tecnici</a>
+                    </li>
+                    <li>
+                        <a href="#attachments" data-toggle="tab">
+                            <i class="fa fa-paperclip fa-fw"></i>
+                            Allegati (<?php echo count($atts); ?>)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#supplies" data-toggle="tab">
+                            <i class="fa fa-truck fa-fw"></i>
+                            Forniture (<?php echo count($supplies); ?>)
+                        </a>
+                    </li>     
+                    <li>
+                        <a href="#history" data-toggle="tab">
+                            <i class="fa fa-clock-o fa-fw"></i>
+                            History
+                        </a>
+                    </li>                       
                 </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="home">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3><small>Richiesta N°:</small> <?php echo $proto->getId(); ?></h3>
+                                <h3><small>Codice Progetto:</small> <?php echo $proto->getProjectCode(); ?></h3>
+                                <h3><small>Data Consegna Richiesta:</small>
+                                    <?php
+                                    echo $this->dateFormat(
+                                            $proto->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
+                                            IntlDateFormatter::NONE, // time
+                                            "it_IT");
+                                    ?>
+                                </h3>                
+                            </div>
+
+                            <div class="col-md-6">
+                                <h3><small>Famiglia:</small> <?php echo $proto->getFamily()->getName(); ?></h3>
+                                <h3><small>Tipo:</small> <?php echo $proto->getType(); ?></h3>                        
+                                <h3><small>Data Consegna Prevista:</small>
+                                    <?php
+                                    echo (!empty($proto->getExpectedDeliveryDate())) ?
+                                            $this->dateFormat(
+                                                    $proto->getExpectedDeliveryDate(), IntlDateFormatter::LONG, // date
+                                                    IntlDateFormatter::NONE, // time
+                                                    "it_IT") : '';
+                                    ?>
+                                </h3>         
+                            </div>
+                        </div>   
+
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h2><small>Destinazione d'uso:</small></h2>
+                                <blockquote>
+                                    <?php echo nl2br($proto->getDestinazioneUso()); ?>
+                                </blockquote>
+                            </div>
+                            <div class="col-md-6">
+                                <h2><small>Note:</small></h2>
+                                <blockquote>
+                                    <?php echo nl2br($proto->getNote()); ?> 
+                                </blockquote> 
+                            </div>                  
+                        </div>                        
+
+
+
+                    </div><!-- /home -->
+
+                    <div class="tab-pane fade" id="parti">
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3><small>Parti plastiche:</small> <?php echo $proto->getPartiPlastiche(true); ?></h3>   
+                                <h3><small>Parti trasparenti:</small> <?php echo $proto->getPartiTrasparenti(true); ?></h3>
+                                <h3><small>Parti in gomma:</small> <?php echo $proto->getPartiGomma(true); ?></h3>
+                                <h3><small>Parti materiale speciale:</small> <?php echo $proto->getPartiMatSpeciale(true); ?></h3>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h3><small>Parti lavorazione metallo:</small> <?php echo $proto->getPartiLavmetallo(true); ?></h3>
+                                <h3><small>Parti verniciate:</small> <?php echo $proto->getPartiVerniciate(true); ?></h3>
+                                <h3><small>Serigrafie:</small> <?php echo $proto->getSerigrafie(true); ?></h3>
+                            </div>
+                        </div>       
+
+                        <?php if ($proto->getPartiMatSpeciale() && !empty($proto->getNotePartiMatSpeciale())): ?>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>
+                                        <small>Note parti materiale speciale:</small>
+                                    </h2> 
+                                    <blockquote>
+                                        <?php echo nl2br($proto->getNotePartiMatSpeciale()); ?>   
+                                    </blockquote>
+
+                                </div>
+                            </div>    
+                        <?php endif; ?>                            
+
+
+                    </div><!-- /parti -->
+
+
+
+
+
+
+                    <div class="tab-pane fade" id="dati-tecnici" style="padding-top:20px">
+
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <td class="col-md-4">
+                                        <strong>Tensione</strong> 
+                                    </td>
+                                    <td>
+                                        <?php echo $proto->getTensione(); ?>
+                                    </td>                          
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Frequenza</strong> 
+                                    </td>
+                                    <td>
+                                        <?php echo $proto->getFrequenza(); ?>
+                                    </td>                           
+                                </tr>                          
+                                <tr>
+                                    <td>
+                                        <strong>Potenza</strong> 
+                                    </td>
+                                    <td>
+                                        <?php echo $proto->getPotenza(); ?>
+                                    </td>                            
+                                </tr>  
+                                <tr>
+                                    <td>
+                                        <strong>Spina</strong> 
+                                    </td>
+                                    <td>
+                                        <?php echo $proto->getSpina(); ?>
+                                    </td>                            
+                                </tr>        
+                                <tr>
+                                    <td>
+                                        <strong>Cavo</strong> 
+                                    </td>
+                                    <td>
+                                        <?php echo $proto->getCavo(); ?>
+                                    </td>                            
+                                </tr>        
+                                <tr>
+                                    <td>
+                                        <strong>Cartella progetto di riferimento o VPP</strong> 
+                                    </td>
+                                    <td>
+                                        <?php echo $proto->getVPP(); ?>
+                                    </td>                            
+                                </tr>     
+                                <?php if (!empty($proto->getVarie())): ?>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Varie</strong><br/> 
+                                            <?php echo nl2br($proto->getVarie()); ?>
+                                        </td>                       
+                                    </tr>  
+                                <?php endif; ?>
+                            </table>
+                        </div>
+
+
+                    </div><!-- /dati tecnici -->
+
+
+
+                    <div class="tab-pane fade" id="attachments" style="padding-top: 20px">
+
+                        <?php
+                        $att['Richiesta'] = $proto->getAttachments(\Proto\Entity\Attachments::ATTACHMENT_TYPE_REQUEST);
+                        $att['Evasione'] = $proto->getAttachments(\Proto\Entity\Attachments::ATTACHMENT_TYPE_CLASSIFIED);
+                        if ((count($att['Richiesta']) < 1) && (count($att['Evasione']) < 1)):
+                            ?>
+                            <div class="huge text-center">
+                                Nessun allegato presente!
+                            </div>
+                        <?php else: ?>                
+                            <?php foreach ($att as $key => $value): ?>
+                                <?php if (!count($value) < 1): ?>                
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tr>
+                                                <th colspan="4"><?= $key ?></th>
+                                            </tr>
+                                            <?php foreach ($value as $attachment): ?>                        
+                                                <tr>
+                                                    <td class="col-md-2">
+                                                        <a 
+                                                        <?php if ($attachment->isImage()): ?>
+                                                                class="fancybox-thumb" rel="fancybox-thumb"
+                                                            <?php endif; ?>                                                 
+
+                                                            target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                            <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
+                                                        </a>
+                                                    </td>
+                                                    <td class="col-md-6">
+                                                        <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                            <?php echo $attachment->getFileName(); ?>
+                                                        </a>
+                                                    </td>
+                                                    <td class="col-md-4">
+                                                        <?php
+                                                        echo $this->dateFormat(
+                                                                $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                                                IntlDateFormatter::NONE, // time
+                                                                "it_IT");
+                                                        ?>
+                                                    </td>   
+                                                </tr>
+                                            <?php endforeach; ?>                         
+                                        </table>
+                                    </div>
+                                <?php endif; ?>    
+                            <?php endforeach; ?>                
+                        <?php endif; ?>                
+                    
+
+                    </div><!-- /Allegati -->
+
+
+
+                    <div class="tab-pane fade" id="supplies" style="padding-top: 20px">
+
+                        <?php if ((count($supplies)) < 1): ?>
+                            <div class="huge text-center">
+                                Nessuna fornitura presente!
+                            </div>
+                        <?php else: ?>                
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th>Fornitore</th>
+                                        <th>N° Ordine</th>
+                                        <th>Data fornitura</th>
+                                        <th><i class="fa fa-paperclip"></i></th>
+                                    </tr>
+                                    <?php foreach ($supplies as $supply): ?>                        
+                                        <tr>
+                                            <td class="col-md-4">
+                                                <?php echo $supply->getSupplier()->getCompanyName(); ?>
+                                            </td>
+                                            <td class="col-md-2">
+                                                <?php echo $supply->getOrderNr(); ?>
+                                            </td>                                            
+                                            <td class="col-md-4">
+                                                <?php
+                                                echo $this->dateFormat(
+                                                        $supply->getSupplyDate(), IntlDateFormatter::LONG, // date
+                                                        IntlDateFormatter::NONE, // time
+                                                        "it_IT");
+                                                ?>
+                                            </td>                                          
+                                            <td>
+                                                <a href="/proto/supplies/attachments/<?php echo $supply->getId(); ?>" data-toggle="modal" data-target="#myModal" data-remote="false">
+                                                    <?= count($supply->getAttachments()); ?>
+                                                </a>
+                                            </td>   
+                                        </tr>
+                                    <?php endforeach; ?>                         
+                                </table>
+                            </div>
+                        <?php endif; ?>                
+                    </div><!-- /Forniture -->                    
+
+                    <div class="tab-pane fade" id="history" style="padding-top: 20px">
+
+
+                        <ul class="timeline">
+                            <?php
+                            $count = 0;
+                            $history = $proto->getHistory();
+                            foreach ($history as $row):
+                                $count++;
+                                $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
+                                ?>
+                                <li class="<?php echo $timelineClass; ?>">
+                                    <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
+                                    </div>
+                                    <div class="timeline-panel">
+                                        <div class="timeline-heading">
+                                            <h4 class="timeline-title"><?php echo $row->getProtoStatus()->getName(); ?></h4>
+                                            <p>
+                                                <small class="text-muted"><i class="fa fa-clock-o"></i> <?php
+                                                    echo $this->dateFormat(
+                                                            $row->getEditDate(), IntlDateFormatter::LONG, // date
+                                                            IntlDateFormatter::SHORT, // time
+                                                            "it_IT");
+                                                    ?>
+                                                </small>
+                                            </p>
+                                            <p>
+                                                <small class="text-muted">
+                                                    <i class="fa fa-user"></i>
+                                                    <?php echo $row->getEditBy()->getDisplayName(); ?>
+                                                </small>
+                                            </p>  
+                                        </div>
+                                        <div class="timeline-body">
+                                            <p></p>
+                                        </div>
+                                    </div>
+                                </li>                    
+                            <?php endforeach; ?>                    
+
+
+                        </ul>                        
+
+
+
+                    </div><!-- /history -->    
+
+
+                </div>
             </div>
             <!-- /.panel-body -->
-        </div>  
-    </div>        
-</div>   
-<!-- Fine History -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>           
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <p>
+            <a href="<?php echo $this->url('proto/edit', array('protoId' => $proto->getId())); ?>"
+               class="btn btn-primary btn-lg">
+                <i class="fa fa-edit"></i> Edit Mode
+            </a>      
+            <a class='btn btn-default btn-lg' href="<?php echo $this->url('proto/print', array('protoId' => $proto->getId())); ?>">
+                <i class="fa fa-print"></i> Stampa
+            </a>                                     
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('proto/list') ?>"><i class="fa fa-mail-reply"></i> Annulla</a>
+        </p>
+    </div>
+</div>
+
+
+<!-- Default bootstrap modal example -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Allegati fornitura</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <?php
 $this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
@@ -376,6 +521,21 @@ $(function() {
                 }
             }
         });
+        
+// Fill modal with content from link href
+$(\"#myModal\").on(\"show.bs.modal\", function(e) {
+    var link = $(e.relatedTarget);
+    $(this).find(\".modal-body\").load(link.attr(\"href\"));
+});
     
     });
 ");
+
+
+
+
+
+
+
+
+

@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Prototyping\Factory;
+namespace Proto\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Mapper\AttachmentsMapper;
+use Proto\Mapper\AttachmentsMapper;
 
 /**
  * Factory to create a attachment mapper
@@ -14,12 +14,12 @@ class AttachmentsMapperFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var \Prototyping\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceLocator->get('Prototyping\Options\ModuleOptions');
+        /* @var \Proto\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceLocator->get('Proto\Options\ModuleOptions');
        
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         
-        /* @var \Prototyping\Mapper\AttachmentsMapper $mapper */
+        /* @var \Proto\Mapper\AttachmentsMapper $mapper */
         $mapper = new AttachmentsMapper($entityManager);
         
         $mapper->setModuleOptions($moduleOptions);

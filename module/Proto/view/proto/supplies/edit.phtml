@@ -1,4 +1,4 @@
-<?php echo $this->titleAndBread('Modifica storico'); ?>
+<?php echo $this->titleAndBread('Modifica fornitura'); ?>
 <?php $this->myFlashMessenger(); ?>    
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
@@ -14,17 +14,19 @@ echo $this->form()->openTag($form);
     <div class = "col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Modifica storico (solo in casi particolari)
+                Modifica fornitura
             </div>
             <div class="panel-body">
                 <h4>
-                    Prova: 
-                    <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $prototyping->getId())); ?>">
-                        <?php echo $prototyping->getId(); ?>
+                    Richiesta: 
+                    <a href="<?php echo $this->url('proto/show', array('protoId' => $proto->getId())); ?>">
+                        <?php echo $proto->getId(); ?>
                     </a>                    
                 </h4> 
-                <?= $this->ztbFormElement($form->get('prototypingStatus')); ?>
-                <?= $this->ztbFormElement($form->get('editDate')); ?>
+                <?= $this->ztbFormElement($form->get('supplier')); ?>
+                <?= $this->ztbFormElement($form->get('orderNr')); ?>
+                <?= $this->ztbFormElement($form->get('supplyDate')); ?>
+                <?= $this->ztbFormElement($form->get('proto')); ?>
                 
             </div>    
         </div>
@@ -32,10 +34,8 @@ echo $this->form()->openTag($form);
 </div>     
 <div class="row">
     <div class = "col-md-6">
-        <?= $this->ztbFormElement($form->get('id')); ?>
-        <?= $this->ztbFormElement($form->get('editBy')); ?>
-        <?= $this->ztbFormElement($form->get('prototyping')); ?>
-        <?= $this->ztbFormElement($form->get('submit')); ?>
+            <button class="btn btn-primary">Modifica Fornitura</button>
+            <a class="btn btn-default" href="<?php echo $this->url('proto/edit', array('protoId' => $proto->getId())); ?>"><i class="fa fa-mail-reply"></i> Annulla</a>
     </div>
 </div>    
 <?php

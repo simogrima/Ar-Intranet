@@ -1,13 +1,32 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+namespace Application;
 
 return array(
+    'service_manager' => array(
+        'factories' => array(
+            'left_navigation' => 'Application\Navigation\Service\LeftNavigationFactory',
+            'Application\Options\ModuleOptions' => 'Application\Factory\ModuleOptionsFactory',
+            'Application\Mapper\SuppliersMapper' => 'Application\Factory\SuppliersMapperFactory',
+        ),        
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+        ),
+        'aliases' => array(
+            'translator' => 'MvcTranslator',
+        ),
+    ),
+
+    'controllers' => array(
+        'invokables' => array(
+            'Application\Controller\Index' => 'Application\Controller\IndexController'
+        ),
+        'factories' => array(
+            'Application\Controller\Suppliers' => 'Application\Factory\Controller\SuppliersControllerFactory',
+        ),        
+    ),    
+
+  
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -48,20 +67,92 @@ return array(
                             ),
                         ),
                     ),
+                    
+                    //suppliers
+                    'suppliers' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/suppliers',
+                            'defaults' => array(
+                                'controller' => 'Application\Controller\Suppliers',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'list' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
+                                    'constraints' => array(
+                                        'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '[0-9]+',
+                                        'page' => '[0-9]+',
+                                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'order' => 'ASC|DESC',
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Application\Controller\Suppliers',
+                                        'action' => 'list',
+                                    ),
+                                ),
+                            ),
+                            'search' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/search',
+                                    'defaults' => array(
+                                        'controller' => 'Application\Controller\Suppliers',
+                                        'action' => 'search',
+                                    ),
+                                ),
+                            ),
+                            'add' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/add/:supplier_id',
+                                    'constraints' => array(
+                                        'supplier_id' => '[0-9]+',
+                                        'type' => '[a-zA-Z][a-zA-Z0-9_\/-]*'
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Application\Controller\Suppliers',
+                                        'action' => 'add',
+                                        'supplier_id' => 0,
+                                    ),
+                                ),
+                            ),                            
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit/:supplierId',
+                                    'defaults' => array(
+                                        'controller' => 'Application\Controller\Suppliers',
+                                        'action' => 'edit',
+                                        'supplierId' => 0
+                                    ),
+                                ),
+                            ),
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:supplierId',
+                                    'defaults' => array(
+                                        'controller' => 'Application\Controller\Suppliers',
+                                        'action' => 'remove',
+                                        'supplierId' => 0
+                                    ),
+                                ),
+                            ),                         
+                        ),
+                    ), // end suppliers                        
+                    
+
+                    
+                    
                 ),
             ),
-        ),
-    ),
-    'service_manager' => array(
-        'factories' => array(
-            'left_navigation' => 'Application\Navigation\Service\LeftNavigationFactory',
-        ),        
-        'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
-        ),
-        'aliases' => array(
-            'translator' => 'MvcTranslator',
         ),
     ),
     'translator' => array(
@@ -72,11 +163,6 @@ return array(
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
         ),
     ),
     'view_manager' => array(
@@ -123,7 +209,9 @@ return array(
         ),
     ),    
     
-    
+    //My module options
+    'application_opt' => [     
+    ],    
     
     'navigation' => array(
         'leftnav' => array(
@@ -131,7 +219,12 @@ return array(
                 'label' => 'Dashboard',
                 'route' => 'home',
                 'icon' => 'fa fa-dashboard fa-fw'
-            ),           
+            ),   
+            'suppliers' => array(
+                'label' => 'Gestione fornitori',
+                'route' => 'application/suppliers/list',
+                'icon' => 'fa fa-truck fa-fw'
+            ),              
         ),
     ),      
     

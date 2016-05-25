@@ -8,11 +8,11 @@
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-namespace Prototyping\Controller;
+namespace Proto\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Application\Controller\EntityUsingController;
-use Prototyping\Entity\Attachments;
+use Proto\Entity\Attachments;
 use Zend\Paginator;
 use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\View\Model\ViewModel;
@@ -21,20 +21,20 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 //Form
-use Prototyping\Form\MultiHtml5Upload;
+use Proto\Form\MultiHtml5Upload;
 use Application\Form\SearchForm;
 
 class AttachmentsController extends EntityUsingController
 {
 
     /**
-     * @var Prototyping\Options\ModuleOptions
+     * @var Proto\Options\ModuleOptions
      */
     protected $options;
 
     /**
      *
-     * @var type Prototyping\Mapper\AttachmentsMapper
+     * @var type Proto\Mapper\AttachmentsMapper
      */
     protected $attachmentsMapper;
 
@@ -78,7 +78,7 @@ class AttachmentsController extends EntityUsingController
             'form' => $searchform,
             'totalRecord' => $paginator->getTotalItemCount(),
             'attachments' => $paginator,
-            'pageAction' => 'prototyping/attachments/list',
+            'pageAction' => 'proto/attachments/list',
             'attachmentPath' => $this->options->getAttachmentPath(),
         );
     }
@@ -88,13 +88,24 @@ class AttachmentsController extends EntityUsingController
     {
         $form = new MultiHtml5Upload('file-form', array('attachmentPath' => $this->options->getAttachmentPath()));
 
-        $prototypingId = $this->getEvent()->getRouteMatch()->getParam('prototyping_id');
+        $entityId = $this->getEvent()->getRouteMatch()->getParam('entity_id');
+        $attachmentType = $this->getEvent()->getRouteMatch()->getParam('type');
 
-        $prototyping = $this->getServiceLocator()->get('Prototyping\Mapper\PrototypingMapper')->find((int) $prototypingId);
-        if (!$prototyping) {
-            throw new \Exception(
-            sprintf('Prova non trovata!')
-            );
+        
+        if ($attachmentType == \Proto\Entity\Attachments::ATTACHMENT_TYPE_SUPPLY) {
+            $entity = $this->getServiceLocator()->get('Proto\Mapper\SuppliesMapper')->find((int) $entityId);
+            $noFoundMsg = 'Fornitura non trovata!';
+            $dataKey = 'supply';
+            $legend = 'Aggiungi allegati alla fornitura';
+        } else {
+            $entity = $this->getServiceLocator()->get('Proto\Mapper\ProtoMapper')->find((int) $entityId);
+            $noFoundMsg = 'Richiesta non trovata!';
+            $dataKey = 'proto';
+            $legend = 'Aggiungi allegati alla richiesta';
+        }
+        
+        if (!$entity) {
+            throw new \Exception(sprintf($noFoundMsg));
         }        
 
         if ($this->getRequest()->isPost()) {
@@ -109,7 +120,8 @@ class AttachmentsController extends EntityUsingController
                 $formData = $form->getData();
                 foreach ($formData['file'] as $file) {
                     $data = array(
-                        'prototyping' => $prototyping,
+                        $dataKey => $entity,
+                        'attachmentType' => $attachmentType,
                         'fileName' => basename($file['tmp_name']),
                     );
                     $this->addAttachment($data);
@@ -120,45 +132,55 @@ class AttachmentsController extends EntityUsingController
                 // ...Save the form...
                 //
                 //var_dump($form->getData());
-
+                
                 $this->flashMessenger()->setNamespace('success')->addMessage('Allegati aggiunti con successo!');
-                return $this->redirect()->toRoute('prototyping/list');
-
-                return $this->redirect()->toRoute('prototyping/edit', array('prototypingId' => $prototyping->getId()));
+                if ($attachmentType == \Proto\Entity\Attachments::ATTACHMENT_TYPE_REQUEST) {
+                    return $this->redirect()->toRoute('proto/list');
+                } elseif($attachmentType == \Proto\Entity\Attachments::ATTACHMENT_TYPE_SUPPLY) {
+                    return $this->redirect()->toRoute('proto/edit', array('protoId' => $entity->getProto()->getId()));
+                }
+                return $this->redirect()->toRoute('proto/edit', array('protoId' => $entity->getId()));
                 //return $this->redirectToSuccessPage($form->getData());
             }
-        }
+        } 
 
         $queryData = $this->getEvent()->getRouteMatch()->getParams();
         $form->setData($queryData);
 
         $view = new ViewModel(array(
-            'legend' => 'Aggiungi allegati alla richiesta',
+            'legend' => $legend,
             'form' => $form,
-            'prototyping' => $prototyping,
+            'entity' => $entity,
+            'type' => $attachmentType,
         ));
         return $view;
     }
 
     public function removeAction()
     {
-        //Solo autorizzai (permissione: prototyping.edit)
-        if (!$this->getAuthorizationService()->isGranted('prototyping.edit')) {
+        //Solo autorizzai (permissione: proto.edit)
+        if (!$this->getAuthorizationService()->isGranted('proto.edit')) {
             throw new UnauthorizedException();
         }
 
         $objectManager = $this->getEntityManager();
 
         $attachmentId = $this->getEvent()->getRouteMatch()->getParam('attachmentId');
-        $attachment = $objectManager->getRepository($this->options->getAttachmentsEntityClass())->find($attachmentId);
+        $attachment = $objectManager->getRepository($this->options->getAttachmentsEntityClass())->find($attachmentId);       
 
         if ($attachment) {
-            $prototyping = $attachment->getPrototyping(); //per redirect
+            $proto = $attachment->getProto(); //per redirect
+            $supply = $attachment->getSupply(); //per redirect
             $this->attachmentsMapper->remove($attachment);
             $this->flashMessenger()->addSuccessMessage('Allegato eliminato con successo!');
         }
 
-        return $this->redirect()->toRoute('prototyping/edit', array('prototypingId' => $prototyping->getId()));
+        if (isset($proto)) {
+            return $this->redirect()->toRoute('proto/edit', array('protoId' => $proto->getId()));
+        } else {
+            return $this->redirect()->toRoute('proto/edit', array('protoId' => $supply->getProto()->getId()));
+        }
+        
     }
 
     /**
@@ -189,7 +211,7 @@ class AttachmentsController extends EntityUsingController
     }
 
     /**
-     * Aggiunge un record alla tabella prototyping_attachment.
+     * Aggiunge un record alla tabella proto_attachment.
      * 
      * @param array $data
      */

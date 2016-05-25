@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Mapper;
+namespace Proto\Mapper;
 
 use MainModule\Mapper\Db\BaseDoctrine;
 

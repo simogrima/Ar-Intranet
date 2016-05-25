@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Prototyping\Factory\Controller;
+namespace Proto\Factory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Controller\IndexController;
+use Proto\Controller\IndexController;
 
 /**
  * Factory to create a index controller
@@ -16,9 +16,9 @@ class IndexControllerFactory implements FactoryInterface
     {
         /* @var $serviceLocator \Zend\Mvc\Controller\ControllerManager */
         $sm   = $serviceLocator->getServiceLocator();
-        $options = $sm->get('Prototyping\Options\ModuleOptions');
-        $mapper = $sm->get('Prototyping\Mapper\PrototypingMapper');
-        $mapperHistory = $sm->get('Prototyping\Mapper\HistoryMapper');
+        $options = $sm->get('Proto\Options\ModuleOptions');
+        $mapper = $sm->get('Proto\Mapper\ProtoMapper');
+        $mapperHistory = $sm->get('Proto\Mapper\HistoryMapper');
         
         return new IndexController($options, $mapper, $mapperHistory);
     }

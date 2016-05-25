@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Mapper;
+namespace Proto\Mapper;
 
 use MainModule\Mapper\Db\BaseDoctrine;
 
@@ -17,7 +17,7 @@ class AttachmentsMapper extends BaseDoctrine
         $qb = $this->em->createQueryBuilder();
         $qb->select(array('a'))
                 ->from($this->options->getAttachmentsEntityClass(), 'a')
-                ->innerJoin('a.prototyping', 's')
+                ->innerJoin('a.proto', 's')
                 ->where(
                     $qb->expr()->orX(
                     $qb->expr()->like('a.fileName', '?1'), 

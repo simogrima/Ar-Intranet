@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Prototyping\Factory\Controller;
+namespace Proto\Factory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Controller\HistoryController;
+use Proto\Controller\HistoryController;
 
 /**
  * Factory to create a history controller
@@ -16,8 +16,8 @@ class HistoryControllerFactory implements FactoryInterface
     {
         /* @var $serviceLocator \Zend\Mvc\Controller\ControllerManager */
         $sm   = $serviceLocator->getServiceLocator();
-        $options = $sm->get('Prototyping\Options\ModuleOptions');
-        $mapper = $sm->get('Prototyping\Mapper\HistoryMapper');
+        $options = $sm->get('Proto\Options\ModuleOptions');
+        $mapper = $sm->get('Proto\Mapper\HistoryMapper');
         
         return new HistoryController($options, $mapper);
     }

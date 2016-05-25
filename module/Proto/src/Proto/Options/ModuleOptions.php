@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Options;
+namespace Proto\Options;
 
 use Zend\Stdlib\AbstractOptions;
 
@@ -10,30 +10,31 @@ class ModuleOptions extends AbstractOptions
     /**
      * @var string
      */
-    protected $prototypingEntityClass = 'Prototyping\Entity\Prototyping';
-    protected $attachmentsEntityClass = 'Prototyping\Entity\Attachments';    
-    protected $historyEntityClass = 'Prototyping\Entity\History'; 
+    protected $protoEntityClass = 'Proto\Entity\Proto';
+    protected $attachmentsEntityClass = 'Proto\Entity\Attachments';    
+    protected $historyEntityClass = 'Proto\Entity\History'; 
+    protected $suppliesEntityClass = 'Proto\Entity\Supplies';
 
     /**
-     * set prototyping entity class name
+     * set proto entity class name
      *
      * @param string $entityClass
      * @return ModuleOptions
      */
-    public function setPrototypingEntityClass($entityClass)
+    public function setProtoEntityClass($entityClass)
     {
-        $this->prototypingClassEntityClass = $entityClass;
+        $this->protoClassEntityClass = $entityClass;
         return $this;
     }
 
     /**
-     * get prototyping entity class name
+     * get proto entity class name
      *
      * @return string
      */
-    public function getPrototypingEntityClass()
+    public function getProtoEntityClass()
     {
-        return $this->prototypingEntityClass;
+        return $this->protoEntityClass;
     }
     
     /**
@@ -79,6 +80,28 @@ class ModuleOptions extends AbstractOptions
     {
         return $this->historyEntityClass;
     }      
+    
+    /**
+     * set supplies entity class name
+     *
+     * @param string $entityClass
+     * @return ModuleOptions
+     */
+    public function setSuppliesEntityClass($entityClass)
+    {
+        $this->suppliesEntityClass = $entityClass;
+        return $this;
+    }
+
+    /**
+     * get supplies entity class name
+     *
+     * @return string
+     */
+    public function getSuppliesEntityClass()
+    {
+        return $this->suppliesEntityClass;
+    }     
 
     /**
      * Getter path allegati
@@ -100,7 +123,27 @@ class ModuleOptions extends AbstractOptions
     }   
     
 
-     
+     /**
+     * Getter indirizzi x notifica (email) nuova richiesta
+     * 
+     * @return array
+     */
+    function getEmailToNewRequest()
+    {
+        return $this->emailToNewRequest;
+    }
+    
+    /**
+     * Setter indirizzi x notifica (email) nuova richiesta
+     * 
+     * @param array $emails
+     * @return ModuleOptions
+     */
+    function setEmailToNewRequest(array $emails)
+    {
+        $this->emailToNewRequest = $emails;
+        return $this;
+    }       
  
     
   

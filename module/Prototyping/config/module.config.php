@@ -289,9 +289,9 @@ return array(
     'navigation' => array(
         'leftnav' => array(
             'prototyping' => array(
-                'label' => 'Ricerca & Prototipazione',
+                'label' => 'Ricerca & Test',
                 'route' => 'prototyping',
-                'icon' => 'fa fa-lightbulb-o fa-fw',
+                'icon' => 'fa fa-flask fa-fw',
                 'pages' => array(
                     'list' => array(
                         'label' => 'Elenco',

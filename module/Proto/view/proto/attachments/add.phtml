@@ -1,20 +1,11 @@
 <?php echo $this->titleAndBread('Aggiungi Allegati'); ?>
 <?php $this->myFlashMessenger(); ?>    
 
-<?php
-//stabilisto se sono in creazione o in modifica
-if (isset($_SERVER['HTTP_REFERER'])) {
-    $pos = strrpos($_SERVER['HTTP_REFERER'], "create");
-    $create = ($pos !== false);
-} else {
-    $create = FALSE;
-}
-?>
-
-<?php if ($create): ?>
+<?php if ($type == 'richiesta'): ?>
     <div class="alert alert-success">
-        <h3>La Prova Nr. <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $prototyping->getId())); ?>" class="alert-link"><?= $prototyping->getId(); ?></a> è stata creata</h3>
-        Se desideri aggiungere degli allegati puo farlo qua sotto.
+        <h3>La richiesta Nr. <a href="<?php echo $this->url('proto/show', array('protoId' => $entity->getId())); ?>" class="alert-link"><?= $entity->getId(); ?></a> è stata inoltrata</h3>
+        Se desideri aggiungere degli allegati alla campionatura puoi farlo qua sotto.<br/>
+        <small>Files: step/dwg, immagine esploso per verniciature, distinta per qualità, serigrafie e colori.</small>
     </div>
 <?php endif; ?>
 
@@ -63,16 +54,20 @@ $errorsHelper
             <?php } ?>
         </div>
     </div>
-    <?= $this->ztbFormElement($form->get('prototyping_id')); ?>
+    <?= $this->ztbFormElement($form->get('proto_id')); ?>
+    <?= $this->ztbFormElement($form->get('supply_id')); ?>
+    <?= $this->ztbFormElement($form->get('type')); ?>
 
     <hr>
     <div class="control-group">
         <div class="controls">
             <button class="btn btn-primary">Aggiungi Allegati</button>
-            <?php if ($create): ?>
-                <a class="btn btn-default" href="<?php echo $this->url('prototyping/list'); ?>">Continua senza allegare</a>
+            <?php if ($type == 'richiesta'): ?>
+            <a class="btn btn-default" href="<?php echo $this->url('proto/list'); ?>">Continua senza allegare</a>
+            <?php elseif ($type == 'evasione'): ?>
+            <a class="btn btn-default" href="<?php echo $this->url('proto/edit', array('protoId' => $entity->getId())); ?>">Annulla</a>
             <?php else: ?>
-                <a class="btn btn-default" href="<?php echo $this->url('prototyping/edit', array('prototypingId' => $prototyping->getId())); ?>">Annulla</a>
+            <a class="btn btn-default" href="<?php echo $this->url('proto/edit', array('protoId' => $entity->getProto()->getId())); ?>">Annulla</a>            
             <?php endif; ?>
         </div>
     </div>

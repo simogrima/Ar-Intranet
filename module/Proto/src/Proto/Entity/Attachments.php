@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Entity;
+namespace Proto\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Collections\Collection,
@@ -9,10 +9,15 @@ use Doctrine\Common\Collections\ArrayCollection,
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="prototyping_attachments")
+ * @ORM\Table(name="proto_attachments")
  */
 class Attachments
 {
+    // AttachmentType enum values
+    const ATTACHMENT_TYPE_REQUEST = 'richiesta';
+    const ATTACHMENT_TYPE_CLASSIFIED = 'evasione'; 
+    const ATTACHMENT_TYPE_SUPPLY = 'fornitura'; 
+    
     /**
      * @var int|null
      *
@@ -23,14 +28,24 @@ class Attachments
     protected $id;
     
     /**
-     * @var \Prototyping\Entity\Prototyping
+     * @var \Proto\Entity\Proto
      *
-     * @ORM\ManyToOne(targetEntity="Prototyping\Entity\Prototyping", inversedBy="attachments", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Proto\Entity\Proto", inversedBy="attachments", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="prototyping_id", nullable=true, referencedColumnName="id")
+     *   @ORM\JoinColumn(name="proto_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $prototyping; 
+    protected $proto; 
+    
+    /**
+     * @var \Proto\Entity\Supplies
+     *
+     * @ORM\ManyToOne(targetEntity="Proto\Entity\Supplies", inversedBy="attachments", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="supply_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $supply;     
     
      
     
@@ -40,6 +55,13 @@ class Attachments
      * @ORM\Column(name="file_name", type="string", length=128)
      */
     protected $fileName;   
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="attachment_type", type="string", length=19, nullable=false)
+     */
+    protected $attachmentType;          
 
     /**
      * @var \DateTime
@@ -66,27 +88,50 @@ class Attachments
     }
     
     /**
-     * Set prototyping
+     * Set proto
      *
-     * @param \Prototyping\Entity\Prototyping
-     * @return \Prototyping\Entity\Attachments
+     * @param \Proto\Entity\Proto
+     * @return \Proto\Entity\Attachments
      */
-    public function setPrototyping(\Prototyping\Entity\Prototyping $prototyping = null)
+    public function setProto(\Proto\Entity\Proto $proto = null)
     {
-        $this->prototyping = $prototyping;
+        $this->proto = $proto;
 
         return $this;
     }
 
     /**
-     * Get Prototyping
+     * Get Proto
      *
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
-    public function getPrototyping()
+    public function getProto()
     {
-        return $this->prototyping;
+        return $this->proto;
     }    
+    
+    /**
+     * Set supply
+     *
+     * @param \Proto\Entity\Supply
+     * @return \Proto\Entity\Attachments
+     */
+    public function setSupply(\Proto\Entity\Supplies $supply = null)
+    {
+        $this->supply = $supply;
+
+        return $this;
+    }
+
+    /**
+     * Get Supply
+     *
+     * @return \Proto\Entity\Supply
+     */
+    public function getSupply()
+    {
+        return $this->supply;
+    }       
     
     /**
      * Get fileName
@@ -102,14 +147,60 @@ class Attachments
      * Set filename
      * 
      * @param string $filename
-     * @return \Prototyping\Entity\Attachments
+     * @return \Proto\Entity\Attachments
      */
     public function setFileName($fileName)
     {
         $this->fileName = $fileName;
 
         return $this;
-    }        
+    }   
+    
+    static private $attachmentTypeValues = null;
+    static public function getAttachmentTypeValues()
+    {
+    	if (self::$attachmentTypeValues == null) {
+    		self::$attachmentTypeValues = array();
+    		$oClass = new \ReflectionClass(__NAMESPACE__ . '\Attachments');
+    		$classConstants = $oClass->getConstants();
+    		$constantPrefix = "ATTACHMENT_TYPE_";
+    		foreach ($classConstants as $key => $val) {
+    			if (substr($key, 0, strlen($constantPrefix)) === $constantPrefix) {
+    				self::$attachmentTypeValues[$val] = $val;
+    			}
+    		}
+    	}
+    	return self::$attachmentTypeValues;
+    }
+    
+    /**
+     * Set attachmentType
+     *
+     * @param string $attachmentType
+     * @return \Proto\Entity\Attachments
+     */
+    public function setAttachmentType($attachmentType)
+    {
+    	if (!in_array($attachmentType, self::getAttachmentTypeValues())) {
+    		throw new \InvalidArgumentException(
+				sprintf('Invalid value for attachment.attachmentType : %s.', $attachmentType)
+    		);
+    	}
+    	
+        $this->attachmentType = $attachmentType;
+    
+        return $this;
+    }    
+    
+    /**
+     * Get attachmentType
+     * 
+     * @return string
+     */
+    public function getAttachmentType()
+    {
+        return $this->attachmentType;
+    }      
 
     /**
      * Get createDate
@@ -125,7 +216,7 @@ class Attachments
      * Set createDate
      * 
      * @param \DateTime $createdDate
-     * @return \Prototyping\Entity\Attachments
+     * @return \Proto\Entity\Attachments
      */
     public function setCreatedDate(\DateTime $createdDate)
     {

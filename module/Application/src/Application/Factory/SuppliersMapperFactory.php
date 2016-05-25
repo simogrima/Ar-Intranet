@@ -1,26 +1,26 @@
 <?php
 
 
-namespace Prototyping\Factory;
+namespace Application\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Mapper\HistoryMapper;
+use Application\Mapper\SuppliersMapper;
 
 /**
- * Factory to create a history mapper
+ * Factory to create a suppliers mapper
  */
-class HistoryMapperFactory implements FactoryInterface
+class SuppliersMapperFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var \Prototyping\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceLocator->get('Prototyping\Options\ModuleOptions');
+        /* @var \Application\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceLocator->get('Application\Options\ModuleOptions');
        
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         
-        /* @var \Prototyping\Mapper\HistoryMapper $mapper */
-        $mapper = new HistoryMapper($entityManager);
+        /* @var \Application\Mapper\SuppliersMapper $mapper */
+        $mapper = new SuppliersMapper($entityManager);
         
         $mapper->setModuleOptions($moduleOptions);
         return $mapper;     

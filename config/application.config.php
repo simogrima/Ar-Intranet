@@ -21,7 +21,8 @@ $modules = array(
         'EmailZF2',
         'Samples',
         'Prototyping',
-        'Computer',    
+        'Proto',
+        'Computer',        
 );
 if ($env == 'development') {
     //$modules[] = 'ZendDeveloperTools';

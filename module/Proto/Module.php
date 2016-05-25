@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping;
+namespace Proto;
 
 use Zend\Mvc\MvcEvent,
     Zend\Mvc\ModuleRouteListener;

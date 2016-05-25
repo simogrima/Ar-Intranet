@@ -1,21 +1,37 @@
 <?php echo $this->titleAndBread('Modifica'); ?>
 <?php $this->myFlashMessenger(); ?>   
 <?php
-$status = $prototyping->getStatus()->getId();
-switch ($status) {
+$status = $proto->getStatus()->getId();
+switch ($status) {  
     case 10:
         $class = 'yellow';
         $icon = 'mail-forward';
-        break;  
+        break;
     case 15:
-        $class = 'green';
-        $icon = 'check';
-        break;               
+        $class = 'yellow';
+        $icon = 'hourglass-end';
+        break;
+    case 20:
+        $class = 'primary';
+        $icon = 'wrench';
+        break;   
     case 25:
+        $class = 'primary';
+        $icon = 'paint-brush';
+        break; 
+    case 30:
+        $class = 'primary';
+        $icon = 'cogs';
+        break;  
+    case 35:
+        $class = 'success';
+        $icon = 'check';
+        break;     
+    case 40:
         $class = 'red';
         $icon = 'trash';
         break;
-    default:
+    default: //5
         $class = 'default';
         $icon = 'clock-o';
         break;
@@ -35,14 +51,34 @@ switch ($status) {
                         <i class="fa fa-<?php echo $icon; ?> fa-5x"></i>
                     </div>
                     <div class="col-xs-8 text-right">
-                        <div class="huge"><?php echo $prototyping->getStatus()->getName(); ?></div>
+                        <div class="huge"><?php echo $proto->getStatus()->getName(); ?></div>
                     </div>
                 </div>
             </div>
         </div>        
     </div>
     <div class="col-md-6">
-         
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-user fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">
+                            <a href="
+                            <?php
+                            echo $this->url(
+                                    'proto/list', ['search_by' => json_encode(['applicant' => $proto->getApplicant()->getId()])]);
+                            ?>                                                              
+                               ">
+                                   <?php echo $proto->getApplicant()->getDisplayName(); ?>
+                            </a>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>           
     </div>
 </div>
 
@@ -54,211 +90,411 @@ $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
 $form->setAttribute('id', 'edit-form');
 $form->get('submit')->setValue('Modifica');
-$fieldset = $form->get('prototyping'); //fieldset
+$fieldset = $form->get('proto'); //fieldset
 $form->prepare();
-
+$atts = $proto->getAttachments(); //Allegati
+$supplies = $proto->getSupplies(); //Forniture
 //prendo l'ultima history con stato "Closed" x che mi serve per modificar la data fine
-$latestClosedHistory = end($prototyping->getHistory(\Prototyping\Entity\Status::STATUS_TYPE_CLOSED));
+$latestClosedHistory = end($proto->getHistory(\Proto\Entity\Status::STATUS_TYPE_DELIVERED));
 echo $this->form()->openTag($form);
+echo $this->ztbFormElement($fieldset->get('id'));
 ?>
-<div class = "row">
-    <div class = "col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-lightbulb-o fa-fw"></i> Prova: <?= $prototyping->getId()?>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <?= $this->ztbFormElement($fieldset->get('projectCode')); ?>
-                    </div>
-                    <div class="col-md-6">
-                        <?= $this->ztbFormElement($fieldset->get('productCode')); ?>
-                    </div>                    
-                </div>
-                <div class = "row">
-                    <div class = "col-md-6">
-                        <?= $this->ztbFormElement($fieldset->get('family')); ?>
-                    </div>     
-                    <div class = "col-md-6">
-                        <?= $this->ztbFormElement($fieldset->get('progress')); ?>
-                    </div>                      
-                </div>                  
-                <div class = "row">
-                    <div class = "col-md-6">
-                        <?= $this->ztbFormElement($fieldset->get('customer')); ?>
-                    </div>    
-                    <div class = "col-md-6">
-                        <?= $this->ztbFormElement($fieldset->get('status')); ?>
-                    </div>                      
-                </div>
-                <div class = "row">
-                    <div class = "col-md-6">
-       
-                        <?= $this->ztbFormElement($fieldset->get('createdDate')); ?>
-                    </div>    
-                    <div class = "col-md-6">
-                        <br/><strong>Data fine:</strong><p>
-                            <?php if($latestClosedHistory): ?>
-                            <a href="<?php echo $this->url('prototyping/history/edit', array('historyId' => $latestClosedHistory->getId())); ?>">
-                            <?php endif; ?>    
-                             <?php echo (!empty($prototyping->getEndDate())) ? 
-                                 $this->dateFormat(
-                                        $prototyping->getEndDate(), IntlDateFormatter::LONG, // date
-                                        IntlDateFormatter::NONE, // time
-                                        "it_IT") : '';
-                             ?>
-                            <?php if($latestClosedHistory): ?>
-                            </a>
-                            <?php endif; ?>   
-                        </p>
-                    </div>                    
-                </div>                
-                <div class = "row">
-                    <div class = "col-md-12">
-                        <?= $this->ztbFormElement($fieldset->get('description')); ?>
-                    </div>      
-                </div>                   
-            </div>    
-        </div>
-    </div>      
-</div>
-<style>
-    #dati-tecnici label {display: none}
-</style>
-<div class="row" id="dati-tecnici">
-    <div class = "col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <i class="fa fa-th-list fa-fw"></i>
-                Dati tecnici
-            </div>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <tr>
-                            <td><strong>Tensione</strong></td>
-                            <td><?= $this->ztbFormElement($fieldset->get('voltage')); ?></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Frequenza</strong></td>
-                            <td><?= $this->ztbFormElement($fieldset->get('frequency')); ?></td>
-                        </tr>    
-                        <tr>
-                            <td><strong>Assorbimento</strong></td>
-                            <td><?= $this->ztbFormElement($fieldset->get('absorption')); ?></td>
-                        </tr> 
-                        <tr>
-                            <td><strong>Pressione</strong></td>
-                            <td><?= $this->ztbFormElement($fieldset->get('pressure')); ?></td>
-                        </tr>             
-                    </table>
-                </div>
-
-            </div>    
-        </div>
-    </div>      
-</div>
 
 
 
 
-<div>
-    <?= $this->ztbFormElement($fieldset->get('id')); ?>
-    <?php //echo $this->ztbFormElement($form->get('submit')); ?>
-</div>    
-
-
-<!-- Allegati -->
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <i class="fa fa-paperclip fa-fw"></i>
-                Allegati
+                <i class="fa fa-lightbulb-o fa-fw"></i> Richiesta: <?= $proto->getId() ?>
             </div>
+            <!-- /.panel-heading -->
             <div class="panel-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#home" data-toggle="tab">Home</a>
+                    </li>
+                    <li><a href="#parti" data-toggle="tab"><i class="fa fa-plus fa-fw"></i> Parti</a>
+                    </li>
+                    <li><a href="#dati-tecnici" data-toggle="tab"><i class="fa fa-th-list fa-fw"></i> Dati Tecnici</a>
+                    </li>
+                    <li>
+                        <a href="#attachments" data-toggle="tab">
+                            <i class="fa fa-paperclip fa-fw"></i>
+                            Allegati (<?php echo count($atts); ?>)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#supplies" data-toggle="tab">
+                            <i class="fa fa-truck fa-fw"></i>
+                            Forniture (<?php echo count($supplies); ?>)
+                        </a>
+                    </li>     
+                    <li>
+                        <a href="#history" data-toggle="tab">
+                            <i class="fa fa-clock-o fa-fw"></i>
+                            History
+                        </a>
+                    </li>                       
+                </ul>
 
-                <?php
-                $atts = $prototyping->getAttachments();
-                if (count($atts) < 1):
-                    ?>
-                    <div class="huge text-center">
-                        Nessun allegato presente!
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="home">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('projectCode')); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('type')); ?>
+                            </div>                    
+                        </div>
+                        <div class = "row">
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('family')); ?>
+                            </div>     
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('status')); ?>
+                            </div>                      
+                        </div>   
+                        <div class = "row">
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('requestedDeliveryDate')); ?>
+                            </div>    
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('expectedDeliveryDate')); ?>
+                            </div>                    
+                        </div>  
+                        <div class = "row">
+                            <div class = "col-md-12">
+                                <?= $this->ztbFormElement($fieldset->get('destinazioneUso')); ?>
+                            </div>      
+                        </div>   
+                        <div class = "row">
+                            <div class = "col-md-12">
+                                <?= $this->ztbFormElement($fieldset->get('note')); ?>
+                            </div>      
+                        </div>                          
                     </div>
-                <?php else: ?>                              
+                    <div class="tab-pane fade" id="parti">
+
+                        <div class = "row">
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('partiPlastiche')); ?>
+                            </div>    
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('partiLavMetallo')); ?>
+                            </div>                      
+                        </div>
+                        <div class = "row">
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('partiTrasparenti')); ?>
+                            </div>    
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('partiVerniciate')); ?>
+                            </div>                      
+                        </div>         
+                        <div class = "row">
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('partiGomma')); ?>
+                            </div>    
+                            <div class = "col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('serigrafie')); ?>
+                            </div>                      
+                        </div>    
+                        <div class = "row">
+                            <div class = "col-md-12">
+                                <?= $this->ztbFormElement($fieldset->get('partiMatSpeciale')); ?>
+                            </div>                         
+                        </div>                
+                        <div class = "row">
+                            <div class = "col-md-12">
+                                <?= $this->ztbFormElement($fieldset->get('notePartiMatSpeciale')); ?>
+                            </div>      
+                        </div>   
+                    </div>
+                    <div class="tab-pane fade" id="dati-tecnici">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('tensione')); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('frequenza')); ?>
+                            </div>                    
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('potenza')); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('spina')); ?>
+                            </div>                    
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('cavo')); ?>
+                            </div>
+                            <div class="col-md-6">
+                                <?= $this->ztbFormElement($fieldset->get('vpp')); ?>
+                            </div>                    
+                        </div>                        
+                        <div class = "row">
+                            <div class = "col-md-12">
+                                <?= $this->ztbFormElement($fieldset->get('varie')); ?>
+                            </div>      
+                        </div>  
+                    </div>
+
+
+
+                    <div class="tab-pane fade" id="attachments">
+
+                        <?php
+                        $att['Richiesta'] = $proto->getAttachments(\Proto\Entity\Attachments::ATTACHMENT_TYPE_REQUEST);
+                        $att['Evasione'] = $proto->getAttachments(\Proto\Entity\Attachments::ATTACHMENT_TYPE_CLASSIFIED);
+                        if ((count($att['Richiesta']) < 1) && (count($att['Evasione']) < 1)):
+                            ?>
+                            <div class="huge text-center">
+                                Nessun allegato presente!
+                            </div>
+                        <?php else: ?>                
+                            <?php foreach ($att as $key => $value): ?>
+                                <?php if (!count($value) < 1): ?>                
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tr>
+                                                <th colspan="4"><?= $key ?></th>
+                                            </tr>
+                                            <?php foreach ($value as $attachment): ?>                        
+                                                <tr>
+                                                    <td class="col-md-2">
+                                                        <a 
+                                                        <?php if ($attachment->isImage()): ?>
+                                                                class="fancybox-thumb" rel="fancybox-thumb"
+                                                            <?php endif; ?>                                                 
+
+                                                            target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                            <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
+                                                        </a>
+                                                    </td>
+                                                    <td class="col-md-6">
+                                                        <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                            <?php echo $attachment->getFileName(); ?>
+                                                        </a>
+                                                    </td>
+                                                    <td class="col-md-4">
+                                                        <?php
+                                                        echo $this->dateFormat(
+                                                                $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                                                IntlDateFormatter::NONE, // time
+                                                                "it_IT");
+                                                        ?>
+                                                    </td>   
+                                                    <td>
+                                                        <a href="<?php echo $this->url('proto/attachments/remove', array('attachmentId' => $attachment->getId())); ?>"
+                                                           class="btn btn-danger btn-xs emodal-confirm">
+                                                            <span class="glyphicon glyphicon-remove"></span> Del
+                                                        </a>                                          
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>                         
+                                        </table>
+                                    </div>
+                                <?php endif; ?>    
+                            <?php endforeach; ?>                
+                        <?php endif; ?>                
+                        <div class="huge text-center" style="margin-top: 30px">
+                            <a href="<?php echo $this->url('proto/attachments/add', array('entity_id' => $proto->getId(), 'type' => 'evasione')); ?>" class="btn btn-primary btn-lg">
+                                <i class="fa fa-paperclip fa-fw"></i> Aggiungi allegati
+                            </a>
+                        </div>
+                    </div><!-- /Allegati -->
+
+
+
+                    <div class="tab-pane fade" id="supplies" style="padding-top: 20px">
+
+                        <?php if ((count($supplies)) < 1): ?>
+                            <div class="huge text-center">
+                                Nessuna fornitura presente!
+                            </div>
+                        <?php else: ?>                
                             <div class="table-responsive">
                                 <table class="table">
-                                    <?php foreach ($atts as $attachment): ?>                        
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Fornitore</th>
+                                        <th>N° Ordine</th>
+                                        <th>Data fornitura</th>
+                                        <th><i class="fa fa-paperclip"></i></th>
+                                        <th></th>
+                                    </tr>
+                                    <?php foreach ($supplies as $supply): ?>                        
                                         <tr>
-                                            <td class="col-md-2">
-                                                <a 
-                                                <?php if ($attachment->isImage()): ?>
-                                                    class="fancybox-thumb" rel="fancybox-thumb"
-                                                    <?php endif; ?>                                                       
-                                                    
-                                                    target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
-                                                    <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
-                                                </a>
+                                            <td>
+                                                <a href="<?php echo $this->url('proto/supplies/edit', array('supplyId' => $supply->getId())); ?>"><?php echo $supply->getId(); ?></a>
                                             </td>
-                                            <td class="col-md-6">
-                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
-                                                    <?php echo $attachment->getFileName(); ?>
-                                                </a>
+                                            <td>
+                                                <?php echo $supply->getSupplier()->getCompanyName(); ?>
                                             </td>
-                                            <td class="col-md-4">
+                                            <td>
+                                                <?php echo $supply->getOrderNr(); ?>
+                                            </td>                                            
+                                            <td>
                                                 <?php
                                                 echo $this->dateFormat(
-                                                        $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                                        $supply->getSupplyDate(), IntlDateFormatter::LONG, // date
                                                         IntlDateFormatter::NONE, // time
                                                         "it_IT");
                                                 ?>
                                             </td>   
                                             <td>
-                                                <a href="<?php echo $this->url('prototyping/attachments/remove', array('attachmentId' => $attachment->getId())); ?>"
-                                                   class="btn btn-danger btn-xs emodal-confirm">
-                                                    <span class="glyphicon glyphicon-remove"></span> Del
-                                                </a>                                          
-                                            </td>
+                                                <a href="/proto/supplies/attachments/<?php echo $supply->getId(); ?>" data-toggle="modal" data-target="#myModal" data-remote="false">
+                                                    <?= count($supply->getAttachments()); ?>
+                                                </a>
+                                            </td>                                            
+                                            <td class="cell cell-ctrls text-center">
+                                                <div class="btn-group">
+                                                    <a href="<?php echo $this->url('proto/attachments/add', array('entity_id' => $supply->getId(), 'type' => 'fornitura')); ?>"
+                                                       class="btn btn-warning btn-xs">
+                                                        <span class="fa fa-paperclip"></span> Allega
+                                                    </a>                                                       
+                                                    <a href="<?php echo $this->url('proto/supplies/edit', array('supplyId' => $supply->getId())); ?>"
+                                                       class="btn btn-info btn-xs">
+                                                        <span class="fa fa-edit"></span> Edit
+                                                    </a>                                                  
+                                                    <a href="<?php echo $this->url('proto/supplies/remove', array('supplyId' => $supply->getId())); ?>"
+                                                       class="btn btn-danger btn-xs emodal-confirm">
+                                                        <span class="fa fa-trash"></span> Del
+                                                    </a>      
+                                                </div>                        
+
+                                            </td>    
+
                                         </tr>
                                     <?php endforeach; ?>                         
                                 </table>
-                            </div>             
-                <?php endif; ?>                
-                <div class="huge text-center" style="margin-top: 30px">
-                    <a href="<?php echo $this->url('prototyping/attachments/add', array('prototyping_id' => $prototyping->getId())); ?>" class="btn btn-primary btn-lg">
-                        <i class="fa fa-paperclip fa-fw"></i> Aggiungi allegati
-                    </a>
+                            </div>
+
+
+                        <?php endif; ?>                
+                        <div class="huge text-center" style="margin-top: 30px">
+                            <a href="<?php echo $this->url('proto/supplies/add', array('proto_id' => $proto->getId())); ?>" class="btn btn-primary btn-lg">
+                                <i class="fa fa-truck fa-fw"></i> Aggiungi fornitura
+                            </a>
+                        </div>
+                    </div><!-- /Forniture -->                    
+
+                    <div class="tab-pane fade" id="history" style="padding-top: 20px">
+
+                        
+                <ul class="timeline">
+                    <?php
+                    $count = 0;
+                    $history = $proto->getHistory();
+                    foreach ($history as $row):
+                        $count++;
+                        $timelineClass = (($count % 2) == 0) ? 'timeline-inverted' : '';
+                        ?>
+                        <li class="<?php echo $timelineClass; ?>">
+                            <div class="timeline-badge <?php echo $row->getAttributes()['class']; ?>"><i class="fa <?php echo $row->getAttributes()['icon']; ?>"></i>
+                            </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title"><?php echo $row->getProtoStatus()->getName(); ?></h4>
+                                    <p>
+                                        <small class="text-muted"><i class="fa fa-clock-o"></i> <?php
+                                            echo $this->dateFormat(
+                                                    $row->getEditDate(), IntlDateFormatter::LONG, // date
+                                                    IntlDateFormatter::SHORT, // time
+                                                    "it_IT");
+                                            ?>
+                                        </small>
+                                    </p>
+                                    <p>
+                                        <small class="text-muted">
+                                            <i class="fa fa-user"></i>
+                                            <?php echo $row->getEditBy()->getDisplayName(); ?>
+                                        </small>
+                                    </p>  
+                                </div>
+                                <div class="timeline-body">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </li>                    
+<?php endforeach; ?>                    
+
+
+                </ul>                        
+                        
+                        
+   
+                    </div><!-- /history -->    
+
+
                 </div>
-
-
             </div>
             <!-- /.panel-body -->
-        </div>        
-    </div>    
-</div> 
-<!-- Fine Allegati -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>                
 
-<hr>
+
 <div class="row">
     <div class="col-md-12 text-right">
         <p>
             <button class="btn btn-primary btn-lg" type="submit"><i class="fa fa-edit"></i> Modifica</button>
-            <a href="<?php echo $this->url('prototyping/remove', array('prototypingId' => $prototyping->getId())); ?>"
+            <a href="<?php echo $this->url('proto/remove', array('protoId' => $proto->getId())); ?>"
                class="btn btn-danger btn-lg emodal-confirm">
                 <i class="fa fa-trash"></i> Elimina
             </a>      
-            <a class='btn btn-default btn-lg' href="<?php echo $this->url('prototyping/print', array('prototypingId' => $prototyping->getId())); ?>">
+            <a class='btn btn-default btn-lg' href="<?php echo $this->url('proto/print', array('protoId' => $proto->getId())); ?>">
                 <i class="fa fa-print"></i> Stampa
             </a>                                     
-            <a class="btn btn-default btn-lg" href="<?php echo $this->url('prototyping/list') ?>"><i class="fa fa-mail-reply"></i> Annulla</a>
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('proto/list') ?>"><i class="fa fa-mail-reply"></i> Annulla</a>
         </p>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Default bootstrap modal example -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Allegati fornitura</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <?php
-//$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
-
-
+$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
 //fancyBox
 $this->headLink()
         ->appendStylesheet($this->basePath() . '/js/plugins/fancyBox/source/helpers/jquery.fancybox-thumbs.css', 'all')
@@ -295,6 +531,15 @@ $(function() {
                 }
             }
         });
+        
+
+// Fill modal with content from link href
+$(\"#myModal\").on(\"show.bs.modal\", function(e) {
+    var link = $(e.relatedTarget);
+    $(this).find(\".modal-body\").load(link.attr(\"href\"));
+});
+
+
     
     });
 ");

@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Form;
+namespace Proto\Form;
 
 use Zend\InputFilter;
 use Zend\Form\Form;
@@ -26,8 +26,18 @@ class MultiHtml5Upload extends Form
         
         $this->add(array(
             'type' => 'Zend\Form\Element\Hidden',
-            'name' => 'prototyping_id'
+            'name' => 'proto_id'
         ));    
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'supply_id'
+        ));           
+        
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'type'
+        ));         
     }
 
     public function createInputFilter()
@@ -51,10 +61,15 @@ class MultiHtml5Upload extends Form
         //);
         $inputFilter->add($file);
         
-        // Prototyping_id Input
-        $prototypingId = new InputFilter\Input('prototyping_id');
-        $prototypingId->setRequired(true);
-        $inputFilter->add($prototypingId);         
+        // Proto_id Input
+        //$protoId = new InputFilter\Input('proto_id');
+        //$protoId->setRequired(true);
+        //$inputFilter->add($protoId);   
+        
+        // Type Input
+        $type = new InputFilter\Input('type');
+        $type->setRequired(true);
+        $inputFilter->add($type);          
 
         return $inputFilter;
     }

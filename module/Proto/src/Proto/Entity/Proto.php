@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Entity;
+namespace Proto\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Collections\Collection,
@@ -9,9 +9,9 @@ use Doctrine\Common\Collections\ArrayCollection,
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="prototyping")
+ * @ORM\Table(name="proto")
  */
-class Prototyping
+class Proto
 {
 
     /**
@@ -33,67 +33,143 @@ class Prototyping
     /**
      * @var string|null
      *
-     * @ORM\Column(name="product_code", type="string", nullable=true, length=128)
+     * @ORM\Column(type="string", nullable=true, length=128)
      */
-    protected $productCode;    
+    protected $type;        
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parti_plastiche", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $partiPlastiche;        
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parti_lav_metallo", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $partiLavMetallo;      
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parti_trasparenti", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $partiTrasparenti;      
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parti_verniciate", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $partiVerniciate;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parti_gomma", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $partiGomma;        
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parti_mat_speciale", type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $partiMatSpeciale;        
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="note_parti_mat_speciale", type="text", nullable=true)
+     */
+    protected $notePartiMatSpeciale;       
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="smallint", nullable=false, options={"default" = 0})
+     */
+    protected $serigrafie;    
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="destinazione_uso", type="text", nullable=true)
+     */
+    protected $destinazioneUso;   
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true, length=128)
+     */
+    protected $tensione;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true, length=128)
+     */
+    protected $frequenza;
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true, length=128)
+     */
+    protected $potenza;
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true, length=128)
+     */
+    protected $spina;    
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", nullable=true, length=128)
+     */
+    protected $cavo; 
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $vpp;       
     
     /**
      * @var string
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    protected $description;   
+    protected $varie;      
     
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(type="string", nullable=true, length=128)
+     * @ORM\Column(type="text", nullable=true)
      */
-    protected $destination;     
+    protected $note;   
     
     /**
-     * @var string|null
+     * @var \DateTime
      *
-     * @ORM\Column(type="string", nullable=true, length=128)
+     * @ORM\Column(name="requested_delivery_date", type="datetime", nullable=false)
      */
-    protected $customer;    
-                    
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", nullable=true, length=128)
-     */
-    protected $voltage; //tensione
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", nullable=true, length=128)
-     */
-    protected $frequency; //frequenza
+    protected $requestedDeliveryDate;     
     
     /**
-     * @var string|null
+     * @var \DateTime
      *
-     * @ORM\Column(type="string", nullable=true, length=128)
+     * @ORM\Column(name="expected_delivery_date", type="datetime", nullable=true)
      */
-    protected $absorption; //assorbimento    
+    protected $expectedDeliveryDate;        
     
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", nullable=true, length=128)
-     */
-    protected $pressure; //pressione     
-    
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", nullable=true, length=128)
-     */
-    protected $progress; //avanzamento    
-    
-
     /**
      * @var \DateTime
      *
@@ -116,19 +192,19 @@ class Prototyping
     protected $editDate;
     
     /**
-     * @ORM\OneToMany(targetEntity="Prototyping\Entity\Attachments", mappedBy="prototyping", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Proto\Entity\Attachments", mappedBy="proto", cascade={"remove"})
      */
     protected $attachments;   
     
     /**
-     * @ORM\OneToMany(targetEntity="Prototyping\Entity\History", mappedBy="prototyping", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Proto\Entity\History", mappedBy="proto", cascade={"remove"})
      */
     protected $history;      
     
     /**
-     * @var \Prototyping\Entity\Status
+     * @var \Proto\Entity\Status
      *
-     * @ORM\ManyToOne(targetEntity="Prototyping\Entity\Status", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Proto\Entity\Status", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="status_id", nullable=true, referencedColumnName="id")
      * })
@@ -143,7 +219,23 @@ class Prototyping
      *   @ORM\JoinColumn(name="family_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $family;         
+    protected $family;  
+    
+    /**
+     * Richiedente prototipo
+     * @var \User\Entity\User
+     *
+     * @ORM\ManyToOne(targetEntity="User\Entity\User", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="applicant", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $applicant;    
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Proto\Entity\Supplies", mappedBy="proto", cascade={"remove"})
+     */
+    protected $supplies;      
     
     /**
      * Never forget to initialize all your collections !
@@ -152,9 +244,9 @@ class Prototyping
     {
         $this->attachments = new ArrayCollection();
         $this->history = new ArrayCollection();
+        $this->supplies = new ArrayCollection();
     }      
-    
- 
+     
     /**
      * Get id
      * 
@@ -174,237 +266,447 @@ class Prototyping
     {
         return $this->projectCode;
     }
-    
+ 
     /**
      * Set projectCode
      * 
      * @param string $projectCode
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function setProjectCode($projectCode)
     {
         $this->projectCode = $projectCode;
 
         return $this;
-    }   
+    }       
     
     /**
-     * Get productCode
+     * Get type
      * 
      * @return string
      */
-    public function getProductCode()
+    public function getType()
     {
-        return $this->productCode;
+        return $this->type;
     }
-    
+ 
     /**
-     * Set productCode
+     * Set type
      * 
-     * @param string $productCode
-     * @return \Prototyping\Entity\Prototyping
+     * @param string $type
+     * @return \Proto\Entity\Proto
      */
-    public function setProductCode($productCode)
+    public function setType($type)
     {
-        $this->productCode = $productCode;
+        $this->type = $type;
 
         return $this;
     }     
     
     /**
-     * Get customer
+     * Get partiPlastiche
      * 
      * @return string
-     */
-    public function getCustomer()
+     */    
+    function getPartiPlastiche($human = false)
     {
-        return $this->customer;
-    }    
-        
-    /**
-     * Set customer
-     * 
-     * @param string $customer
-     * @return \Prototyping\Entity\Prototyping
-     */
-    public function setCustomer($customer)
-    {
-        $this->customer = $customer;
+        if ($human) {
+            return ($this->partiPlastiche == 1) ? 'Yes' : 'No';
+        }        
+        return $this->partiPlastiche;
+    }
 
+    /**
+     * Get partiLaMetallo
+     * 
+     * @return string
+     */   
+    function getPartiLavMetallo($human = false)
+    {
+        if ($human) {
+            return ($this->partiLavMetallo == 1) ? 'Yes' : 'No';
+        }        
+        return $this->partiLavMetallo;
+    }
+
+    /**
+     * Get partiTrasparenti
+     * 
+     * @return string
+     */      
+    function getPartiTrasparenti($human = false)
+    {
+        if ($human) {
+            return ($this->partiTrasparenti == 1) ? 'Yes' : 'No';
+        }        
+        return $this->partiTrasparenti;
+    }
+
+    function getPartiVerniciate($human = false)
+    {
+        if ($human) {
+            return ($this->partiVerniciate == 1) ? 'Yes' : 'No';
+        }        
+        return $this->partiVerniciate;
+    }
+
+    /**
+     * Get partiGomma
+     * 
+     * @return string
+     */      
+    function getPartiGomma($human = false)
+    {
+        if ($human) {
+            return ($this->partiGomma == 1) ? 'Yes' : 'No';
+        }        
+        return $this->partiGomma;
+    }
+
+    /**
+     * Get partiMatSpeciale
+     * 
+     * @return string
+     */      
+    function getPartiMatSpeciale($human = false)
+    {
+        if ($human) {
+            return ($this->partiMatSpeciale == 1) ? 'Yes' : 'No';
+        }        
+        return $this->partiMatSpeciale;
+    }
+
+    /**
+     * Get notePartiMatSpeciale
+     * 
+     * @return string
+     */      
+    function getNotePartiMatSpeciale()
+    {
+        return $this->notePartiMatSpeciale;
+    }
+
+    /**
+     * Get destinazioneUso
+     * 
+     * @return string
+     */      
+    function getDestinazioneUso()
+    {
+        return $this->destinazioneUso;
+    }
+
+    /**
+     * Get tensione
+     * 
+     * @return string
+     */      
+    function getTensione()
+    {
+        return $this->tensione;
+    }
+
+    /**
+     * Get frequenza
+     * 
+     * @return string
+     */      
+    function getFrequenza()
+    {
+        return $this->frequenza;
+    }
+
+    /**
+     * Get potenza
+     * 
+     * @return string
+     */      
+    function getPotenza()
+    {
+        return $this->potenza;
+    }
+
+    /**
+     * Get spina
+     * 
+     * @return string
+     */      
+    function getSpina()
+    {
+        return $this->spina;
+    }
+
+    /**
+     * Get cavo
+     * 
+     * @return string
+     */      
+    function getCavo()
+    {
+        return $this->cavo;
+    }
+
+    /**
+     * Set partiPlastiche
+     * 
+     * @param string $partiPlastiche
+     * @return \Proto\Entity\Proto
+     */    
+    function setPartiPlastiche($partiPlastiche)
+    {
+        $this->partiPlastiche = $partiPlastiche;
         return $this;
-    }          
+    }
 
     /**
-     * Get voltage
+     * Set partiLavMetallo
      * 
-     * @return string
-     */
-    public function getVoltage()
+     * @param string $partiLavMetallo
+     * @return \Proto\Entity\Proto
+     */       
+    function setPartiLavMetallo($partiLavMetallo)
     {
-        return $this->voltage;
+        $this->partiLavMetallo = $partiLavMetallo;
+        return $this;
+    }
+
+    /**
+     * Set partiTrasparenti
+     * 
+     * @param string $partiTrasparenti
+     * @return \Proto\Entity\Proto
+     */     
+    function setPartiTrasparenti($partiTrasparenti)
+    {
+        $this->partiTrasparenti = $partiTrasparenti;
+        return $this;
+    }
+
+    /**
+     * Set partiVerniciate
+     * 
+     * @param string $partiVerniciate
+     * @return \Proto\Entity\Proto
+     */     
+    function setPartiVerniciate($partiVerniciate)
+    {
+        $this->partiVerniciate = $partiVerniciate;
+        return $this;
+    }
+
+    /**
+     * Set partiGomma
+     * 
+     * @param string $partiGomma
+     * @return \Proto\Entity\Proto
+     */     
+    function setPartiGomma($partiGomma)
+    {
+        $this->partiGomma = $partiGomma;
+        return $this;
+    }
+
+    /**
+     * Set partiMatSpeciale
+     * 
+     * @param string $partiMatSpeciale
+     * @return \Proto\Entity\Proto
+     */     
+    function setPartiMatSpeciale($partiMatSpeciale)
+    {
+        $this->partiMatSpeciale = $partiMatSpeciale;
+        return $this;
+    }
+
+    /**
+     * Set notePartiMatSpeciale
+     * 
+     * @param string $notePartiMatSpeciale
+     * @return \Proto\Entity\Proto
+     */ 
+    function setNotePartiMatSpeciale($notePartiMatSpeciale)
+    {
+        $this->notePartiMatSpeciale = $notePartiMatSpeciale;
+        return $this;
+    }
+
+    /**
+     * Set destinazioneUso
+     * 
+     * @param string $destinazioneUso
+     * @return \Proto\Entity\Proto
+     */     
+    function setDestinazioneUso($destinazioneUso)
+    {
+        $this->destinazioneUso = $destinazioneUso;
+        return $this;
+    }
+
+    /**
+     * Set tensione
+     * 
+     * @param string $tensione
+     * @return \Proto\Entity\Proto
+     */     
+    function setTensione($tensione)
+    {
+        $this->tensione = $tensione;
+        return $this;
+    }
+
+    /**
+     * Set frequenza
+     * 
+     * @param string $frequenza
+     * @return \Proto\Entity\Proto
+     */     
+    function setFrequenza($frequenza)
+    {
+        $this->frequenza = $frequenza;
+        return $this;
+    }
+
+    /**
+     * Set potenza
+     * 
+     * @param string $potenza
+     * @return \Proto\Entity\Proto
+     */     
+    function setPotenza($potenza)
+    {
+        $this->potenza = $potenza;
+        return $this;
+    }
+
+    /**
+     * Set spina
+     * 
+     * @param string $spina
+     * @return \Proto\Entity\Proto
+     */     
+    function setSpina($spina)
+    {
+        $this->spina = $spina;
+        return $this;
+    }
+
+    /**
+     * Set cavo
+     * 
+     * @param string $cavo
+     * @return \Proto\Entity\Proto
+     */        
+    function setCavo($cavo)
+    {
+        $this->cavo = $cavo;
+        return $this;
     }
     
     /**
-     * Set voltage
+     * Set serigrafie
      * 
-     * @param string $voltage
-     * @return \Prototyping\Entity\Prototyping
-     */
-    public function setVoltage($voltage)
+     * @param string $serigrafie
+     * @return \Proto\Entity\Proto
+     */        
+    public function setSerigrafie($serigrafie)
     {
-        $this->voltage = $voltage;
-
+        $this->serigrafie = $serigrafie;
+        
         return $this;
-    }    
-
-    /**
-     * Get frequency
-     * 
-     * @return string
-     */
-    public function getFrequency()
-    {
-        return $this->frequency;
     }
     
     /**
-     * Set frequency
-     * 
-     * @param string $frequency
-     * @return \Prototyping\Entity\Prototyping
-     */
-    public function setFrequency($frequency)
-    {
-        $this->frequency = $frequency;
-
-        return $this;
-    }        
-    
-    /**
-     * Get absorption
+     * Get serigrafie
      * 
      * @return string
      */       
-    public function getAbsorption()
+    public function getSerigrafie($human = false)
     {
-        return $this->absorption;
-    } 
-
-    /**
-     * Set absorption
-     * 
-     * @param string $absorption
-     * @return \Prototyping\Entity\Prototyping
-     */        
-    public function setAbsorption($absorption)
-    {
-        $this->absorption = $absorption;
-        
-        return $this;
-    }  
-    
-    /**
-     * Get pressure
-     * 
-     * @return string
-     */       
-    public function getPressure()
-    {
-        return $this->pressure;
-    } 
-
-    /**
-     * Set pressure
-     * 
-     * @param string $pressure
-     * @return \Prototyping\Entity\Prototyping
-     */        
-    public function setPressure($pressure)
-    {
-        $this->pressure = $pressure;
-        
-        return $this;
-    }      
-    
-    /**
-     * Get progress
-     * 
-     * @return string
-     */       
-    public function getProgress()
-    {
-        return $this->progress;
-    } 
-
-    /**
-     * Set progress
-     * 
-     * @param string $progress
-     * @return \Prototyping\Entity\Prototyping
-     */        
-    public function setProgress($progress)
-    {
-        $this->progress = $progress;
-        
-        return $this;
+        if ($human) {
+            return ($this->serigrafie == 1) ? 'Yes' : 'No';
+        }        
+        return $this->serigrafie;
     }     
+    
+    /**
+     * Set vpp
+     * 
+     * @param string $vpp
+     * @return \Proto\Entity\Proto
+     */        
+    public function setVpp($vpp)
+    {
+        $this->vpp = $vpp;
+        
+        return $this;
+    }
+    
+    /**
+     * Get vpp
+     * 
+     * @return string
+     */       
+    public function getVpp()
+    {
+        return $this->vpp;
+    }       
 
     /**
-     * Get description
-     *
-     * @return string 
-     */
-    public function getDescription()
+     * Get varie
+
+     * @return string
+     */     
+    function getVarie()
     {
-        return $this->description;
-    }      
-    
+        return $this->varie;
+    }
+
     /**
-     * Set description
-     *
-     * @param string $description
-     * @return \Prototyping\Entity\Prototyping
-     */
-    public function setDescription($description)
+     * Set varie
+     * 
+     * @param string $varie
+     * @return \Proto\Entity\Proto
+     */        
+    function setVarie($varie)
     {
-        $this->description = $description;
-    
+        $this->varie = $varie;
         return $this;
-    }  
+    }    
     
     /**
-     * Get destination
-     *
-     * @return string 
-     */
-    public function getDestination()
+     * Get note
+
+     * @return string
+     */     
+    function getNote()
     {
-        return $this->destination;
-    }      
-    
+        return $this->note;
+    }
+
     /**
-     * Set destination
-     *
-     * @param string $destination
-     * @return \Prototyping\Entity\Prototyping
-     */
-    public function setDestination($destination)
+     * Set note
+     * 
+     * @param string $note
+     * @return \Proto\Entity\Proto
+     */        
+    function setNote($note)
     {
-        $this->destination = $destination;
-    
+        $this->note = $note;
         return $this;
-    }  
+    }    
+        
+ 
           
     /**
      * Aggiunge gli allegati.
      * 
-     * @param Collection $attachments gli allegati da aggioungere
-     * @return \Prototyping\Entity\Prototyping
+     * @param Collection $attachments gli allegati da aggiungere
+     * @return \Proto\Entity\Proto
      */
     public function addAttachments(Collection $attachments)
     {
         foreach ($attachments as $row) {
-            $row->setPrototyping($this);
+            $row->setProto($this);
             $this->attachments->add($row);
         }
         
@@ -414,27 +716,73 @@ class Prototyping
     /**
      * Rimuove gli allegati
      * @param Collection $attachments gli allegati da rimuovere
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function removeAttachments(Collection $attachments)
     {
         foreach ($attachments as $row) {
-            $row->setPrototyping(null);
+            $row->setProto(null);
             $this->attachments->removeElement($row);
         }
         
         return $this;
-    }
+    }    
     
-    public function getAttachments()
-    {   
+    public function getAttachments($type = null)
+    {
+        if ($type && in_array($type, \Proto\Entity\Attachments::getAttachmentTypeValues())) {
+            $attachments = [];
+            foreach ($this->getAttachments() as $row) {
+                if ($row->getAttachmentType() == $type)
+                $attachments[] = $row;
+            }
+            return $attachments;
+        }
+        
         return $this->attachments;
-    }        
+    }     
+    
+    
+    /**
+     * Aggiunge gli forniture.
+     * 
+     * @param Collection $supplies le forniture da aggiungere
+     * @return \Proto\Entity\Proto
+     */
+    public function addSupplies(Collection $supplies)
+    {
+        foreach ($supplies as $row) {
+            $row->setProto($this);
+            $this->supplies->add($row);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Rimuove gli le forniture
+     * @param Collection $supplies le forniture da rimuovere
+     * @return \Proto\Entity\Proto
+     */
+    public function removeSupplies(Collection $supplies)
+    {
+        foreach ($supplies as $row) {
+            $row->setProto(null);
+            $this->supplies->removeElement($row);
+        }
+        
+        return $this;
+    }    
+    
+    public function getSupplies()
+    {   
+        return $this->supplies;
+    }     
 
     public function addHistory(Collection $history)
     {
         foreach ($history as $row) {
-            $row->setPrototyping($this);
+            $row->setProto($this);
             $this->history->add($row);
         }
     }
@@ -442,12 +790,12 @@ class Prototyping
     /**
      * Rimuove lo storico
      * @param Collection $history lo storico da rimuovere
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function removeHistory(Collection $history)
     {
         foreach ($history as $row) {
-            $row->setPrototyping(null);
+            $row->setProto(null);
             $this->history->removeElement($row);
         }
         
@@ -465,7 +813,7 @@ class Prototyping
         if (is_numeric($type) && $type > 0) {
             $history = [];
             foreach ($this->getHistory() as $row) {
-                if ($row->getPrototypingStatus()->getId() == $type)
+                if ($row->getProtoStatus()->getId() == $type)
                 $history[] = $row;
             }
             return $history;
@@ -476,10 +824,10 @@ class Prototyping
     /**
      * Set status
      *
-     * @param \Prototyping\Entity\Status
-     * @return \Prototyping\Entity\Prototyping
+     * @param \Proto\Entity\Status
+     * @return \Proto\Entity\Proto
      */
-    public function setStatus(\Prototyping\Entity\Status $status = null)
+    public function setStatus(\Proto\Entity\Status $status = null)
     {
         $this->status = $status;
     
@@ -489,7 +837,7 @@ class Prototyping
     /**
      * Get status
      *
-     * @return \Prototyping\Entity\Status 
+     * @return \Proto\Entity\Status 
      */
     public function getStatus()
     {
@@ -497,10 +845,10 @@ class Prototyping
     }  
     
     /**
-     * Set fsmily
+     * Set family
      *
      * @param \Application\Entity\Family
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function setFamily(\Application\Entity\Family $family = null)
     {
@@ -517,8 +865,77 @@ class Prototyping
     public function getFamily()
     {
         return $this->family;
-    }        
-      
+    }    
+    
+    /**
+     * Set applicant
+     *
+     * @param \User\Entity\User
+     * @return \Proto\Entity\Proto
+     */
+    public function setApplicant(\User\Entity\User $user = null)
+    {
+        $this->applicant = $user;
+
+        return $this;
+    }   
+
+    /**
+     * Get recipient
+     *
+     * @return \User\Entity\User
+     */
+    public function getApplicant()
+    {
+        return $this->applicant;
+    }         
+
+    /**
+     * Get requestedDeliveryDate
+     * 
+     * @return \DateTime 
+     */
+    public function getRequestedDeliveryDate()
+    {
+        return $this->requestedDeliveryDate;
+    }    
+    
+    /**
+     * Set requestedDeliveryDate
+     * 
+     * @param \DateTime $requestedDeliveryDate
+     * @return \Proto\Entity\Proto
+     */
+    public function setRequestedDeliveryDate(\DateTime $requestedDeliveryDate)
+    {
+        $this->requestedDeliveryDate = $requestedDeliveryDate;
+
+        return $this;
+    }      
+
+    /**
+     * Set expectedDeliveryDate
+     * 
+     * @param \DateTime $expectedDeliveryDate|null
+     * @return \Proto\Entity\Proto
+     */
+    public function setExpectedDeliveryDate($expectedDeliveryDate)
+    {
+        $this->expectedDeliveryDate = $expectedDeliveryDate;
+
+        return $this;
+    }      
+    
+    /**
+     * Get requestedDeliveryDate
+     * 
+     * @return \DateTime 
+     */
+    public function getExpectedDeliveryDate()
+    {
+        return $this->expectedDeliveryDate;
+    }    
+
 
     /**
      * Get createDate
@@ -534,7 +951,7 @@ class Prototyping
      * Set createDate
      * 
      * @param \DateTime $createdDate
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function setCreatedDate(\DateTime $createdDate)
     {
@@ -557,7 +974,7 @@ class Prototyping
      * Set editDate
      * 
      * @param \DateTime $editDate
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function setEditDate(\DateTime $createdDate)
     {
@@ -567,7 +984,7 @@ class Prototyping
     }  
     
     /**
-     * Get enddDate
+     * Get endDate
      * 
      * @return \DateTime|NULL 
      */
@@ -580,7 +997,7 @@ class Prototyping
      * Set endDate
      * 
      * @param \DateTime|null $endDate
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
     public function setEndDate($endDate)
     {
@@ -589,35 +1006,7 @@ class Prototyping
         return $this;
     }        
     
-    /**
-     * Metodo logico che mi dice se la prova è in stato "richiesta".
-     * 
-     * @return boolean
-     */
-    public function isRequired()
-    {
-        return ($this->getStatus()->getId() == \Prototyping\Entity\Status::STATUS_TYPE_REQUIRED);
-    }  
-    
-    /**
-     * Metodo logico che mi dice se la prova è in stato "in corso".
-     * 
-     * @return boolean
-     */
-    public function isInProgress()
-    {
-        return ($this->getStatus()->getId() == \Prototyping\Entity\Status::STATUS_TYPE_IN_PROGRESS);
-    }     
-    
-    /**
-     * Metodo logico che mi dice se la prova è in stato "conclusa".
-     * 
-     * @return boolean
-     */
-    public function isClosed()
-    {
-        return ($this->getStatus()->getId() == \Prototyping\Entity\Status::STATUS_TYPE_CLOSED);
-    }       
+
 
     /**
      * @ORM\PrePersist

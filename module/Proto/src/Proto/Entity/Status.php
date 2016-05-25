@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Entity;
+namespace Proto\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Collections\Collection,
@@ -8,14 +8,20 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="prototyping_status")
+ * @ORM\Table(name="proto_status")
  */
 class Status
 {
+
     const STATUS_TYPE_REQUIRED = 5; //Richiesta    
-    const STATUS_TYPE_IN_PROGRESS = 10; //In corso
-    const STATUS_TYPE_CLOSED = 15; //Chiusa
-    const STATUS_TYPE_CANCELED = 25; //Annullata
+    const STATUS_TYPE_ESTIMATES_REQUESTED = 10; //Preventivi Richiesti
+    const STATUS_TYPE_AWAITING_DETAILS = 15; //In attesa particolari
+    const STATUS_TYPE_PROCESSING = 20; //In lavorazione
+    const STATUS_TYPE_PAINTING = 25; //Verniciatura
+    const STATUS_TYPE_FINAL_VERIFICATION = 30; //Verifica finale
+    const STATUS_TYPE_DELIVERED = 35; //Consegnata    
+    const STATUS_TYPE_CANCELED = 40; //Annullata
+
 
     /**
      * @var int|null
@@ -47,7 +53,7 @@ class Status
      * Set id
      * 
      * @param string $name
-     * @return \Prototyping\Entity\Status
+     * @return \Proto\Entity\Status
      */
     public function setId($id)
     {
@@ -82,17 +88,23 @@ class Status
     public static function getCssClass($id)
     {
         switch ($id) {
-            case self::STATUS_TYPE_IN_PROGRESS:
+            case self::STATUS_TYPE_REQUIRED: //5
+                return 'default';
+                break;            
+            case self::STATUS_TYPE_ESTIMATES_REQUESTED: //10
                 return 'warning';
                 break;
-            case self::STATUS_TYPE_CLOSED:
+            case self::STATUS_TYPE_AWAITING_DETAILS: //15
+                return 'warning';
+                break;                          
+            case self::STATUS_TYPE_DELIVERED: //35
                 return 'success';
                 break;         
-            case self::STATUS_TYPE_CANCELED:
+            case self::STATUS_TYPE_CANCELED: //40
                 return 'danger';
                 break;            
-            default: //1
-                return 'default';
+            default: //20,25,30
+                return 'info';
                 break;
         }
     }      

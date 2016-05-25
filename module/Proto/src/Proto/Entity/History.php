@@ -1,16 +1,16 @@
 <?php
 
-namespace Prototyping\Entity;
+namespace Proto\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Collections\Collection,
     Doctrine\ORM\Mapping as ORM,
-    \Prototyping\Entity\Status;
+    \Proto\Entity\Status;
 
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="prototyping_history")
+ * @ORM\Table(name="proto_history")
  */
 class History
 {
@@ -25,26 +25,26 @@ class History
     protected $id;
 
     /**
-     * @var \Prototyping\Entity\Prototyping
+     * @var \Proto\Entity\Proto
      *
-     * @ORM\ManyToOne(targetEntity="Prototyping\Entity\Prototyping", inversedBy="history", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Proto\Entity\Proto", inversedBy="history", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="prototyping_id", nullable=true, referencedColumnName="id")
+     *   @ORM\JoinColumn(name="proto_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $prototyping;
+    protected $proto;
 
 
 
     /**
-     * @var \Prototyping\Entity\Status
+     * @var \Proto\Entity\Status
      *
-     * @ORM\ManyToOne(targetEntity="Prototyping\Entity\Status", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Proto\Entity\Status", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="prototyping_status_id", nullable=true, referencedColumnName="id")
+     *   @ORM\JoinColumn(name="proto_status_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $prototypingStatus;
+    protected $protoStatus;
 
     /**
      * @var \User\Entity\User
@@ -74,57 +74,57 @@ class History
     }
 
     /**
-     * Set prototyping
+     * Set proto
      *
-     * @param \Prototyping\Entity\Prototyping
-     * @return \Prototyping\Entity\History
+     * @param \Proto\Entity\Proto
+     * @return \Proto\Entity\History
      */
-    public function setPrototyping(\Prototyping\Entity\Prototyping $prototyping = null)
+    public function setProto(\Proto\Entity\Proto $proto = null)
     {
-        $this->prototyping = $prototyping;
+        $this->proto= $proto;
 
         return $this;
     }
 
     /**
-     * Get prototyping
+     * Get proto
      *
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
-    public function getPrototyping()
+    public function getProto()
     {
-        return $this->prototyping;
+        return $this->proto;
     }
 
 
     /**
-     * Set prototypingStatus
+     * Set protoStatus
      *
-     * @param \Prototyping\Entity\Status
-     * @return \Prototyping\Entity\History
+     * @param \Proto\Entity\Status
+     * @return \Proto\Entity\History
      */
-    public function setPrototypingStatus(\Prototyping\Entity\Status $status = null)
+    public function setProtoStatus(\Proto\Entity\Status $status = null)
     {
-        $this->prototypingStatus = $status;
+        $this->protoStatus = $status;
 
         return $this;
     }
 
     /**
-     * Get prototypingStatus
+     * Get protoStatus
      *
-     * @return \Prototyping\Entity\Status 
+     * @return \Proto\Entity\Status 
      */
-    public function getPrototypingStatus()
+    public function getProtoStatus()
     {
-        return $this->prototypingStatus;
+        return $this->protoStatus;
     }
 
     /**
      * Set editBy
      *
      * @param \User\Entity\User
-     * @return \Prototyping\Entity\History
+     * @return \Proto\Entity\History
      */
     public function setEditBy(\User\Entity\User $user = null)
     {
@@ -157,7 +157,7 @@ class History
      * Set editDate
      * 
      * @param \DateTime $editDate
-     * @return \Prototyping\Entity\History
+     * @return \Proto\Entity\History
      */
     public function setEditDate(\DateTime $editDate)
     {
@@ -175,16 +175,32 @@ class History
     {
         $result = [];
 
-            switch ($this->getPrototypingStatus()->getId()) {
+            switch ($this->getProtoStatus()->getId()) {
                 case Status::STATUS_TYPE_REQUIRED: //5
                     $result['icon'] = 'fa-clock-o';
                     $result['class'] = 'default';
                     break;
-                case Status::STATUS_TYPE_IN_PROGRESS: //10
+                case Status::STATUS_TYPE_ESTIMATES_REQUESTED: //10
                     $result['icon'] = 'fa-mail-forward';
                     $result['class'] = 'warning';
                     break;
-                case Status::STATUS_TYPE_CLOSED: //15
+                case Status::STATUS_TYPE_AWAITING_DETAILS: //15
+                    $result['icon'] = 'fa-hourglass-end';
+                    $result['class'] = 'warning';
+                    break;  
+                case Status::STATUS_TYPE_PROCESSING: //20
+                    $result['icon'] = 'fa-wrench';
+                    $result['class'] = 'info';
+                    break;    
+                case Status::STATUS_TYPE_PAINTING: //25
+                    $result['icon'] = 'fa-paint-brush';
+                    $result['class'] = 'info';
+                    break;                 
+                case Status::STATUS_TYPE_FINAL_VERIFICATION: //30
+                    $result['icon'] = 'fa-cogs';
+                    $result['class'] = 'info';
+                    break;                 
+                case Status::STATUS_TYPE_DELIVERED: //35
                     $result['icon'] = 'fa-check';
                     $result['class'] = 'success';
                     break;      

@@ -1,10 +1,10 @@
-<h3>Campionatura:</h3>
-<strong>Id:</strong> <?= $sample->getId() . '<br/>'; ?>
-<strong>Richiedente:</strong> <?= $sample->getApplicant()->getDisplayName() . '<br/>'; ?>
-<strong>Modello:</strong> <?= $sample->getModel() . '<br/>'; ?>
-<strong>Cliente:</strong> <?= $sample->getCustomer() . '<br/>'; ?>
-<strong>Note:</strong> <?= nl2br($sample->getNote()) . '<br/>'; ?>
+<h3>Richiesta:</h3>
+<strong>Id:</strong> <?= $proto->getId() . '<br/>'; ?>
+<strong>Richiedente:</strong> <?= $proto->getApplicant()->getDisplayName() . '<br/>'; ?>
+<strong>Codice progetto:</strong> <?= $proto->getProjectCode() . '<br/>'; ?>
+<strong>Famiglia:</strong> <?= $proto->getFamily()->getName() . '<br/>'; ?>
+<strong>Destinazione uso:</strong> <?= nl2br($proto->getDestinazioneUso()) . '<br/>'; ?>
 
 <p>
-    Vai alla <a href="<?= $url ?>">campionatura</a>
+    Vai alla <a href="<?= $url ?>">richiesta</a>
 </p>

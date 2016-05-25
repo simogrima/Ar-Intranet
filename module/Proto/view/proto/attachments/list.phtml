@@ -1,4 +1,4 @@
-<?php echo $this->titleAndBread('Allegati ricerca & prototipazione'); ?>
+<?php echo $this->titleAndBread('Allegati prototipi'); ?>
 <?php $this->myFlashMessenger(); ?>    
 <div class="row">
     <div class="col-md-12">                
@@ -11,7 +11,7 @@
             <div class="col-md-12">
                 <?php
                 $form = $this->form;
-                $form->setAttribute('action', $this->url('prototyping/attachments/search'));
+                $form->setAttribute('action', $this->url('proto/attachments/search'));
                 $form->setAttribute('class', 'navbar-form navbar-right');
                 $form->prepare();
 
@@ -59,8 +59,8 @@
                         </a>
                     </td>         
                     <td class="cell">
-                        <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $attachment->getPrototyping()->getId())); ?>">
-                            <?php echo $attachment->getPrototyping()->getId(); ?>
+                        <a href="<?php echo $this->url('proto/show', array('protoId' => $attachment->getProto()->getId())); ?>">
+                            <?php echo $attachment->getProto()->getId(); ?>
                         </a>
                     </td>      
                     <td class="cell text-center">
@@ -72,7 +72,7 @@
                         ?>                        
                     </td>                      
                     <td class="cell cell-ctrls text-center">
-                        <a href="<?php echo $this->url('prototyping/attachments/remove', array('attachmentId' => $attachment->getId())); ?>"
+                        <a href="<?php echo $this->url('proto/attachments/remove', array('attachmentId' => $attachment->getId())); ?>"
                            class="btn btn-danger btn-xs emodal-confirm">
                             <span class="glyphicon glyphicon-remove"></span> Del
                         </a>

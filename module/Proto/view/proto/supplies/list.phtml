@@ -1,81 +1,85 @@
-<?php echo $this->titleAndBread('Allegati ricerca & prototipazione'); ?>
+<?php echo $this->titleAndBread('Forniture prototipi'); ?>
 <?php $this->myFlashMessenger(); ?>    
 <div class="row">
     <div class="col-md-12">                
-        Trovati <?php echo $totalRecord; ?> allegati
+        Trovate <?php echo $totalRecord; ?> forniture
     </div>
 </div>  
 
-        
-        <div class="row">
-            <div class="col-md-12">
-                <?php
-                $form = $this->form;
-                $form->setAttribute('action', $this->url('prototyping/attachments/search'));
-                $form->setAttribute('class', 'navbar-form navbar-right');
-                $form->prepare();
 
-                echo $this->form()->openTag($form);
-                echo $this->formSearch($form->get('search'));
-                echo $this->formButton()->render($form->get('submit'), 'Go!');
+<div class="row">
+    <div class="col-md-12">
+        <?php
+        $form = $this->form;
+        $form->setAttribute('action', $this->url('proto/supplies/search'));
+        $form->setAttribute('class', 'navbar-form navbar-right');
+        $form->prepare();
 
-                echo $this->form()->closeTag();
-                ?>               
-            </div>
-        </div>
+        echo $this->form()->openTag($form);
+        echo $this->formSearch($form->get('search'));
+        echo $this->formButton()->render($form->get('submit'), 'Go!');
+
+        echo $this->form()->closeTag();
+        ?>               
+    </div>
+</div>
 
 
 <div class="table-responsive">
     <table class="table table-bordered table-hover" id="example1">
         <thead>
             <tr>
-                <th>
-                    Id
-                </th>
-                <th>
-                </th>
-                <th>
-                    File Name
-                </th>    
-                <th>Prova</th>
-                <th class="text-center"><i class="fa fa-calendar fa-fw"></i></th>
+                <th>Id</th>
+                <th>Richiesta</th>
+                <th>Fornitore</th>    
+                <th>N° ordine</th>
+                <th>Data Fornitura</th>
+                <td class="cell text-center"><i class="fa fa-paperclip"></i></th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->attachments as $attachment): ?>
+            <?php foreach ($this->supplies as $supply): ?>
                 <tr>
                     <td class="cell cell-id">
-                        <?php echo $attachment->getId(); ?>
+                        <?php echo $supply->getId(); ?>
                     </td>
                     <td class="cell">
-                        <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
-                            <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
+                        <a href="<?php echo $this->url('proto/show', array('protoId' => $supply->getProto()->getId())); ?>">
+                            <?php echo $supply->getProto()->getId(); ?>
                         </a>
+                    </td>                       
+                    <td class="cell">
+                        <?php echo $supply->getSupplier()->getCompanyName(); ?>
                     </td>                     
                     <td class="cell cell-serial">
-                        <a href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
-                            <?php echo $attachment->getFileName(); ?>
-                        </a>
+                        <?php echo $supply->getOrderNr(); ?>
                     </td>         
-                    <td class="cell">
-                        <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $attachment->getPrototyping()->getId())); ?>">
-                            <?php echo $attachment->getPrototyping()->getId(); ?>
-                        </a>
-                    </td>      
+
                     <td class="cell text-center">
                         <?php
                         echo $this->dateFormat(
-                                $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                $supply->getSupplyDate(), IntlDateFormatter::LONG, // date
                                 IntlDateFormatter::NONE, // time
                                 "it_IT");
                         ?>                        
-                    </td>                      
+                    </td>       
+                    <td class="cell text-center">
+                        <a href="/proto/supplies/attachments/<?php echo $supply->getId(); ?>" data-toggle="modal" data-target="#myModal" data-remote="false">
+                            <?= count($supply->getAttachments()); ?>
+                        </a>
+                    </td>
                     <td class="cell cell-ctrls text-center">
-                        <a href="<?php echo $this->url('prototyping/attachments/remove', array('attachmentId' => $attachment->getId())); ?>"
+                        <?php if ($this->isEditor): ?> 
+                        <a href="<?php echo $this->url('proto/supplies/edit', array('supplyId' => $supply->getId())); ?>"
+                           class="btn btn-info btn-xs">
+                            <span class="glyphicon glyphicon-edit"></span> Edit
+                        </a>                        
+                        <a href="<?php echo $this->url('proto/supplies/remove', array('supplyId' => $supply->getId())); ?>"
                            class="btn btn-danger btn-xs emodal-confirm">
                             <span class="glyphicon glyphicon-remove"></span> Del
                         </a>
+                        <?php endif; ?>
                     </td>
 
                 </tr>
@@ -84,13 +88,48 @@
     </table>
 </div>
 
+
+<!-- Default bootstrap modal example -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Allegati fornitura</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <?php
 echo $this->paginationControl(
-        $this->attachments, 'Sliding', 'paginator-slide', array(
+        $this->supplies, 'Sliding', 'paginator-slide', array(
     'order_by' => $order_by,
     'order' => $order,
     'search_by' => $search_by,
     'pageAction' => $pageAction,
         )
 );
-?>
+
+
+
+
+
+$this->headScript()->appendScript("
+$(function() {
+
+// Fill modal with content from link href
+$(\"#myModal\").on(\"show.bs.modal\", function(e) {
+    var link = $(e.relatedTarget);
+    $(this).find(\".modal-body\").load(link.attr(\"href\"));
+});
+    
+    });
+");

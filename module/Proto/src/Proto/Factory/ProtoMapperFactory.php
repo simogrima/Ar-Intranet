@@ -1,25 +1,25 @@
 <?php
 
-namespace Prototyping\Factory;
+namespace Proto\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Mapper\PrototypingMapper;
+use Proto\Mapper\ProtoMapper;
 
 /**
- * Factory to create a prototyping mapper
+ * Factory to create a proto mapper
  */
-class PrototypingMapperFactory implements FactoryInterface
+class ProtoMapperFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var \Prototyping\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceLocator->get('Prototyping\Options\ModuleOptions');
+        /* @var \Proto\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceLocator->get('Proto\Options\ModuleOptions');
        
         $entityManager = $serviceLocator->get('doctrine.entitymanager.orm_default');
         
-        /* @var \Prototyping\Mapper\PrototypingMapper $mapper */
-        $mapper = new PrototypingMapper($entityManager);
+        /* @var \Proto\Mapper\ProtoMapper $mapper */
+        $mapper = new ProtoMapper($entityManager);
         
         $mapper->setModuleOptions($moduleOptions);
         return $mapper;     

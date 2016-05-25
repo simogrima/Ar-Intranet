@@ -8,9 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="family")
+ * @ORM\Table(name="supplier")
  */
-class Family
+class Supplier
 {
     /**
      * @var int|null
@@ -24,9 +24,9 @@ class Family
     /**
      * @var string|null
      *
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(name="company_name", type="string", length=128)
      */
-    protected $name;
+    protected $companyName;
 
 
     /**
@@ -47,13 +47,13 @@ class Family
     }
 
     /**
-     * Get name
+     * Get companyName
      * 
      * @return string
      */
-    public function getName()
+    public function getCompanyName()
     {
-        return $this->name;
+        return $this->companyName;
     }
 
 
@@ -68,14 +68,14 @@ class Family
     }
 
     /**
-     * Set name
+     * Set companyName
      * 
-     * @param string $name
-     * @return \Application\Entity\Family
+     * @param string $companyName
+     * @return \Application\Entity\Supplier
      */
-    public function setName($name)
+    public function setCompanyName($companyName)
     {
-        $this->name = $name;
+        $this->companyName = $companyName;
         
         return $this;
     }
@@ -84,7 +84,7 @@ class Family
      * Set status
      * 
      * @param int $status
-     * @return \Application\Entity\Family
+     * @return \Application\Entity\Supplier
      */
     public function setStatus($status)
     {

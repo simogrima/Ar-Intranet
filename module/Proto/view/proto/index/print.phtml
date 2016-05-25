@@ -1,17 +1,17 @@
-<?php echo $this->titleAndBread('Prova ' . $prototyping->getId()) ?>
+<?php echo $this->titleAndBread('Richiesta ' . $proto->getId()) ?>
 <?php $this->myFlashMessenger(); ?>   
 <style>
-        .page-title, .breadcrumb
+    .page-title, .breadcrumb
     {
         display: none !important;
     }
-@media print
-{    
-    #button
-    {
-        display: none !important;
-    }
-}    
+    @media print
+    {    
+        #button
+        {
+            display: none !important;
+        }
+    }    
 </style>
 <script type="text/javascript">
 <!--
@@ -26,28 +26,28 @@ window.print();
 
 <div class="row">
     <div class="col-md-12 text-center">
-        <h1>PROVA N° <?= $prototyping->getId()?></h1>
+        <h1>RICHIESTA N° <?= $proto->getId() ?></h1>
         <h3>
             Iniziata il: 
-                        <?php
-                        echo $this->dateFormat(
-                                $prototyping->getCreatedDate(), IntlDateFormatter::LONG, // date
-                                IntlDateFormatter::NONE, // time
-                                "it_IT");
-                        ?>               
+            <?php
+            echo $this->dateFormat(
+                    $proto->getCreatedDate(), IntlDateFormatter::LONG, // date
+                    IntlDateFormatter::NONE, // time
+                    "it_IT");
+            ?>               
         </h3>
-        
-<?php if (!empty($prototyping->getEndDate())): ?>        
-        <h3>
-            Conclusa il:
-                        <?php
-                            echo $this->dateFormat(
-                                $prototyping->getEndDate(), IntlDateFormatter::LONG, // date
-                                IntlDateFormatter::NONE, // time
-                                "it_IT");
-                        ?>                   
-        </h3>
-<?php endif; ?>        
+
+        <?php if (!empty($proto->getEndDate())): ?>        
+            <h3>
+                Conclusa il:
+                <?php
+                echo $this->dateFormat(
+                        $proto->getEndDate(), IntlDateFormatter::LONG, // date
+                        IntlDateFormatter::NONE, // time
+                        "it_IT");
+                ?>                   
+            </h3>
+        <?php endif; ?>        
     </div>
 </div>
 
@@ -55,50 +55,149 @@ window.print();
     <div class="col-md-12 text-center">
         <table class="table table-bordered text-left" style="margin-top: 20px">
             <tr>
-                <td><strong>Codice progetto:</strong> <?= $prototyping->getProjectCode(); ?></td>
-                <td><strong>Codice prodotto:</strong> <?= $prototyping->getProductCode(); ?></td>
+                <td><strong>Codice progetto:</strong> <?= $proto->getProjectCode(); ?></td>
+                <td colspan="2"><strong>Richiedente:</strong> <?= $proto->getApplicant()->getDisplayName(); ?> </td>
             </tr>
             <tr>
-                <td><strong>Famiglia:</strong> <?= $prototyping->getFamily()->getName(); ?></td>
-                <td><strong>Avanzamento:</strong> <?= $prototyping->getProgress(); ?></td>
+                <td><strong>Famiglia:</strong> <?= $proto->getFamily()->getName(); ?></td>
+                <td><strong>Tipo:</strong> <?= $proto->getType(); ?></td>
             </tr>     
             <tr>
-                <td colspan="2"><strong>Cliente:</strong><?= $prototyping->getCustomer(); ?> </td>
+                <td><strong>Data consegna richiesta:</strong>
+                    <?php
+                    echo $this->dateFormat(
+                            $proto->getRequestedDeliveryDate(), IntlDateFormatter::LONG, // date
+                            IntlDateFormatter::NONE, // time
+                            "it_IT");
+                    ?>                   
+
+
+                </td>
+                <td><strong>Data consegna prevista:</strong>
+                    <?php
+                    if (!empty($proto->getExpectedDeliveryDate())):
+                        echo $this->dateFormat(
+                                $proto->getExpectedDeliveryDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                    endif;
+                    ?>                   
+
+
+                </td>                
             </tr>              
             <tr>
-                <td colspan="2"><strong>Descrizione:</strong><br/> <?= $prototyping->getDescription(); ?></td>
-            </tr>                  
+                <td colspan="2"><strong>Destinazione d'uso:</strong><br/> <?= $proto->getDestinazioneUso(); ?></td>
+            </tr>   
+            <?php if (!empty($proto->getNote())): ?> 
+                <tr>
+                    <td colspan="2"><strong>Note:</strong><br/> <?= $proto->getNote(); ?></td>
+                </tr>      
+            <?php endif; ?>
+            <tr>
+                <td><strong>Parti plastiche:</strong> <?= $proto->getPartiPlastiche(true); ?></td>
+                <td><strong>Parti lavorazione metallo:</strong> <?= $proto->getPartiLavMetallo(true); ?></td>
+            </tr>     
+            <tr>
+                <td><strong>Parti trasparenti:</strong> <?= $proto->getPartiTrasparenti(true); ?></td>
+                <td><strong>Parti verniciate:</strong> <?= $proto->getPartiVerniciate(true); ?></td>
+            </tr>     
+            <tr>
+                <td><strong>Parti in gomma:</strong> <?= $proto->getPartiGomma(true); ?></td>
+                <td><strong>Serigrafie:</strong> <?= $proto->getSerigrafie(true); ?></td>
+            </tr>     
+            <tr>
+                <td colspan="2"><strong>Parti materiale speciale:</strong> <?= $proto->getPartiMatSpeciale(true); ?></td>
+            </tr>   
+            <?php if (!empty($proto->getNotePartiMatSpeciale())): ?> 
+                <tr>
+                    <td colspan="2">
+                        <strong>Note parti materiale speciale</strong><br/> 
+                        <?= nl2br($proto->getNotePartiMatSpeciale()); ?>
+                    </td>
+                </tr>      
+            <?php endif; ?>            
         </table>
-        
-                    <table class="table table-bordered text-left" style="margin-top: 20px">
-                        <thead>
-                            <tr>
-                                <th colspan="2">Dati Tecnici</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td><strong>Tensione</strong> <?= $prototyping->getVoltage(); ?></td>
-                            <td><strong>Frequenza</strong> <?= $prototyping->getFrequency(); ?></td>
-                        </tr>  
-                        <tr>
-                            <td><strong>Assorbimento</strong> <?= $prototyping->getAbsorption(); ?></td>
-                            <td><strong>Pressione</strong> <?= $prototyping->getPressure(); ?></td>
-                        </tr>              
-                    </table>        
+
+        <table class="table table-bordered text-left" style="margin-top: 20px">
+            <thead>
+                <tr>
+                    <th colspan="2"><i class="fa fa-th-list fa-fw"></i> Dati Tecnici</th>
+                </tr>
+            </thead>
+            <tr>
+                <td><strong>Tensione</strong> <?= $proto->getTensione(); ?></td>
+                <td><strong>Frequenza</strong> <?= $proto->getFrequenza(); ?></td>
+            </tr>  
+            <tr>
+                <td><strong>Potenza</strong> <?= $proto->getPotenza(); ?></td>
+                <td><strong>Spina</strong> <?= $proto->getSpina(); ?></td>
+            </tr>    
+            <tr>
+                <td><strong>Cavo</strong> <?= $proto->getPotenza(); ?></td>
+                <td><strong>Cartella progetto di riferimento o VPP</strong> <?= $proto->getSpina(); ?></td>
+            </tr>    
+            <?php if (!empty($proto->getVarie())): ?> 
+                <tr>
+                    <td colspan="2">
+                        <strong>Varie</strong><br/> 
+                        <?= nl2br($proto->getVarie()); ?>
+                    </td>
+                </tr>      
+            <?php endif; ?>
+        </table>        
 
 
+        <?php
+        $supplies = $proto->getSupplies();
+        if (count($supplies) > 0):
+            ?>        
+
+            <table class="table table-bordered text-left" style="margin-top: 20px">
+                <thead>
+                    <tr>
+                        <th colspan="3"><i class="fa fa-truck"></i> Forniture</th>
+                    </tr>
+                    <tr>
+                        <th>Fornitore</th>
+                        <th>N° Ordine</th>
+                        <th>Data fornitura</th>
+                    </tr>                
+                </thead>
+                <tbody>
+                    <?php foreach ($supplies as $supply): ?>                        
+                        <tr>
+
+                            <td class="col-md-4">
+                                <?php echo $supply->getSupplier()->getCompanyName(); ?>
+                            </td>
+                            <td class="col-md-2">
+                                <?php echo $supply->getOrderNr(); ?>
+                            </td>                                            
+                            <td class="col-md-4">
+                                <?php
+                                echo $this->dateFormat(
+                                        $supply->getSupplyDate(), IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        "it_IT");
+                                ?>
+                            </td>                                             
+                        </tr>
+                    <?php endforeach; ?>                       
+                </tbody>
+            </table>           
+
+        </div>
     </div>
-</div>
-
+<?php endif; ?>
 
 <div class="row" id="button">
     <div class="col-md-12 text-center" style="margin-top: 50px">
         <p>
-
-            <a class='btn btn-default btn-lg' href="<?php echo $this->url('prototyping/edit', array('prototypingId' => $prototyping->getId())); ?>">
-                    <i class="fa fa-edit"></i> Modifica
+            <a class='btn btn-default btn-lg' href="javascript:history.back()">
+                <i class="fa fa-mail-reply"></i> Indietro
             </a>                                      
-            <a class="btn btn-default btn-lg" href="<?php echo $this->url('prototyping/list') ?>"><i class="fa fa-mail-reply"></i> Elenco</a>
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('proto/list') ?>"><i class="fa fa-list"></i> Elenco</a>
         </p>
     </div>
 </div>

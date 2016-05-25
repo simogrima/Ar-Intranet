@@ -1,24 +1,24 @@
 <?php
 
 
-namespace Prototyping\Factory\Controller;
+namespace Application\Factory\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Prototyping\Controller\HistoryController;
+use Application\Controller\SuppliersController;
 
 /**
- * Factory to create a history controller
+ * Factory to create a suppliers controller
  */
-class HistoryControllerFactory implements FactoryInterface
+class SuppliersControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         /* @var $serviceLocator \Zend\Mvc\Controller\ControllerManager */
         $sm   = $serviceLocator->getServiceLocator();
-        $options = $sm->get('Prototyping\Options\ModuleOptions');
-        $mapper = $sm->get('Prototyping\Mapper\HistoryMapper');
+        $options = $sm->get('Application\Options\ModuleOptions');
+        $mapper = $sm->get('Application\Mapper\SuppliersMapper');
         
-        return new HistoryController($options, $mapper);
+        return new SuppliersController($options, $mapper);
     }
 }

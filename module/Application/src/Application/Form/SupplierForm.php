@@ -1,29 +1,99 @@
 <?php
+
 namespace Application\Form;
 
-use Zend\Form\Form;
-use \Zend\Form\Element;
+use Application\Entity\Supplier,
+    Doctrine\Common\Persistence\ObjectManager,
+    DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
+    Zend\Form\Form,
+    Zend\InputFilter;
 
-class SearchForm extends Form
+class SupplierForm extends Form
 {
-    public function __construct($name = null)
+
+    public function __construct(ObjectManager $objectManager)
     {
-        //setto il nome chimando il parent’s constructor
-        parent::__construct('search-form');
-        $this->setAttribute('class', 'navbar-form navbar-right');
-        $this->setAttribute('method', 'post');
+        parent::__construct('supplier-form');
 
-        $search = new Element('search');
-        $search->setLabel('Search')
-                ->setAttribute('class', 'form-control')
-                ->setAttribute('placeholder', 'Search');
+        //$this->setHydrator(new DoctrineHydrator($objectManager));
+        $this->setHydrator(new DoctrineHydrator($objectManager, 'Application\Entity\Supplier', true))->setObject(new Supplier());
 
-        $submit = new Element\Submit('submit');
-        $submit->setValue('Search')
-                ->setAttribute('class', 'btn btn-primary');
+        //Id
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Hidden',
+            'name' => 'id'
+        ));
 
-        $this->add($search);
-        $this->add($submit);
+        //companyName
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'companyName',
+            'options' => array(
+                'label' => 'Ragione Sociale*',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));
 
+        //status   
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'status',
+            'options' => array(
+                'label' => 'Stato',
+                'value_options' => array(
+                    '1' => 'Enable',
+                    '0' => 'Disable',
+                ),
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
+        ));
+
+        $this->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type' => 'submit',
+                'value' => 'Save',
+                'class' => 'btn btn-primary',
+                'id' => 'submitbutton',
+            ),
+        ));
+
+
+        $this->addInputFilter();
     }
+
+    public function addInputFilter()
+    {
+        $inputFilter = new InputFilter\InputFilter();
+
+        $inputFilter->add(
+                array(
+                    'name' => 'id',
+                    'required' => false,
+                )
+        );
+
+        $inputFilter->add(
+                array(
+                    'name' => 'companyName',
+                    'required' => true,
+                )
+        );
+
+        $inputFilter->add(
+                array(
+                    'name' => 'status',
+                    'required' => true,
+                )
+        );
+
+        $this->setInputFilter($inputFilter);
+    }
+
 }

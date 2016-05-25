@@ -1,83 +1,92 @@
 <?php
 
-namespace Prototyping\Form;
+namespace Proto\Form;
 
-use Prototyping\Entity\History,
+use Proto\Entity\Supplies,
     Doctrine\Common\Persistence\ObjectManager,
     DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator,
     Zend\Form\Form,
     Zend\InputFilter;
 
-class HistoryForm extends Form
+class SupplyForm extends Form
 {
 
     public function __construct(ObjectManager $objectManager)
     {
-        parent::__construct('history-form');
+        parent::__construct('supply-form');
 
         //$this->setHydrator(new DoctrineHydrator($objectManager));
-        $this->setHydrator(new DoctrineHydrator($objectManager, 'Prototyping\Entity\History', true))->setObject(new History());
+        $this->setHydrator(new DoctrineHydrator($objectManager, 'Proto\Entity\Supplies', true))->setObject(new Supplies());
 
         //Id
         $this->add(array(
             'type' => 'Zend\Form\Element\Hidden',
             'name' => 'id'
         ));
-
-        //EditBy
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Hidden',
-            'name' => 'editBy'
-        ));
         
-        //Prototyping
+        //Proto
         $this->add(array(
             'type' => 'Zend\Form\Element\Hidden',
-            'name' => 'prototyping'
+            'name' => 'proto'
+        ));     
+        
+        //orderNr
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'orderNr',
+            'options' => array(
+                'label' => 'N° Ordine*',
+            ),
+            'attributes' => array(
+                'required' => true,
+                'class' => 'form-control',
+            )
         ));        
-
-        //status
+        
+        //supplier
         $this->add(
                 array(
                     'type' => 'DoctrineModule\Form\Element\ObjectSelect',
-                    'name' => 'prototypingStatus',
+                    'name' => 'supplier',
                     'emptyOption' => 'Select..',
                     'options' => array(
                         'empty_option' => 'Select..',
-                        'label' => 'Stato',
+                        'label' => 'Fornitore*',
                         'object_manager' => $objectManager,
-                        'target_class' => 'Prototyping\Entity\Status',
-                        'property' => 'name',
+                        'target_class' => 'Application\Entity\Supplier',
+                        'property' => 'companyName',
                         'is_method' => true,
                         'find_method' => array(
                             'name' => 'findBy',
                             'params' => array(
                                 'criteria' => array(),
-                                //'criteria' => array('name' => 'Attivo'),
-                                'orderBy' => array('id' => 'ASC'),
+                                'criteria' => array('status' => 1),
+                                'orderBy' => array('companyName' => 'ASC'),
                             ),
                         ),
                     ),
                     'attributes' => array(
                         'required' => true,
                         'class' => 'form-control',
-                        'id' => 'status',
+                        'id' => 'supplier',
                     )
                 )
-        );             
+        );        
+           
 
-        //editDate
+        //supplyDate
         $this->add(array(
             'type' => 'Zend\Form\Element\Date',
-            'name' => 'editDate',
+            'name' => 'supplyDate',
             'options' => array(
-                'label' => 'Data'
+                'label' => 'Data fornitura*'
             ),
             'attributes' => array(
                 //'min' => date('Y-m-d', time()),
                 // 'max' => '2020-01-01',
                 'step' => '1', // days; default step interval is 1 day
                 'class' => 'form-control',
+                'required' => true,
             )
         ));        
 
@@ -109,17 +118,31 @@ class HistoryForm extends Form
 
         $inputFilter->add(
                 array(
-                    'name' => 'editBy',
+                    'name' => 'supplier',
                     'required' => true,
                 )
         );            
 
         $inputFilter->add(
                 array(
-                    'name' => 'prototyping',
+                    'name' => 'proto',
                     'required' => true,
                 )
         );
+        
+        $inputFilter->add(
+                array(
+                    'name' => 'supplyDate',
+                    'required' => true,
+                )
+        );    
+        
+        $inputFilter->add(
+                array(
+                    'name' => 'orderNr',
+                    'required' => true,
+                )
+        );          
 
         $this->setInputFilter($inputFilter);
     }

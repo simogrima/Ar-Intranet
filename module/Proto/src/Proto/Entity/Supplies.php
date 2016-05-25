@@ -1,6 +1,6 @@
 <?php
 
-namespace Prototyping\Entity;
+namespace Proto\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Collections\Collection,
@@ -9,10 +9,11 @@ use Doctrine\Common\Collections\ArrayCollection,
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="prototyping_attachments")
+ * @ORM\Table(name="proto_supplies")
  */
-class Attachments
+class Supplies
 {
+   
     /**
      * @var int|null
      *
@@ -23,30 +24,53 @@ class Attachments
     protected $id;
     
     /**
-     * @var \Prototyping\Entity\Prototyping
+     * @var \Proto\Entity\Proto
      *
-     * @ORM\ManyToOne(targetEntity="Prototyping\Entity\Prototyping", inversedBy="attachments", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Proto\Entity\Proto", inversedBy="supplies", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="prototyping_id", nullable=true, referencedColumnName="id")
+     *   @ORM\JoinColumn(name="proto_id", nullable=true, referencedColumnName="id")
      * })
      */
-    protected $prototyping; 
+    protected $proto; 
+    
+    /**
+     * @var \Application\Entity\Supplier
+     *
+     * @ORM\ManyToOne(targetEntity="Application\Entity\Supplier", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="supplier_id", nullable=true, referencedColumnName="id")
+     * })
+     */
+    protected $supplier;     
     
      
     
     /**
      * @var string|null
      *
-     * @ORM\Column(name="file_name", type="string", length=128)
+     * @ORM\Column(name="order_nr", type="string", length=64)
      */
-    protected $fileName;   
+    protected $orderNr;   
+       
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="supply_date", type="datetime", nullable=false)
+     */
+    protected $supplyDate;
+    
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_date", type="datetime", nullable=false)
      */
-    protected $createdDate;
+    protected $createdDate;    
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Proto\Entity\Attachments", mappedBy="supply", cascade={"remove"})
+     */
+    protected $attachments;      
 
     /**
      * Never forget to initialize all your collections !
@@ -66,51 +90,145 @@ class Attachments
     }
     
     /**
-     * Set prototyping
+     * Set proto
      *
-     * @param \Prototyping\Entity\Prototyping
-     * @return \Prototyping\Entity\Attachments
+     * @param \Proto\Entity\Proto
+     * @return \Proto\Entity\Supplies
      */
-    public function setPrototyping(\Prototyping\Entity\Prototyping $prototyping = null)
+    public function setProto(\Proto\Entity\Proto $proto = null)
     {
-        $this->prototyping = $prototyping;
+        $this->proto = $proto;
 
         return $this;
     }
 
     /**
-     * Get Prototyping
+     * Get Proto
      *
-     * @return \Prototyping\Entity\Prototyping
+     * @return \Proto\Entity\Proto
      */
-    public function getPrototyping()
+    public function getProto()
     {
-        return $this->prototyping;
+        return $this->proto;
     }    
     
     /**
-     * Get fileName
+     * Set supplier
+     *
+     * @param \Application\Entity\Supplier
+     * @return \Proto\Entity\Supplies
+     */
+    public function setSupplier(\Application\Entity\Supplier $supplier = null)
+    {
+        $this->supplier = $supplier;
+
+        return $this;
+    }
+
+    /**
+     * Get Supplier
+     *
+     * @return \Application\Entity\Supplier
+     */
+    public function getSupplier()
+    {
+        return $this->supplier;
+    }      
+    
+    /**
+     * Get orderNr
      * 
      * @return string
      */
-    public function getFileName()
+    public function getOrderNr()
     {
-        return $this->fileName;
+        return $this->orderNr;
     }
     
     /**
      * Set filename
      * 
-     * @param string $filename
-     * @return \Prototyping\Entity\Attachments
+     * @param string $orderNr
+     * @return \Proto\Entity\Supplies
      */
-    public function setFileName($fileName)
+    public function setOrderNr($orderNr)
     {
-        $this->fileName = $fileName;
+        $this->orderNr = $orderNr;
 
         return $this;
-    }        
+    }   
+    
+    
+    /**
+     * Aggiunge gli allegati.
+     * 
+     * @param Collection $attachments gli allegati da aggiungere
+     * @return \Proto\Entity\Supplies
+     */
+    public function addAttachments(Collection $attachments)
+    {
+        foreach ($attachments as $row) {
+            $row->setSupply($this);
+            $this->attachments->add($row);
+        }
+        
+        return $this;
+    }
 
+    /**
+     * Rimuove gli allegati
+     * @param Collection $attachments gli allegati da rimuovere
+     * @return \Proto\Entity\Supplies
+     */
+    public function removeAttachments(Collection $attachments)
+    {
+        foreach ($attachments as $row) {
+            $row->setSupply(null);
+            $this->attachments->removeElement($row);
+        }
+        
+        return $this;
+    }    
+    
+    public function getAttachments($type = null)
+    {
+        if ($type && in_array($type, \Proto\Entity\Attachments::getAttachmentTypeValues())) {
+            $attachments = [];
+            foreach ($this->getAttachments() as $row) {
+                if ($row->getAttachmentType() == $type)
+                $attachments[] = $row;
+            }
+            return $attachments;
+        }
+        
+        return $this->attachments;
+    }        
+    
+    
+
+    /**
+     * Get supplyDate
+     * 
+     * @return \DateTime 
+     */
+    public function getSupplyDate()
+    {
+        return $this->supplyDate;
+    }
+    
+    /**
+     * Set supplyDate
+     * 
+     * @param \DateTime $supplyDate
+     * @return \Proto\Entity\Supplies
+     */
+    public function setSupplyDate(\DateTime $supplyDate)
+    {
+        $this->supplyDate = $supplyDate;
+
+        return $this;
+    }    
+    
     /**
      * Get createDate
      * 
@@ -125,82 +243,15 @@ class Attachments
      * Set createDate
      * 
      * @param \DateTime $createdDate
-     * @return \Prototyping\Entity\Attachments
+     * @return \Proto\Entity\Supplies
      */
     public function setCreatedDate(\DateTime $createdDate)
     {
         $this->createdDate = $createdDate;
 
         return $this;
-    }    
-    
-    /**
-     * Metodo puramente logico che in base all'estensione del file restituisce 
-     * il nome dell'icona.
-     * @return string
-     */
-    public function getIcon()
-    {
-        $pos = strrpos($this->getFileName(), '.');
-        $extension = substr($this->getFileName(), $pos+1);
-        switch (strtolower($extension)) {
-            case 'jpg':
-            case 'jpeg':
-            case 'gif':    
-                return 'image.png';
-                break;
-            case 'png':    
-                return 'png.png';
-                break;
-            case 'doc':
-            case 'docx':    
-                return 'word.png';
-                break; 
-            case 'xls':
-            case 'xlsx':    
-                return 'excel.png';
-                break;       
-            case 'ppt':
-            case 'pptx':    
-                return 'pp.png';
-                break;    
-            case 'pdf':    
-                return 'pdf.png';
-                break;  
-            case 'ai':    
-                return 'ai.png';
-                break;    
-            case 'psd':    
-                return 'psd.png';
-                break;
-            case 'webm':
-            case 'flv':
-            case 'avi':    
-            case 'mp4': 
-            case 'wmv': 
-            case 'mov': 
-                return 'video.png';
-                break;            
-            default:
-                return 'generic.png';
-                break;
-        }
-    }        
-    
-    /**
-     * Metodo puramente logico che in base all'estensione del file dice se è un'immagine 
-     * 
-     * @return boolean
-     */
-    public function isImage()
-    {
-        $pos = strrpos($this->getFileName(), '.');
-        $extension = strtolower(substr($this->getFileName(), $pos+1));
-        
-        $ok = ['jpg','jpeg','gif','png','bmp','tiff'];
-        
-        return (in_array($extension, $ok));
-    }        
+    }      
+
 
     /**
      * @ORM\PrePersist

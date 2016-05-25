@@ -1,11 +1,10 @@
-<?php echo $this->titleAndBread('Modifica storico'); ?>
+<?php echo $this->titleAndBread('Modifica fornitore'); ?>
 <?php $this->myFlashMessenger(); ?>    
 <?php
 //$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
 $form->setAttribute('action', $this->serverUrl(TRUE));
 $form->setAttribute('class', 'form-horizontal');
 $form->setAttribute('id', 'edit-form');
-$form->get('submit')->setValue('Modifica storico');
 $form->prepare();
 
 echo $this->form()->openTag($form);
@@ -14,28 +13,19 @@ echo $this->form()->openTag($form);
     <div class = "col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Modifica storico (solo in casi particolari)
+                Modifica fornitore
             </div>
             <div class="panel-body">
-                <h4>
-                    Prova: 
-                    <a href="<?php echo $this->url('prototyping/show', array('prototypingId' => $prototyping->getId())); ?>">
-                        <?php echo $prototyping->getId(); ?>
-                    </a>                    
-                </h4> 
-                <?= $this->ztbFormElement($form->get('prototypingStatus')); ?>
-                <?= $this->ztbFormElement($form->get('editDate')); ?>
-                
+                <?= $this->ztbFormElement($form->get('companyName')); ?>
+                <?= $this->ztbFormElement($form->get('status')); ?>
             </div>    
         </div>
     </div>    
 </div>     
 <div class="row">
     <div class = "col-md-6">
-        <?= $this->ztbFormElement($form->get('id')); ?>
-        <?= $this->ztbFormElement($form->get('editBy')); ?>
-        <?= $this->ztbFormElement($form->get('prototyping')); ?>
-        <?= $this->ztbFormElement($form->get('submit')); ?>
+            <button class="btn btn-primary">Modifica Fornitore</button>
+            <a class="btn btn-default" href="javascript:history.back()"><i class="fa fa-mail-reply"></i> Indietro</a>
     </div>
 </div>    
 <?php

@@ -1,32 +1,34 @@
 <?php
 
-namespace Prototyping;
+namespace Proto;
 
 return array(
     'service_manager' => array(
         'factories' => array(
-            'Prototyping\Options\ModuleOptions' => 'Prototyping\Factory\ModuleOptionsFactory',
-            'Prototyping\Mapper\PrototypingMapper' => 'Prototyping\Factory\PrototypingMapperFactory',
-            'Prototyping\Mapper\AttachmentsMapper' => 'Prototyping\Factory\AttachmentsMapperFactory',
-            'Prototyping\Mapper\HistoryMapper' => 'Prototyping\Factory\HistoryMapperFactory',
+            'Proto\Options\ModuleOptions' => 'Proto\Factory\ModuleOptionsFactory',
+            'Proto\Mapper\ProtoMapper' => 'Proto\Factory\ProtoMapperFactory',
+            'Proto\Mapper\AttachmentsMapper' => 'Proto\Factory\AttachmentsMapperFactory',
+            'Proto\Mapper\HistoryMapper' => 'Proto\Factory\HistoryMapperFactory',
+            'Proto\Mapper\SuppliesMapper' => 'Proto\Factory\SuppliesMapperFactory',
         ),
     ),
     'controllers' => array(
         'factories' => array(
-            'Prototyping\Controller\Index' => 'Prototyping\Factory\Controller\IndexControllerFactory',
-            'Prototyping\Controller\Attachments' => 'Prototyping\Factory\Controller\AttachmentsControllerFactory',
-            'Prototyping\Controller\History' => 'Prototyping\Factory\Controller\HistoryControllerFactory',
+            'Proto\Controller\Index' => 'Proto\Factory\Controller\IndexControllerFactory',
+            'Proto\Controller\Attachments' => 'Proto\Factory\Controller\AttachmentsControllerFactory',
+            'Proto\Controller\History' => 'Proto\Factory\Controller\HistoryControllerFactory',
+            'Proto\Controller\Supplies' => 'Proto\Factory\Controller\SuppliesControllerFactory',
         ),
     ),
     'router' => array(
         'routes' => array(
-            'prototyping' => array(
+            'proto' => array(
                 'type' => 'Literal',
                 'priority' => 1000,
                 'options' => array(
-                    'route' => '/prototyping',
+                    'route' => '/proto',
                     'defaults' => array(
-                        'controller' => 'Prototyping\Controller\Index',
+                        'controller' => 'Proto\Controller\Index',
                         'action' => 'index',
                     ),
                 ),
@@ -44,7 +46,7 @@ return array(
                                 'order' => 'ASC|DESC',
                             ),
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'list',
                             ),
                         ),
@@ -61,7 +63,7 @@ return array(
                                 'order' => 'ASC|DESC',
                             ),
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'update',
                             ),
                         ),
@@ -74,7 +76,7 @@ return array(
                         'options' => array(
                             'route' => '/search',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'search',
                             ),
                         ),
@@ -84,7 +86,7 @@ return array(
                         'options' => array(
                             'route' => '/create',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'create',
                             ),
                         ),
@@ -92,33 +94,33 @@ return array(
                     'edit' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/edit/:prototypingId',
+                            'route' => '/edit/:protoId',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'edit',
-                                'prototypingId' => 0
+                                'protoId' => 0
                             ),
                         ),
                     ),
                     'remove' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/remove/:prototypingId',
+                            'route' => '/remove/:protoId',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'remove',
-                                'prototypingId' => 0
+                                'protoId' => 0
                             ),
                         ),
                     ),
                     'show' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/show/:prototypingId/:historyType',
+                            'route' => '/show/:protoId/:historyType',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'show',
-                                'prototypingId' => 0,
+                                'protoId' => 0,
                                 'historyType' => 0,
                             ),
                         ),
@@ -126,11 +128,11 @@ return array(
                     'print' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/print/:prototypingId',
+                            'route' => '/print/:protoId',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Index',
+                                'controller' => 'Proto\Controller\Index',
                                 'action' => 'print',
-                                'prototypingId' => 0
+                                'protoId' => 0
                             ),
                         ),
                     ),                    
@@ -141,7 +143,7 @@ return array(
                         'options' => array(
                             'route' => '/attachments',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\Attachments',
+                                'controller' => 'Proto\Controller\Attachments',
                                 'action' => 'index',
                             ),
                         ),
@@ -159,7 +161,7 @@ return array(
                                         'order' => 'ASC|DESC',
                                     ),
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\Attachments',
+                                        'controller' => 'Proto\Controller\Attachments',
                                         'action' => 'list',
                                     ),
                                 ),
@@ -169,7 +171,7 @@ return array(
                                 'options' => array(
                                     'route' => '/search',
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\Attachments',
+                                        'controller' => 'Proto\Controller\Attachments',
                                         'action' => 'search',
                                     ),
                                 ),
@@ -177,14 +179,15 @@ return array(
                             'add' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/add/:prototyping_id',
+                                    'route' => '/add/:entity_id/:type',
                                     'constraints' => array(
-                                        'prototyping_id' => '[0-9]+'
+                                        'entity_id' => '[0-9]+',
+                                        'type' => '[a-zA-Z][a-zA-Z0-9_\/-]*'
                                     ),
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\Attachments',
+                                        'controller' => 'Proto\Controller\Attachments',
                                         'action' => 'add',
-                                        'prototyping_id' => 0,
+                                        'entity_id' => 0,
                                         'type' => 0,
                                     ),
                                 ),
@@ -194,7 +197,7 @@ return array(
                                 'options' => array(
                                     'route' => '/remove/:attachmentId',
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\Attachments',
+                                        'controller' => 'Proto\Controller\Attachments',
                                         'action' => 'remove',
                                         'attachmentId' => 0
                                     ),
@@ -210,7 +213,7 @@ return array(
                         'options' => array(
                             'route' => '/history',
                             'defaults' => array(
-                                'controller' => 'Prototyping\Controller\History',
+                                'controller' => 'Proto\Controller\History',
                                 'action' => 'index',
                             ),
                         ),
@@ -228,7 +231,7 @@ return array(
                                         'order' => 'ASC|DESC',
                                     ),
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\History',
+                                        'controller' => 'Proto\Controller\History',
                                         'action' => 'index',
                                     ),
                                 ),
@@ -238,7 +241,7 @@ return array(
                                 'options' => array(
                                     'route' => '/edit/:historyId',
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\History',
+                                        'controller' => 'Proto\Controller\History',
                                         'action' => 'edit',
                                         'historyId' => 0
                                     ),
@@ -249,7 +252,7 @@ return array(
                                 'options' => array(
                                     'route' => '/remove/:historyId',
                                     'defaults' => array(
-                                        'controller' => 'Prototyping\Controller\History',
+                                        'controller' => 'Proto\Controller\History',
                                         'action' => 'remove',
                                         'historyId' => 0
                                     ),
@@ -257,6 +260,97 @@ return array(
                             ),                         
                         ),
                     ), // end history      
+                    
+                    //supplies
+                    'supplies' => array(
+                        'type' => 'Literal',
+                        'priority' => 1000,
+                        'options' => array(
+                            'route' => '/supplies',
+                            'defaults' => array(
+                                'controller' => 'Proto\Controller\Supplies',
+                                'action' => 'index',
+                            ),
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'list' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route' => '/list[/:action][/:id][/page/:page][/order_by/:order_by][/:order][/search_by/:search_by]',
+                                    'constraints' => array(
+                                        'action' => '(?!\bpage\b)(?!\border_by\b)(?!\bsearch_by\b)[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '[0-9]+',
+                                        'page' => '[0-9]+',
+                                        'order_by' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'order' => 'ASC|DESC',
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Proto\Controller\Supplies',
+                                        'action' => 'list',
+                                    ),
+                                ),
+                            ),
+                            'search' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route' => '/search',
+                                    'defaults' => array(
+                                        'controller' => 'Proto\Controller\Supplies',
+                                        'action' => 'search',
+                                    ),
+                                ),
+                            ),
+                            'add' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/add/:proto_id',
+                                    'constraints' => array(
+                                        'proto_id' => '[0-9]+',
+                                        'type' => '[a-zA-Z][a-zA-Z0-9_\/-]*'
+                                    ),
+                                    'defaults' => array(
+                                        'controller' => 'Proto\Controller\Supplies',
+                                        'action' => 'add',
+                                        'proto_id' => 0,
+                                    ),
+                                ),
+                            ),                            
+                            'edit' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/edit/:supplyId',
+                                    'defaults' => array(
+                                        'controller' => 'Proto\Controller\Supplies',
+                                        'action' => 'edit',
+                                        'supplyId' => 0
+                                    ),
+                                ),
+                            ),
+                            'attachments' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/attachments/:supplyId',
+                                    'defaults' => array(
+                                        'controller' => 'Proto\Controller\Supplies',
+                                        'action' => 'attachments',
+                                        'supplyId' => 0
+                                    ),
+                                ),
+                            ),                            
+                            'remove' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/remove/:supplyId',
+                                    'defaults' => array(
+                                        'controller' => 'Proto\Controller\Supplies',
+                                        'action' => 'remove',
+                                        'supplyId' => 0
+                                    ),
+                                ),
+                            ),                         
+                        ),
+                    ), // end supplies                       
                                           
                     
                 ),
@@ -267,11 +361,11 @@ return array(
         'driver' => array(
             'application_entities' => array(
                 'paths' => array(
-                    __DIR__ . '/../../Prototyping/src/Prototyping/Entity')
+                    __DIR__ . '/../../Proto/src/Proto/Entity')
             ),
             'orm_default' => array(
                 'drivers' => array(
-                    'Prototyping\Entity' => 'application_entities'
+                    'Proto\Entity' => 'application_entities'
                 )
             )
         ),
@@ -282,38 +376,44 @@ return array(
         ),
     ),
     //My module options
-    'prototyping_opt' => [
-        'attachmentPath' => '/data/attachments/prototyping/',        
+    'proto_opt' => [
+        'attachmentPath' => '/data/attachments/proto/',  
+        'emailToNewRequest' => [
+            'grimani@ariete.net',
+            //'simogrima@gmail.com',
+            //'veronica.salvadori@ariete.net',
+            //'filippo.ringressi@ariete.net',
+        ],        
     ],
     //Navigation menu/breadcrumb
     'navigation' => array(
         'leftnav' => array(
-            'prototyping' => array(
-                'label' => 'Ricerca & Prototipazione',
-                'route' => 'prototyping',
+            'proto' => array(
+                'label' => 'Prototipi',
+                'route' => 'proto',
                 'icon' => 'fa fa-lightbulb-o fa-fw',
                 'pages' => array(
                     'list' => array(
                         'label' => 'Elenco',
-                        'route' => 'prototyping/list',
+                        'route' => 'proto/list',
                     ),   
                     'add' => array(
                         'label' => 'Richiedi',
-                        'route' => 'prototyping/create',
+                        'route' => 'proto/create',
                     ),                                         
                     'edit' => array(
                         'label' => 'Modifica',
-                        'route' => 'prototyping/edit',
+                        'route' => 'proto/edit',
                         'onlybread' => true,
                     ),
                     'pritn' => array(
                         'label' => 'Stampa',
-                        'route' => 'prototyping/print',
+                        'route' => 'proto/print',
                         'onlybread' => true,
                     ),                    
                     'show' => array(
-                        'label' => 'Mostra Prova',
-                        'route' => 'prototyping/show',
+                        'label' => 'Mostra Richiesta',
+                        'route' => 'proto/show',
                         'onlybread' => true,
                     ),
                     'userhistory' => array(
@@ -321,19 +421,34 @@ return array(
                         'route' => 'computer/userhistory',
                         'onlybread' => true,
                     ),
-                    //attachment
+                    /**attachment
                     'attachmentlist' => array(
                         'label' => 'Elenco Allegati',
-                        'route' => 'prototyping/attachments/list',
+                        'route' => 'proto/attachments/list',
                         'onlybread' => false,
                         'pages' => array(                        
                             'attachmentadd' => array(
                                 'label' => 'Aggiungi allegati',
-                                'route' => 'prototyping/attachments/add',
+                                'route' => 'proto/attachments/add',
                                 'onlybread' => true,
                             ),
                         ),
                     ),
+                     * 
+                     */
+                    //supplies
+                    'supplieslist' => array(
+                        'label' => 'Elenco Forniture',
+                        'route' => 'proto/supplies/list',
+                        'onlybread' => false,
+                        'pages' => array(                        
+                            'supplyadd' => array(
+                                'label' => 'Aggiungi fornitura',
+                                'route' => 'proto/supplies/add',
+                                'onlybread' => true,
+                            ),
+                        ),
+                    ),                    
                
                 ),
             ),
