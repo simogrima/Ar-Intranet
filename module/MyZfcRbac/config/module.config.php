@@ -220,6 +220,7 @@ return array(
                 '*admin*'          => ['admin'],
                 'computer*'        => ['admin', 'computers'],
                 'prototyping*'     => ['admin', 'prototyping.manager', 'prototyping.reader'],
+                'proto*'           => ['admin', 'proto.manager', 'proto.reader'],
                 '*'                => ['user'],
             ],
         ],

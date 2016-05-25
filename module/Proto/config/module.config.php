@@ -379,10 +379,10 @@ return array(
     'proto_opt' => [
         'attachmentPath' => '/data/attachments/proto/',  
         'emailToNewRequest' => [
-            'grimani@ariete.net',
+            //'grimani@ariete.net',
             //'simogrima@gmail.com',
-            //'veronica.salvadori@ariete.net',
-            //'filippo.ringressi@ariete.net',
+            'veronica.salvadori@ariete.net',
+            'filippo.ringressi@ariete.net',
         ],        
     ],
     //Navigation menu/breadcrumb
