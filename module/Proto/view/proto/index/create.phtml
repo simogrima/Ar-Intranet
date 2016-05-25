@@ -1,0 +1,121 @@
+<?php echo $this->titleAndBread('Richiedi Prova'); ?>
+<?php $this->myFlashMessenger(); ?>    
+<?php
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/css/plugins/bootstrap-select/css/bootstrap-select.min.css', 'all');
+$this->headScript()
+        ->prependFile($this->basePath() . '/css/plugins/bootstrap-select/js/bootstrap-select.min.js')
+?>
+
+<?php
+//$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
+$form->setAttribute('action', $this->serverUrl(TRUE));
+$form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('id', 'create-form');
+$form->get('submit')->setValue('Richiedi');
+$prototyping = $form->get('prototyping'); //fieldset
+$form->prepare();
+
+echo $this->form()->openTag($form);
+?>
+
+<div class = "row">
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Richiesta
+            </div>
+            <div class="panel-body">
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('projectCode')); ?>
+                    </div>
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('productCode')); ?>
+                    </div>    
+                   
+                </div>
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('family')); ?>
+                    </div>    
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('progress')); ?>
+                    </div>                    
+                </div>                
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('createdDate')); ?>  
+                    </div>
+                    <div class = "col-md-6">
+
+                    </div>   
+                </div>
+                
+<div class = "row">
+    <div class = "col-md-12">
+        <?= $this->ztbFormElement($prototyping->get('description')); ?>
+    </div>      
+</div>                   
+ 
+            </div>    
+        </div>
+    </div>      
+</div>
+
+<div class = "row">
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Dati tecnici
+            </div>
+            <div class="panel-body">
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('voltage')); ?>
+                    </div>   
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('frequency')); ?>
+                    </div> 
+                </div>    
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('absorption')); ?>
+                    </div>   
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($prototyping->get('pressure')); ?>
+                    </div> 
+                </div>   
+            </div>    
+        </div>
+    </div>      
+</div>
+
+
+    
+
+<div>
+
+    <?= $this->ztbFormElement($form->get('submit')->setAttribute('id', 'createBtn')); ?>
+</div>    
+<?php
+echo $this->form()->closeTag();
+?>
+
+<?php
+
+$this->headScript()->appendScript("
+$(function() {
+
+$('#create-form').submit(function(){
+    $('#createBtn').button('loading');
+    setTimeout(function() {
+       $('#createBtn').button('reset');
+    }, 5000);
+  
+});
+
+    
+}); 
+
+");

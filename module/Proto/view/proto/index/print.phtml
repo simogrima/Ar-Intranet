@@ -1,0 +1,104 @@
+<?php echo $this->titleAndBread('Prova ' . $prototyping->getId()) ?>
+<?php $this->myFlashMessenger(); ?>   
+<style>
+        .page-title, .breadcrumb
+    {
+        display: none !important;
+    }
+@media print
+{    
+    #button
+    {
+        display: none !important;
+    }
+}    
+</style>
+<script type="text/javascript">
+<!--
+window.print();
+//-->
+</script>
+<div class="row">
+    <div class="col-md-12">
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1>PROVA N° <?= $prototyping->getId()?></h1>
+        <h3>
+            Iniziata il: 
+                        <?php
+                        echo $this->dateFormat(
+                                $prototyping->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        ?>               
+        </h3>
+        
+<?php if (!empty($prototyping->getEndDate())): ?>        
+        <h3>
+            Conclusa il:
+                        <?php
+                            echo $this->dateFormat(
+                                $prototyping->getEndDate(), IntlDateFormatter::LONG, // date
+                                IntlDateFormatter::NONE, // time
+                                "it_IT");
+                        ?>                   
+        </h3>
+<?php endif; ?>        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <table class="table table-bordered text-left" style="margin-top: 20px">
+            <tr>
+                <td><strong>Codice progetto:</strong> <?= $prototyping->getProjectCode(); ?></td>
+                <td><strong>Codice prodotto:</strong> <?= $prototyping->getProductCode(); ?></td>
+            </tr>
+            <tr>
+                <td><strong>Famiglia:</strong> <?= $prototyping->getFamily()->getName(); ?></td>
+                <td><strong>Avanzamento:</strong> <?= $prototyping->getProgress(); ?></td>
+            </tr>     
+            <tr>
+                <td colspan="2"><strong>Cliente:</strong><?= $prototyping->getCustomer(); ?> </td>
+            </tr>              
+            <tr>
+                <td colspan="2"><strong>Descrizione:</strong><br/> <?= $prototyping->getDescription(); ?></td>
+            </tr>                  
+        </table>
+        
+                    <table class="table table-bordered text-left" style="margin-top: 20px">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Dati Tecnici</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td><strong>Tensione</strong> <?= $prototyping->getVoltage(); ?></td>
+                            <td><strong>Frequenza</strong> <?= $prototyping->getFrequency(); ?></td>
+                        </tr>  
+                        <tr>
+                            <td><strong>Assorbimento</strong> <?= $prototyping->getAbsorption(); ?></td>
+                            <td><strong>Pressione</strong> <?= $prototyping->getPressure(); ?></td>
+                        </tr>              
+                    </table>        
+
+
+    </div>
+</div>
+
+
+<div class="row" id="button">
+    <div class="col-md-12 text-center" style="margin-top: 50px">
+        <p>
+
+            <a class='btn btn-default btn-lg' href="<?php echo $this->url('prototyping/edit', array('prototypingId' => $prototyping->getId())); ?>">
+                    <i class="fa fa-edit"></i> Modifica
+            </a>                                      
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('prototyping/list') ?>"><i class="fa fa-mail-reply"></i> Elenco</a>
+        </p>
+    </div>
+</div>

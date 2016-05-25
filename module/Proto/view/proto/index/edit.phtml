@@ -1,0 +1,300 @@
+<?php echo $this->titleAndBread('Modifica'); ?>
+<?php $this->myFlashMessenger(); ?>   
+<?php
+$status = $prototyping->getStatus()->getId();
+switch ($status) {
+    case 10:
+        $class = 'yellow';
+        $icon = 'mail-forward';
+        break;  
+    case 15:
+        $class = 'green';
+        $icon = 'check';
+        break;               
+    case 25:
+        $class = 'red';
+        $icon = 'trash';
+        break;
+    default:
+        $class = 'default';
+        $icon = 'clock-o';
+        break;
+}
+?>
+<div class="row">
+    <div class="col-md-12">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-<?php echo $class; ?>">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <i class="fa fa-<?php echo $icon; ?> fa-5x"></i>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                        <div class="huge"><?php echo $prototyping->getStatus()->getName(); ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <div class="col-md-6">
+         
+    </div>
+</div>
+
+
+
+<?php
+//$form->setAttribute('action', $this->url('application/default', array('controller' => 'index','action' => 'create')));
+$form->setAttribute('action', $this->serverUrl(TRUE));
+$form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('id', 'edit-form');
+$form->get('submit')->setValue('Modifica');
+$fieldset = $form->get('prototyping'); //fieldset
+$form->prepare();
+
+//prendo l'ultima history con stato "Closed" x che mi serve per modificar la data fine
+$latestClosedHistory = end($prototyping->getHistory(\Prototyping\Entity\Status::STATUS_TYPE_CLOSED));
+echo $this->form()->openTag($form);
+?>
+<div class = "row">
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-lightbulb-o fa-fw"></i> Prova: <?= $prototyping->getId()?>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $this->ztbFormElement($fieldset->get('projectCode')); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $this->ztbFormElement($fieldset->get('productCode')); ?>
+                    </div>                    
+                </div>
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($fieldset->get('family')); ?>
+                    </div>     
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($fieldset->get('progress')); ?>
+                    </div>                      
+                </div>                  
+                <div class = "row">
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($fieldset->get('customer')); ?>
+                    </div>    
+                    <div class = "col-md-6">
+                        <?= $this->ztbFormElement($fieldset->get('status')); ?>
+                    </div>                      
+                </div>
+                <div class = "row">
+                    <div class = "col-md-6">
+       
+                        <?= $this->ztbFormElement($fieldset->get('createdDate')); ?>
+                    </div>    
+                    <div class = "col-md-6">
+                        <br/><strong>Data fine:</strong><p>
+                            <?php if($latestClosedHistory): ?>
+                            <a href="<?php echo $this->url('prototyping/history/edit', array('historyId' => $latestClosedHistory->getId())); ?>">
+                            <?php endif; ?>    
+                             <?php echo (!empty($prototyping->getEndDate())) ? 
+                                 $this->dateFormat(
+                                        $prototyping->getEndDate(), IntlDateFormatter::LONG, // date
+                                        IntlDateFormatter::NONE, // time
+                                        "it_IT") : '';
+                             ?>
+                            <?php if($latestClosedHistory): ?>
+                            </a>
+                            <?php endif; ?>   
+                        </p>
+                    </div>                    
+                </div>                
+                <div class = "row">
+                    <div class = "col-md-12">
+                        <?= $this->ztbFormElement($fieldset->get('description')); ?>
+                    </div>      
+                </div>                   
+            </div>    
+        </div>
+    </div>      
+</div>
+<style>
+    #dati-tecnici label {display: none}
+</style>
+<div class="row" id="dati-tecnici">
+    <div class = "col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-th-list fa-fw"></i>
+                Dati tecnici
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <td><strong>Tensione</strong></td>
+                            <td><?= $this->ztbFormElement($fieldset->get('voltage')); ?></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Frequenza</strong></td>
+                            <td><?= $this->ztbFormElement($fieldset->get('frequency')); ?></td>
+                        </tr>    
+                        <tr>
+                            <td><strong>Assorbimento</strong></td>
+                            <td><?= $this->ztbFormElement($fieldset->get('absorption')); ?></td>
+                        </tr> 
+                        <tr>
+                            <td><strong>Pressione</strong></td>
+                            <td><?= $this->ztbFormElement($fieldset->get('pressure')); ?></td>
+                        </tr>             
+                    </table>
+                </div>
+
+            </div>    
+        </div>
+    </div>      
+</div>
+
+
+
+
+<div>
+    <?= $this->ztbFormElement($fieldset->get('id')); ?>
+    <?php //echo $this->ztbFormElement($form->get('submit')); ?>
+</div>    
+
+
+<!-- Allegati -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-paperclip fa-fw"></i>
+                Allegati
+            </div>
+            <div class="panel-body">
+
+                <?php
+                $atts = $prototyping->getAttachments();
+                if (count($atts) < 1):
+                    ?>
+                    <div class="huge text-center">
+                        Nessun allegato presente!
+                    </div>
+                <?php else: ?>                              
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <?php foreach ($atts as $attachment): ?>                        
+                                        <tr>
+                                            <td class="col-md-2">
+                                                <a 
+                                                <?php if ($attachment->isImage()): ?>
+                                                    class="fancybox-thumb" rel="fancybox-thumb"
+                                                    <?php endif; ?>                                                       
+                                                    
+                                                    target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                    <img class="img-responsive" style="max-height: 30px" src="/img/file-extension/<?php echo $attachment->getIcon(); ?>" alt="<?php echo $attachment->getFileName(); ?>" />
+                                                </a>
+                                            </td>
+                                            <td class="col-md-6">
+                                                <a target="_blank" href="<?php echo $attachmentPath . $attachment->getFileName(); ?>">
+                                                    <?php echo $attachment->getFileName(); ?>
+                                                </a>
+                                            </td>
+                                            <td class="col-md-4">
+                                                <?php
+                                                echo $this->dateFormat(
+                                                        $attachment->getCreatedDate(), IntlDateFormatter::LONG, // date
+                                                        IntlDateFormatter::NONE, // time
+                                                        "it_IT");
+                                                ?>
+                                            </td>   
+                                            <td>
+                                                <a href="<?php echo $this->url('prototyping/attachments/remove', array('attachmentId' => $attachment->getId())); ?>"
+                                                   class="btn btn-danger btn-xs emodal-confirm">
+                                                    <span class="glyphicon glyphicon-remove"></span> Del
+                                                </a>                                          
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>                         
+                                </table>
+                            </div>             
+                <?php endif; ?>                
+                <div class="huge text-center" style="margin-top: 30px">
+                    <a href="<?php echo $this->url('prototyping/attachments/add', array('prototyping_id' => $prototyping->getId())); ?>" class="btn btn-primary btn-lg">
+                        <i class="fa fa-paperclip fa-fw"></i> Aggiungi allegati
+                    </a>
+                </div>
+
+
+            </div>
+            <!-- /.panel-body -->
+        </div>        
+    </div>    
+</div> 
+<!-- Fine Allegati -->
+
+<hr>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <p>
+            <button class="btn btn-primary btn-lg" type="submit"><i class="fa fa-edit"></i> Modifica</button>
+            <a href="<?php echo $this->url('prototyping/remove', array('prototypingId' => $prototyping->getId())); ?>"
+               class="btn btn-danger btn-lg emodal-confirm">
+                <i class="fa fa-trash"></i> Elimina
+            </a>      
+            <a class='btn btn-default btn-lg' href="<?php echo $this->url('prototyping/print', array('prototypingId' => $prototyping->getId())); ?>">
+                <i class="fa fa-print"></i> Stampa
+            </a>                                     
+            <a class="btn btn-default btn-lg" href="<?php echo $this->url('prototyping/list') ?>"><i class="fa fa-mail-reply"></i> Annulla</a>
+        </p>
+    </div>
+</div>
+<?php
+//$this->headLink()->prependStylesheet($this->basePath() . '/css/plugins/timeline.css', 'all');
+
+
+//fancyBox
+$this->headLink()
+        ->appendStylesheet($this->basePath() . '/js/plugins/fancyBox/source/helpers/jquery.fancybox-thumbs.css', 'all')
+        ->appendStylesheet($this->basePath() . '/js/plugins/fancyBox/source/jquery.fancybox.css', 'all');
+$this->headScript()
+        ->prependFile($this->basePath() . '/js/plugins/fancyBox/source/helpers/jquery.fancybox-thumbs.js')
+        ->prependFile($this->basePath() . '/js/plugins/fancyBox/source/jquery.fancybox.js');
+
+
+$this->headScript()->appendScript("
+$(function() {
+
+	$('.fancybox-thumb').fancybox({
+		prevEffect	: 'none',
+		nextEffect	: 'none',
+		helpers	: {
+			title	: {
+				type: 'outside'
+			},
+			thumbs	: {
+				width	: 50,
+				height	: 50
+			}
+		}
+	});
+        
+        //Modifico sorgente thumb (altrimente mi prende l'icona dell'estensione)
+        $('.fancybox-thumb').fancybox({
+            helpers : {
+                thumbs : {
+                    source: function( item ) {
+                        return item.href;
+                     }
+                }
+            }
+        });
+    
+    });
+");

@@ -1,0 +1,10 @@
+<h3>Campionatura:</h3>
+<strong>Id:</strong> <?= $sample->getId() . '<br/>'; ?>
+<strong>Richiedente:</strong> <?= $sample->getApplicant()->getDisplayName() . '<br/>'; ?>
+<strong>Modello:</strong> <?= $sample->getModel() . '<br/>'; ?>
+<strong>Cliente:</strong> <?= $sample->getCustomer() . '<br/>'; ?>
+<strong>Note:</strong> <?= nl2br($sample->getNote()) . '<br/>'; ?>
+
+<p>
+    Vai alla <a href="<?= $url ?>">campionatura</a>
+</p>
