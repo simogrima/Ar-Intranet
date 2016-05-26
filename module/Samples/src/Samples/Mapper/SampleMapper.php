@@ -276,15 +276,33 @@ class SampleMapper extends BaseDoctrine
      * @param array $samples le campionature
      * @param array $data colli, pesi, misure, note
      * @param \Application\Controller\AbstractActionController $controller
+     * @param array $emailTo eventuale array di indirizi email. Sono i destinatari
      */
-    public function sendShippingReadyEmail($samples, $data, $controller, $replyTo)
+    public function sendShippingReadyEmail($samples, $data, $controller, $replyTo, $emailTo = [])
     {
-        //Stabilisco detinatari (default + richiedente/i)
-        $emailTo = $this->options->getEmailToShippingReady();
-        foreach ($samples as $sample) {
-           $emailTo[] = $sample->getApplicant()->getEmail();
+        /**
+         * Se non li passo io ($emailTo) allora i destinatari sono i richiedenti.
+         */
+        if (!empty($emailTo)) {
+            echo '1';
+            //$email to deve essere un array di indirizzi email + aggiungo default (non faccio controllo su indirizzi emails)
+            foreach ($this->options->getEmailToShippingReady() as $value) {
+                $emailTo[] = $value;
+            }
+        } else {
+            echo 2;
+            //Detinatari (default + richiedente/i)
+            $emailTo = $this->options->getEmailToShippingReady();
+            foreach ($samples as $sample) {
+                $emailTo[] = $sample->getApplicant()->getEmail();
+            }            
         }
         $emailTo = array_unique($emailTo);
+        
+        var_dump($emailTo);
+        return;
+        
+        
    
         $view = new ViewModel(array(
             'samples' => $samples,

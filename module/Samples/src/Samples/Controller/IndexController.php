@@ -482,7 +482,10 @@ class IndexController extends EntityUsingController
                 $sample->setEmail1(1);
                 $this->sampleMapper->update($sample);
             }
-            $this->sampleMapper->sendShippingReadyEmail($samples, $this->params()->fromPost(), $this, $this->zfcUserAuthentication()->getIdentity());
+            //Ottengo i destinatari
+            $post = $this->params()->fromPost();
+            $recipients = explode(',', $post['recipients']);
+            $this->sampleMapper->sendShippingReadyEmail($samples, $post, $this, $this->zfcUserAuthentication()->getIdentity(), $recipients);
             $this->flashMessenger()->setNamespace('success')->addMessage('La comunicazione è stata inviata. Ora le campionature possono essere spedite.');
             return $this->redirect()->toRoute('samples/ship');
             //}

@@ -12,7 +12,20 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <form role="form" method="post" action="<?= $this->url('samples/ship'); ?>">
+                            <form role="form" method="post" action="<?= $this->url('samples/ship'); ?>" id="comunicateForm">
+                                <div class="form-group">
+                                    <label>Destinatari</label><br/>                
+<?php
+    //Destinatari di default sono i richiedenti
+    foreach ($samples as $sample) {
+        $nominative[] = $sample->getApplicant()->getDisplayName();    
+        $data[] = ['value' => $sample->getApplicant()->getEmail(),'text' => $sample->getApplicant()->getDisplayName()];        
+    }
+?>                                    
+
+                                    <?php echo $this->recipientsInputElement($data)?>
+                                    <p class="help-block">Richiedenti: <?php echo implode(', ', array_unique($nominative));?></p>
+                                </div>
                                 <div class="form-group">
                                     <label>Peso</label>
                                     <input class="form-control" name="peso" placeholder="Esempio 1,2 Kg">
@@ -32,6 +45,10 @@
                                 <input type="hidden" name="ids" value="<?= $ids; ?>" />
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-envelope"></i> Comunica</button>
                                 <a class="btn btn-default" href="javascript: history.back()">Annulla</a>
+                                
+                                
+
+                                
                             </form>
                         </div>
                         <!-- /.col-lg-6 (nested) -->
@@ -67,8 +84,7 @@
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-
-
+                            
                         </div>
                         <!-- /.col-lg-6 (nested) -->
                     </div>

@@ -53,5 +53,5 @@ class UserController extends ZfcUserController
         echo 'fooooooo';
         return FALSE;
     }  
-
+    
 }

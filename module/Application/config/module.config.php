@@ -186,6 +186,7 @@ return array(
             'titleAndBread' => 'Application\View\Helper\TitleAndBread',
             'myFlashMessenger' => 'Application\View\Helper\FlashMessenger',
             'truncateTxt' => 'Application\View\Helper\TruncateTxt',
+            'recipientsInputElement' => 'Application\View\Helper\RecipientsInputElement',
       ),
    ), 
     // Placeholder for console routes

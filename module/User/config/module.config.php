@@ -76,7 +76,7 @@ return array(
                                 'action' => 'changeemail',
                             ),
                         ),
-                    ),
+                    ),                   
                 ),
             ),
         ),

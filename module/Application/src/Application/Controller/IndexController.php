@@ -171,6 +171,26 @@ class IndexController extends AbstractActionController
         }
         
         return $this->getResponse();
+    }       
+
+    /**
+     * X campo destinatari.
+     * Vedi view helper Application\View\Helper\RecipientsInputElement
+     * url: /application/index/json-users
+     */    
+    public function jsonUsersAction()
+    {
+        $users = $this->getServiceLocator()->get('zfcuser_user_mapper')->findAll();
+        $data = [];
+        foreach ($users as $user) {
+            $data[] = [
+                'value' => $user->getEmail(),
+                'text' => $user->getDisplayName(),
+            ];
+        }
+        $jsonObject = \Zend\Json\Json::encode($data, true);
+        echo $jsonObject;
+        return $this->getResponse();
     }        
 
 }
