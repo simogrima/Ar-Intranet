@@ -299,10 +299,6 @@ class SampleMapper extends BaseDoctrine
         }
         $emailTo = array_unique($emailTo);
         
-        var_dump($emailTo);
-        return;
-        
-        
    
         $view = new ViewModel(array(
             'samples' => $samples,
