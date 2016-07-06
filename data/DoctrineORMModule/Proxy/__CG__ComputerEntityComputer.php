@@ -64,10 +64,10 @@ class Computer extends \Computer\Entity\Computer implements \Doctrine\ORM\Proxy\
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'serial', 'model', 'supplier', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
+            return array('__isInitialized__', 'id', 'serial', 'model', 'supplier', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient', 'note');
         }
 
-        return array('__isInitialized__', 'id', 'serial', 'model', 'supplier', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient');
+        return array('__isInitialized__', 'id', 'serial', 'model', 'supplier', 'invoice', 'invoiceDate', 'ddt', 'ddtDate', 'createdDate', 'editDate', 'brand', 'processor', 'status', 'category', 'history', 'recipient', 'note');
     }
 
     /**
@@ -527,6 +527,28 @@ class Computer extends \Computer\Entity\Computer implements \Doctrine\ORM\Proxy\
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRecipient', array());
 
         return parent::getRecipient();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNote()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNote', array());
+
+        return parent::getNote();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setNote($note)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNote', array($note));
+
+        return parent::setNote($note);
     }
 
     /**
