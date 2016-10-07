@@ -71,7 +71,20 @@ class SupplyForm extends Form
                         'id' => 'supplier',
                     )
                 )
-        );        
+        );       
+        
+        //description
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Text',
+            'name' => 'description',
+            'options' => array(
+                'label' => 'Descrizione',
+            ),
+            'attributes' => array(
+                'required' => false,
+                'class' => 'form-control',
+            )
+        ));        
            
 
         //supplyDate

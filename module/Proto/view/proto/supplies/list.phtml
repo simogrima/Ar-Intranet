@@ -31,7 +31,8 @@
             <tr>
                 <th>Id</th>
                 <th>Richiesta</th>
-                <th>Fornitore</th>    
+                <th>Fornitore</th>
+                <th>Descrizione</th>
                 <th>N° ordine</th>
                 <th>Data Fornitura</th>
                 <td class="cell text-center"><i class="fa fa-paperclip"></i></th>
@@ -51,7 +52,10 @@
                     </td>                       
                     <td class="cell">
                         <?php echo $supply->getSupplier()->getCompanyName(); ?>
-                    </td>                     
+                    </td>       
+                    <td class="cell">
+                        <?php echo $supply->getDescription(); ?>
+                    </td>                    
                     <td class="cell cell-serial">
                         <?php echo $supply->getOrderNr(); ?>
                     </td>         

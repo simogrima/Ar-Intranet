@@ -358,6 +358,7 @@ $supplies = $proto->getSupplies(); //Forniture
                                 <table class="table">
                                     <tr>
                                         <th>Fornitore</th>
+                                        <th>Descrizione</th>
                                         <th>N° Ordine</th>
                                         <th>Data fornitura</th>
                                         <th><i class="fa fa-paperclip"></i></th>
@@ -367,6 +368,9 @@ $supplies = $proto->getSupplies(); //Forniture
                                             <td class="col-md-4">
                                                 <?php echo $supply->getSupplier()->getCompanyName(); ?>
                                             </td>
+                                            <td class="col-md-2">
+                                                <?php echo $supply->getDescription(); ?>
+                                            </td>                                              
                                             <td class="col-md-2">
                                                 <?php echo $supply->getOrderNr(); ?>
                                             </td>                                            

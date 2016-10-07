@@ -51,6 +51,13 @@ class Supplies
      * @ORM\Column(name="order_nr", type="string", length=64)
      */
     protected $orderNr;   
+    
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="description", type="string", nullable=true, length=256)
+     */
+    protected $description;    
        
 
     /**
@@ -203,6 +210,29 @@ class Supplies
         
         return $this->attachments;
     }        
+    
+    /**
+     * Get Description
+     * 
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }   
+    
+    /**
+     * Set description
+     *
+     * @param string
+     * @return \Proto\Entity\Supplies
+     */
+    public function setDescription($description = null)
+    {
+        $this->description = $description;
+
+        return $this;
+    }    
     
     
 
