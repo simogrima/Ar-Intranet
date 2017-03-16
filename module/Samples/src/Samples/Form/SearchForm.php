@@ -120,7 +120,38 @@ class SearchForm extends Form
                         'id' => 'applicant',
                     )
                 )
-        );         
+        );        
+        
+        
+        //country
+        $this->add(
+                array(
+                    'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                    'name' => 'country',
+                    'emptyOption' => 'Select..',
+                    'options' => array(
+                        'empty_option' => 'Qualunque',
+                        'label' => 'Country',
+                        'object_manager' => $objectManager,
+                        'target_class' => 'Application\Entity\Country',
+                        'property' => 'name',
+                        'is_method' => true,
+                        'find_method' => array(
+                            'name' => 'findBy',
+                            'params' => array(
+                                'criteria' => array('status' => 1),
+                                'orderBy' => array('name' => 'ASC'),
+                            ),
+                        ),
+                    ),
+                    'attributes' => array(
+                        'required' => false,
+                        'class' => 'form-control selectpicker',
+                        'data-live-search' => 'true',
+                    )                    
+                )
+        );        
+        
 
         $submit = new Element\Submit('submit');
         $submit->setValue('Search')

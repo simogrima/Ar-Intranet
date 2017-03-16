@@ -57,6 +57,7 @@ class SampleMapper extends BaseDoctrine
                 ->from($this->options->getSampleEntityClass(), 's')
                 ->innerJoin('s.applicant', 'u')
                 ->innerJoin('s.status', 't')
+                ->innerJoin('s.country', 'c')
                 ->orderBy($orderBy, $order);
 
         if (!empty($data)) {
@@ -67,7 +68,7 @@ class SampleMapper extends BaseDoctrine
                     case 'status':
                         $whereString .= $and . "t.id = ?1";
                         $qb->setParameter(1,  trim($value));
-                        break;
+                        break;                  
                     case 'applicant':
                         $whereString .= $and . "u.id = ?2";
                         $qb->setParameter(2, trim($value));
@@ -75,7 +76,11 @@ class SampleMapper extends BaseDoctrine
                     case 'id':
                         $whereString .= $and . "s.id = ?3";
                         $qb->setParameter(3,  trim($value));
-                        break;                    
+                        break;    
+                    case 'country':
+                        $whereString .= $and . "c.countryId = ?4";
+                        $qb->setParameter(4,  trim($value));
+                        break;                      
                     default:
                         $whereString .= $and . "s.$key LIKE :$key";
                         $qb->setParameter($key, '%' . trim($value) . '%');
