@@ -401,6 +401,9 @@ return array(
             'erica.chelli@ariete.net',
             'riccardo.peschi@ariete.net',
             'matteo.bacchelli@ariete.net',
+            'massimiliano.stagi@ariete.net',
+            'massimo.palchetti@ariete.net',
+            'giuseppe.turturiello@ariete.net',
         ],        
     ],
     //Navigation menu/breadcrumb
