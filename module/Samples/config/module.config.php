@@ -391,7 +391,6 @@ return array(
         'emailToProcessedSample' => [
             //'simogrima@gmail.com',
             'riccardo.peschi@ariete.net',
-            //'santo.riccio@ariete.net',
         ],    
         'emailToShippingReady' => [
             //'simogrima@gmail.com',
@@ -402,7 +401,6 @@ return array(
             'erica.chelli@ariete.net',
             'riccardo.peschi@ariete.net',
             'matteo.bacchelli@ariete.net',
-            'santo.riccio@ariete.net'
         ],        
     ],
     //Navigation menu/breadcrumb
